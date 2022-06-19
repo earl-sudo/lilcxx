@@ -1,0 +1,8 @@
+The string is '  Hello,  world! '
+After trim:   'Hello,  world!'
+After ltrim:  'Hello,  world! '
+After rtrim:  '  Hello,  world!'
+Let's remove spaces, commas and exclamation marks for all words:
+   Hello world
+Alternative method using "split" and "filter":
+   Hello world

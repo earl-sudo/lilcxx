@@ -1,0 +1,9 @@
+pew pew
+7
+Known functions:
+  Name: add
+    Arguments:   a b
+    Information: Adds two numbers and returns the result
+  Name: pew
+    Arguments:   
+    Information: Prints pew pew

@@ -1,0 +1,18 @@
+* Evaluating 'print Hello, world!'
+Hello, world!
+* Sourcing hello.lil
+Hello, world!
+* Evaluating the string returned by 'read hello.lil'
+Hello, world!
+* Let's call the function 'foo' with the argument 'tralala'
+This is function foo and the arg is tralala
+* Let's call the function 'foo' with the argument '3 + 3'
+This is function foo and the arg is 3 + 3
+* Let's call the function 'bar' with the argument 'tralala'
+This is function bar and the arg... who cares
+* Let's call the function 'bar' with the argument '3 + 3'
+This is function bar and the arg... who cares
+* Let's call the function 'print' with the argument 'tralala'
+tralala
+* Let's call the function 'print' with the argument '3 + 3'
+3 + 3

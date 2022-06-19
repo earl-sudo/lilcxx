@@ -1,0 +1,4 @@
+1st test failed, as expected
+foo before redefinition: args= body= return ole 
+foo after redefinition: args=ole body= print $ole 
+done

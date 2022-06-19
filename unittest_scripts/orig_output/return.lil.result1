@@ -1,0 +1,3 @@
+The result of 'uses_return 10' is 100
+The result of 'does_not_use_return 10' is 100
+100

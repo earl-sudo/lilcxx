@@ -1,0 +1,29 @@
+Catcher test 1
+This will be printed just fine
+foo bar
+etc
+this will not be printed
+however substitution is still done 6
+{since a list is what is displayed, this will appear in braces}
+Catcher test 2
+We'll try to parse
+Adding field user
+  Adding attribute '.name' with value_ 'Kostas Michalopoulos' to the field user
+  Adding attribute '.email' with value_ 'badsector@runtimelegend.com' to the field user
+  Adding attribute '.www' with value_ 'none' to the field user
+  Adding attribute '.nick' with value_ 'Bad Sector' to the field user
+  Adding field groups
+    Adding attribute '.group' with value_ 'coder' to the field groups
+    Adding attribute '.group' with value_ 'maintainer' to the field groups
+  Adding attribute '.flags' with value_ '6' to the field user
+Adding field groups
+  Adding field group
+    Adding attribute '.name' with value_ 'coder' to the field group
+    Adding attribute '.info' with value_ 'LIL Coders' to the field group
+    Adding attribute '.cando' with value_ 'stuff' to the field group
+  Adding field group
+    Adding attribute '.name' with value_ 'maintainer' to the field group
+    Adding attribute '.info' with value_ 'LIL Maintainers' to the field group
+    Adding attribute '.cando' with value_ 'otherstuff' to the field group
+Done
+Catcher test 3

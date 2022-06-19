@@ -1,0 +1,26 @@
+String a: This is a string
+String b: This is another string
+String a length: 16
+String b length: 22
+Character at length/2 in a: a
+Character at length/2 in b: t
+Character code_ at length/2 in a: 97
+Character code_ at length/2 in b: 116
+Middle of a: 'is a '
+Middle of b: ' anothe'
+Index of 'string' in a: 10
+Index of 'string' in b: 16
+String comparison between a and b yields -78
+String equality between a and b yeilds 0
+String a with 'string' replaced to 'foo': This is a foo
+String b with 'string' replaced to 'foo': This is another foo
+String a splitted:
+    part: 'This'
+    part: 'is'
+    part: 'a'
+    part: 'string'
+String b splitted:
+    part: 'This'
+    part: 'is'
+    part: 'another'
+    part: 'string'

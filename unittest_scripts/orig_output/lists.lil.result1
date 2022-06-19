@@ -1,0 +1,49 @@
+Initial list: foo bar baz bad
+    item 1: foo
+    item 2: bar
+    item 3: baz
+    item 4: bad
+4 items
+Item at index 2: baz
+Appending Chlorine...
+List after Chlorine: foo bar baz bad Chlorine
+    item 1: foo
+    item 2: bar
+    item 3: baz
+    item 4: bad
+    item 5: Chlorine
+5 items
+Appending Hello, world!...
+List after Hello, world!: foo bar baz bad Chlorine {Hello, world!}
+    item 1: foo
+    item 2: bar
+    item 3: baz
+    item 4: bad
+    item 5: Chlorine
+    item 6: Hello, world!
+6 items
+Substituting the list
+List after substitution: foo bar baz bad Chlorine Hello, world!
+    item 1: foo
+    item 2: bar
+    item 3: baz
+    item 4: bad
+    item 5: Chlorine
+    item 6: Hello,
+    item 7: world!
+7 items
+Map list to variables
+foox is 'foo'
+barx is 'bar'
+bamia is 'baz'
+List made up of multiple lines
+-> {one}
+-> {two}
+-> {three}
+-> {three;and;a;half}
+-> {four}
+-> {five}
+-> {six
+    seven
+    eight}
+Done

@@ -1,0 +1,5 @@
+setting x in the global environment to 300
+x inside enveval before changing is , y is 10 and z is 88
+x inside enveval after changing is 100, y is 44 and z is 123
+x inside do-something is 32, y is 44 and z is 88
+x in the global environment is 300

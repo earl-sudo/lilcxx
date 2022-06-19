@@ -1,0 +1,5 @@
+x in global is 10 and y is 20
+x inside topeval before modifying it is 10
+y in does-something is 420
+x in calls-something is 33 and y is 420
+now x in global is 42 and y is 420

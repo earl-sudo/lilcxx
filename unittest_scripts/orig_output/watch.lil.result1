@@ -1,0 +1,15 @@
+foo is now `32`
+bar is now `blah`
+moo and coo are `globalmoo` and ``
+moo and coo are `globalmoo` and `test`
+moo and coo are `globalmoo` and `second`
+foo is now `blah`
+foo is now `one`
+foo is now `two`
+foo is now `three`
+moo and coo are `globalmoo` and `fromwithin`
+local moo is inside1
+local moo is inside2 and zoo is whoknows
+moo and coo are `theglobal` and `fromwithin`
+moo and coo are `theglobal` and `last-coo-set`
+moo and coo are `last-moo-set` and `last-coo-set`

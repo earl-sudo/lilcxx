@@ -1,0 +1,86 @@
+- Top level exception handler -  DONE
+- namespace - DONE
+- valgrind - DONE
+- coverage - DONE
+- fix names - DONE
+- output stats - DONE
+- Pipe SysInfo into each new Type. - DONE
+- Convert series of integers into enums - DONE
+- Get rid of Lil_callframe.var_ and Lil_callframe.vars_.  Use iterators over varmap_ - DONE
+- Get rid of for loops over LilInterp.cmdArray_ - DONE
+- Get rid of LilInterp.numCmds_ - DONE
+- Get rid of loops over LilInterp.cmdArray_ and then cmdArray_ itself. - DONE
+- Convert function pointers into std::function<> - DONE
+- Replace LilInterp.callback_ array with dynamic std::vector of std::function<> - DONE
+- Prepare for UTF16 - DONE
+- Prepare for replaceable strings. - DONE
+- Convert Lil_value to a std::string. - DONE
+- Up warnings on compiler - DONE
+- better unit-testing - DONE
+- More organize code - DONE
+- Make library - DONE
+
+- What to do about failure to parse integers and floats.
+- Use inspectors.
+- Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
+- Lil_list copy ctor, assignment
+- Convert Lil_list to std::list<> and change calling convention to use a std::list<> from C-array.
+- Make argument error, action error, parser error, null return all distinct in commands.
+- Connect sub LilInterp to main one for stats.
+- Add documentation.
+
+
+- Object cache
+- Add system to associate binary/alternate representations to string representations and deal with changes.
+- Push to github
+- Publish
+- Add dict type
+- Make more like tcl ("func" => "proc" and like)
+- const char* -> std::string_view
+- safe mode
+- less code
+- better errors
+- thread safe
+- string class
+- configure hashtables.
+- configure vectors.
+- configure strings
+- Move private code to private section.
+- Info fields
+	int 		maxCalldepth_ = 0;
+	int			numCalls_ = 0;
+	int			maxNumVarsInCallframe_ = 0;
+	int			numCommands_ = 0;
+	int			numProcs_ = 0;
+	int			numConversionsToInt_ = 0;
+	int 		numConversionsToDouble_ = 0;
+	int			numConversionsToListStr_ = 0;
+	int			numVarReads_ = 0;
+	int			numVarWrites_ = 0;
+	int			numErrors_ = 0;
+	int			numFailedVarReads_ = 0;
+	int			numFailedCmdFind_ = 0;
+	int			maxNumFuncArgs_ = 0;
+	int			numBreaks_ = 0;
+	int			numCatches_ = 0;
+    int         maxParseDepth_ = 0;
+=================== Additions
+- handles interface
+
+std::string wrapper
+std::unordered_map wrapper
+fake Tcl API borrow Tcl commands
+    binary, env, eof, exec(***), expr, fcopy, file, fileevent, filename, flush, format, gets, glob, http,
+    open, puts, read, regexp, regsub, scan, seek, socket, string, tcl_platform, tcltest, tell, time, timerate,
+    clock, vmwait, zlib, sqlite
+from boost
+    xml, json, yaml, csv, tokenizer, python, asio, process, beast, log, circular buffer, dll, integer
+from C++
+    string, random, filesystem, chrono
+Add limiting API
+    maxNumLength, maxValueLen, maxNumArgs, maxNumProcs, maxNumCommands, maxNumValue, maxLevelStack, maxScriptSize,
+    maxProcSize, maxNumLocals, maxNumLoops, maxExprSize, maxIntegerValue, minIntegerValue, maxDoubleValue, minDoubleValue
+show
+    cmdsAsGenerated, varsAsGenerated, varsAsWritten, procErrorReturn, missedVars, missedCommands, badConversions
+    procChanges
+Define base-command-set

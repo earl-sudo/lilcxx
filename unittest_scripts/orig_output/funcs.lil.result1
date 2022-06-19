@@ -1,0 +1,23 @@
+This is foo and a is 'hello, world' while b is 'hello to you too'
+This is bar and a is 'hi again' while b is 'and again'
+I'm moo and i've got these arguments:
+    argument 0 is '!!un!anonymous-function!000000001!nu!!'
+    argument 1 is 'this'
+    argument 2 is 'is'
+    argument 3 is 'a'
+    argument 4 is 'good'
+    argument 5 is 'day'
+Splitting the list items:
+{bad's} day
+{good's} day
+{eh??}
+Getting list items' length:
+9
+10
+4
+Using an anonymous function with the list:
+The length of bad's day is 9
+The length of good's day is 10
+The length of eh?? is 4
+The function's code_ is
+    return "The length of $a is [length $a]"

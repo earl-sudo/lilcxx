@@ -1,0 +1,17 @@
+Functions with small names:
+  func
+  set
+  eval
+  list
+  expr
+  inc
+  dec
+  read
+  if
+  for
+  char
+  trim
+  try
+  exit
+  lmap
+  rand
