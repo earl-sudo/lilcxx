@@ -325,12 +325,16 @@ int main(int argc, const char* argv[]) {
     bool do_unit_test = false;
     if (strcmp(argv[1],"unittest")==0) do_unit_test = true;
     if (do_unit_test) {
+        int numErrors = 0;
         for (int i = 0; i < sizeof(ut)/sizeof(unittest); i++) {
+            std::cout << "TEST: " << i << ":";
             g_unitTestOutput.reset();
             run_a_string(ut[i].input);
             g_unitTestOutput.splitExpected(ut[i].output);
-            g_unitTestOutput.diff(ut[i].name);
+            numErrors += g_unitTestOutput.diff(ut[i].name);
         }
+        std::cout << "numErrors: " << numErrors << "\n";
+        return numErrors;
     }
     try {
         if (argc < 2) { return repl(); } // Plan integrative mode.
@@ -340,4 +344,5 @@ int main(int argc, const char* argv[]) {
     } catch (...) {
         std::cout << L_VSTR(0xd8d2, "EXCEPTION: (lil main) (...) ") << std::endl;
     }
+    return 0;
 }

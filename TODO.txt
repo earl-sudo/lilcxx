@@ -30,7 +30,20 @@
 - Add documentation.
 
 
+- ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_.
+- ERROR: Copies may exist of LilInterp may exist so other references are possible.
+- Review algorithms for substitutions.
+- Fix miss matched Lil::_strclone() new[] and Lil::LilInterp::setCather() delete.
+- Fix miss matched Lil::_real_trim() delete() and Lil::_strclone() new[].
+- Fix "invalid read of size 1", ~Lil_value().
 - Object cache
+- configure hashtables.
+- configure vectors.
+- configure strings
+- cache int64_t and Lil_value.
+- cache double and Lil_value.
+- cache Lil_list and Lil_value.
+- Info fields
 - Add system to associate binary/alternate representations to string representations and deal with changes.
 - Push to github
 - Publish
@@ -42,28 +55,8 @@
 - better errors
 - thread safe
 - string class
-- configure hashtables.
-- configure vectors.
-- configure strings
 - Move private code to private section.
-- Info fields
-	int 		maxCalldepth_ = 0;
-	int			numCalls_ = 0;
-	int			maxNumVarsInCallframe_ = 0;
-	int			numCommands_ = 0;
-	int			numProcs_ = 0;
-	int			numConversionsToInt_ = 0;
-	int 		numConversionsToDouble_ = 0;
-	int			numConversionsToListStr_ = 0;
-	int			numVarReads_ = 0;
-	int			numVarWrites_ = 0;
-	int			numErrors_ = 0;
-	int			numFailedVarReads_ = 0;
-	int			numFailedCmdFind_ = 0;
-	int			maxNumFuncArgs_ = 0;
-	int			numBreaks_ = 0;
-	int			numCatches_ = 0;
-    int         maxParseDepth_ = 0;
+
 =================== Additions
 - handles interface
 
