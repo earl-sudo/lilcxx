@@ -108,25 +108,25 @@ static LILCALLBACK Lil_value_Ptr fnc_reflect(LilInterp_Ptr lil, size_t argc, Lil
     Lil_value_Ptr r;
     if (!argc) { return nullptr; } // #argErr
     lcstrp type = lil_to_string(argv[0]);
-    if (!LSTRCMP(type, "version")) {
+    if (!LSTRCMP(type, L_STR("version"))) {
         return lil_alloc_string(lil, LIL_VERSION_STRING);
     }
-    if (!LSTRCMP(type, "args")) {
+    if (!LSTRCMP(type, L_STR("args"))) {
         if (argc < 2) { return nullptr; } // #argErr
         func = _find_cmd(lil, lil_to_string(argv[1]));
         if (!func || !func->getArgnames()) { return nullptr; } // #argErr
         return lil_list_to_value(lil, func->getArgnames(), true);
     }
-    if (!LSTRCMP(type, "body")) {
+    if (!LSTRCMP(type, L_STR("body"))) {
         if (argc < 2) { return nullptr; } // #argErr
         func = _find_cmd(lil, lil_to_string(argv[1]));
         if (!func || func->getProc()) { return nullptr; } // #argErr
         return lil_clone_value(func->getCode());
     }
-    if (!LSTRCMP(type, "func-count")) {
+    if (!LSTRCMP(type, L_STR("func-count"))) {
         return lil_alloc_integer(lil, _NT(lilint_t,lil->getCmds()));
     }
-    if (!LSTRCMP(type, "funcs")) {
+    if (!LSTRCMP(type, L_STR("funcs"))) {
         Lil_list_SPtr funcs(lil_alloc_list(lil)); // Delete on exit.
         auto appendFuncName = [&funcs, &lil](const lstring& name, const Lil_func_Ptr f) {
             (void)f;
@@ -136,7 +136,7 @@ static LILCALLBACK Lil_value_Ptr fnc_reflect(LilInterp_Ptr lil, size_t argc, Lil
         r = lil_list_to_value(lil, funcs.v, true);
         return r;
     }
-    if (!LSTRCMP(type, "vars")) {
+    if (!LSTRCMP(type, L_STR("vars"))) {
         Lil_list_SPtr     vars(lil_alloc_list(lil)); // Delete on exit.
         Lil_callframe_Ptr env = lil->getEnv();
         while (env) {
@@ -146,50 +146,50 @@ static LILCALLBACK Lil_value_Ptr fnc_reflect(LilInterp_Ptr lil, size_t argc, Lil
         r                     = lil_list_to_value(lil, vars.v, true);
         return r;
     }
-    if (!LSTRCMP(type, "globals")) {
+    if (!LSTRCMP(type, L_STR("globals"))) {
         Lil_list_SPtr vars(lil_alloc_list(lil));
         lil->getRootEnv()->varsNamesToList(lil, vars.v);
         r               = lil_list_to_value(lil, vars.v, true);
         return r;
     }
-    if (!LSTRCMP(type, "has-func")) {
+    if (!LSTRCMP(type, L_STR("has-func"))) {
         if (argc == 1) { return nullptr; } // #argErr
         lcstrp target = lil_to_string(argv[1]);
-        return lil->cmdExists(target) ? lil_alloc_string(lil, "1") : nullptr;
+        return lil->cmdExists(target) ? lil_alloc_string(lil, L_STR("1")) : nullptr;
     }
-    if (!LSTRCMP(type, "has-var")) {
+    if (!LSTRCMP(type, L_STR("has-var"))) {
         Lil_callframe_Ptr env = lil->getEnv();
         if (argc == 1) { return nullptr; } // #argErr
         lcstrp target = lil_to_string(argv[1]);
         while (env) {
-            if (env->varExists(target)) { return lil_alloc_string(lil, "1"); }
+            if (env->varExists(target)) { return lil_alloc_string(lil, L_STR("1")); }
             env = env->getParent();
         }
         return nullptr;
     }
-    if (!LSTRCMP(type, "has-global")) {
+    if (!LSTRCMP(type, L_STR("has-global"))) {
         if (argc == 1) { return nullptr; } // #argErr
         lcstrp target = lil_to_string(argv[1]);
-        if (lil->getRootEnv()->varExists(target)) return lil_alloc_string(lil, "1");
+        if (lil->getRootEnv()->varExists(target)) return lil_alloc_string(lil, L_STR("1"));
         return nullptr;
     }
-    if (!LSTRCMP(type, "error")) {
+    if (!LSTRCMP(type, L_STR("error"))) {
         return lil->getErrMsg().length() ? lil_alloc_string(lil, lil->getErrMsg().c_str()) : nullptr;
     }
-    if (!LSTRCMP(type, "dollar-prefix")) {
+    if (!LSTRCMP(type, L_STR("dollar-prefix"))) {
         if (argc == 1) { return lil_alloc_string(lil, lil->getDollarprefix()); }
         Lil_value_Ptr rr = lil_alloc_string(lil, lil->getDollarprefix());
         lil->setDollarprefix(lil_to_string(argv[1]));
         return rr;
     }
-    if (!LSTRCMP(type, "this")) {
+    if (!LSTRCMP(type, L_STR("this"))) {
         Lil_callframe_Ptr env = lil->getEnv();
         while (env != lil->getRootEnv() && !env->getCatcher_for() && !env->getFunc()) { env = env->getParent(); }
         if (env->getCatcher_for()) { return lil_alloc_string(lil, lil->getCatcher()); }
         if (env == lil->getRootEnv()) { return lil_alloc_string(lil, lil->getRootcode()); }
         return env->setFunc() ? lil_clone_value(env->getFunc()->getCode()) : nullptr;
     }
-    if (!LSTRCMP(type, "name")) {
+    if (!LSTRCMP(type, L_STR("name"))) {
         Lil_callframe_Ptr env = lil->getEnv();
         while (env != lil->getRootEnv() && !env->getCatcher_for() && !env->getFunc()) { env = env->getParent(); }
         if (env->getCatcher_for()) { return env->getCatcher_for(); }
@@ -205,7 +205,7 @@ static LILCALLBACK Lil_value_Ptr fnc_reflect(LilInterp_Ptr lil, size_t argc, Lil
 
 static LILCALLBACK Lil_value_Ptr fnc_func(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
-    LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_func");
+    LIL_BEENHERE_CMD(lil->sysInfo_, ("fnc_func"));
     Lil_value_Ptr name;
     Lil_func_Ptr  cmd;
     Lil_list_Ptr  fargs;
@@ -217,9 +217,9 @@ static LILCALLBACK Lil_value_Ptr fnc_func(LilInterp_Ptr lil, size_t argc, Lil_va
         cmd->setArgnames(fargs);
         cmd->setCode(argv[2]);
     } else {
-        name = lil_unused_name(lil, "anonymous-function");
+        name = lil_unused_name(lil, L_STR("anonymous-function"));
         if (argc < 2) {
-            Lil_value_SPtr tmp(lil_alloc_string(lil, "args")); // Delete on exit.
+            Lil_value_SPtr tmp(lil_alloc_string(lil, L_STR("args"))); // Delete on exit.
             fargs = lil_subst_to_list(lil, tmp.v);
             cmd   = _add_func(lil, lil_to_string(name));
             cmd->setArgnames(fargs);
@@ -244,7 +244,7 @@ static LILCALLBACK Lil_value_Ptr fnc_func(LilInterp_Ptr lil, size_t argc, Lil_va
 
 static LILCALLBACK Lil_value_Ptr fnc_rename(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
-    LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_rename");
+    LIL_BEENHERE_CMD(lil->sysInfo_, ("fnc_rename"));
     Lil_value_Ptr r;
     if (argc < 2) { return nullptr; } // #argErr
     lcstrp oldname = lil_to_string(argv[0]);
@@ -276,7 +276,7 @@ static LILCALLBACK Lil_value_Ptr fnc_rename(LilInterp_Ptr lil, size_t argc, Lil_
 static LILCALLBACK Lil_value_Ptr fnc_unusedname(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_unusedname");
-    return lil_unused_name(lil, argc > 0 ? lil_to_string(argv[0]) : "unusedname");
+    return lil_unused_name(lil, argc > 0 ? lil_to_string(argv[0]) : L_STR("unusedname"));
 }
 
 [[maybe_unused]] const auto fnc_quote_doc = R"cmt(
@@ -309,7 +309,7 @@ static LILCALLBACK Lil_value_Ptr fnc_set(LilInterp_Ptr lil, size_t argc, Lil_val
     Lil_var_Ptr var    = nullptr;
     LIL_VAR_TYPE       access = LIL_SETVAR_LOCAL;
     if (!argc) { return nullptr; } // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), "global")) {
+    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("global"))) {
         i      = 1;
         access = LIL_SETVAR_GLOBAL;
     }
@@ -367,7 +367,7 @@ static LILCALLBACK Lil_value_Ptr fnc_print(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_print");
     fnc_write(lil, argc, argv);
-    lil_write(lil, "\n");
+    lil_write(lil, L_STR("\n"));
     return nullptr;
 }
 
@@ -569,7 +569,7 @@ static LILCALLBACK Lil_value_Ptr fnc_jaileval(LilInterp_Ptr lil, size_t argc, Li
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_jaileval");
     bool base = false;
     if (!argc) { return nullptr; } // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), "clean")) {
+    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("clean"))) {
         base = true;
         if (argc == 1) { return nullptr; } // #argErr
     }
@@ -591,9 +591,9 @@ static LILCALLBACK Lil_value_Ptr fnc_count(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_count");
     lchar buff[64]; // #magic
-    if (!argc) { return _alloc_value(lil, "0"); }
+    if (!argc) { return _alloc_value(lil, L_STR("0")); }
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
-    LSPRINTF(buff, "%u", (unsigned int) list.v->getCount());
+    LSPRINTF(buff, L_STR("%u"), (unsigned int) list.v->getCount());
     return _alloc_value(lil, buff);
 }
 
@@ -655,7 +655,7 @@ static LILCALLBACK Lil_value_Ptr fnc_append(LilInterp_Ptr lil, size_t argc, Lil_
     LIL_VAR_TYPE    access = LIL_SETVAR_LOCAL;
     if (argc < 2) { return nullptr; } // #argErr
     lcstrp varname = lil_to_string(argv[0]);
-    if (!LSTRCMP(varname, "global")) {
+    if (!LSTRCMP(varname, L_STR("global"))) {
         if (argc < 3) { return nullptr; } // #argErr
         varname = lil_to_string(argv[1]);
         base    = 2;
@@ -714,7 +714,7 @@ static LILCALLBACK Lil_value_Ptr fnc_filter(LilInterp_Ptr lil, size_t argc, Lil_
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_filter");
     Lil_value_Ptr r;
-    lcstrp varname = "x";
+    lcstrp varname = L_STR("x");
     int           base     = 0;
     if (argc < 1) { return nullptr; } // #argErr
     if (argc < 2) { return lil_clone_value(argv[0]); }
@@ -777,7 +777,7 @@ static LILCALLBACK Lil_value_Ptr fnc_concat(LilInterp_Ptr lil, size_t argc, Lil_
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_concat");
     if (argc < 1) { return nullptr; } // #argErr
-    Lil_value_Ptr r = lil_alloc_string(lil, "");
+    Lil_value_Ptr r = lil_alloc_string(lil, L_STR(""));
     for (size_t   i = 0; i < argc; i++) {
         {
             Lil_list_SPtr  list(lil_subst_to_list(lil, argv[i])); // Delete on exit.
@@ -799,7 +799,7 @@ static LILCALLBACK Lil_value_Ptr fnc_foreach(LilInterp_Ptr lil, size_t argc, Lil
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_foreach");
     size_t     listidx  = 0, codeidx = 1;
-    lcstrp varname = "i";
+    lcstrp varname = L_STR("i");
     if (argc < 2) { return nullptr; } // #argErr
     if (argc >= 3) {
         varname = lil_to_string(argv[0]);
@@ -977,7 +977,7 @@ static LILCALLBACK Lil_value_Ptr fnc_read(LilInterp_Ptr lil, size_t argc, Lil_va
         std::unique_ptr<lchar>  buffer(proc(lil, lil_to_string(argv[0])));
         r = lil_alloc_string(lil, buffer.get());
     } else {
-        FILE *f = fopen(lil_to_string(argv[0]), "rb");
+        FILE *f = fopen(lil_to_string(argv[0]), L_STR("rb"));
         if (!f) { return nullptr; }
         fseek(f, 0, SEEK_END);
         auto size = ftell(f);
@@ -1029,7 +1029,7 @@ static LILCALLBACK Lil_value_Ptr fnc_if(LilInterp_Ptr lil, size_t argc, Lil_valu
     Lil_value_Ptr r    = nullptr;
     int           base = 0, bnot_ = 0, v;
     if (argc < 1) { return nullptr; } // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), "bnot_")) { base = bnot_ = 1; }
+    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("bnot_"))) { base = bnot_ = 1; }
     if (argc < (size_t) base + 2) { return nullptr; } // #argErr
     Lil_value_SPtr val(lil_eval_expr(lil, argv[base])); // Delete on exit.
     if (!val.v || lil->getError().inError()) { return nullptr; } // #argErr
@@ -1057,7 +1057,7 @@ static LILCALLBACK Lil_value_Ptr fnc_while(LilInterp_Ptr lil, size_t argc, Lil_v
     Lil_value_Ptr r    = nullptr;
     int           base = 0, bnot_ = 0, v;
     if (argc < 1) { return nullptr; } // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), "bnot_")) { base = bnot_ = 1; }
+    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("bnot_"))) { base = bnot_ = 1; }
     if (argc < (size_t) base + 2) { return nullptr; } // #argErr
     while (!lil->getError().inError() && !lil->getEnv()->getBreakrun()) {
         Lil_value_SPtr val(lil_eval_expr(lil, argv[base])); // Delete on exit.
@@ -1191,7 +1191,7 @@ static LILCALLBACK Lil_value_Ptr fnc_substr(LilInterp_Ptr lil, size_t argc, Lil_
     // #TODO error condition
     if (end > slen) { end = slen; }
     if (start >= end) { return nullptr; } // #argErr
-    Lil_value_Ptr r = lil_alloc_string(lil, "");
+    Lil_value_Ptr r = lil_alloc_string(lil, L_STR(""));
     for (size_t   i = start; i < end; i++) {
         lil_append_char(r, str[i]);
     }
@@ -1267,7 +1267,7 @@ static LILCALLBACK Lil_value_Ptr fnc_trim(LilInterp_Ptr lil, size_t argc, Lil_va
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_trim");
     if (!argc) { return nullptr; } // #argErr
-    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? " \f\n\r\t\v" : lil_to_string(argv[1]), 1, 1);
+    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 1, 1);
 }
 
 [[maybe_unused]] const auto fnc_ltrim_doc = R"cmt(
@@ -1279,7 +1279,7 @@ static LILCALLBACK Lil_value_Ptr fnc_ltrim(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_ltrim");
     if (!argc) { return nullptr; } // #argErr
-    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? " \f\n\r\t\v" : lil_to_string(argv[1]), 1, 0);
+    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 1, 0);
 }
 
 [[maybe_unused]] const auto fnc_rtrim_doc = R"cmt(
@@ -1291,7 +1291,7 @@ static LILCALLBACK Lil_value_Ptr fnc_rtrim(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_rtrim");
     if (!argc) { return nullptr; } // #argErr
-    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? " \f\n\r\t\v" : lil_to_string(argv[1]), 0, 1);
+    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 0, 1);
 }
 
 [[maybe_unused]] const auto fnc_strcmp_doc = R"cmt(
@@ -1365,19 +1365,19 @@ static LILCALLBACK Lil_value_Ptr fnc_repstr(LilInterp_Ptr lil, size_t argc, Lil_
 static LILCALLBACK Lil_value_Ptr fnc_split(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_split");
-    lcstrp sep = " ";
+    lcstrp sep = L_STR(" ");
     if (argc == 0) { return nullptr; } // #argErr
     if (argc > 1) {
         sep = lil_to_string(argv[1]);
         if (!sep || !sep[0]) { return lil_clone_value(argv[0]); }
     }
-    Lil_value_Ptr val  = lil_alloc_string(lil, "");
+    Lil_value_Ptr val  = lil_alloc_string(lil, L_STR(""));
     lcstrp str = lil_to_string(argv[0]);
     Lil_list_SPtr list(lil_alloc_list(lil)); // Delete on exit.
     for (size_t   i    = 0; str[i]; i++) {
         if (LSTRCHR(sep, str[i])) {
             lil_list_append(list.v, val);
-            val = lil_alloc_string(lil, "");
+            val = lil_alloc_string(lil, L_STR(""));
         } else {
             lil_append_char(val, str[i]);
         }

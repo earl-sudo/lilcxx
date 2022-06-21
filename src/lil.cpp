@@ -57,7 +57,7 @@ ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
         LIL_CTOR(&sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );
         this->setEmptyVal(_alloc_empty_value(this) );
-        this->dollarprefix_ = ("set ");
+        this->dollarprefix_ = L_VSTR(0x59e0,"set ");
         register_stdcmds();
     }
     void LilInterp::setCather(Lil_value_Ptr cmdD) {
@@ -72,7 +72,6 @@ ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
         Lil_func_Ptr cmdD = find_cmd(name);
         if (cmdD) { // Already have a function by that name so re-are redefining it.
             cmdD->eraseOrgDefinition();
-            return cmdD;
         }
         cmdD = std::make_shared<Lil_func>(this, name); //alloc Lil_func_Ptr
         hashmap_addCmd(name, cmdD);
@@ -92,7 +91,7 @@ ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
         func = find_cmd(oldname);
         if (!func) {
             std::vector<lchar> msg((24 + LSTRLEN(oldname)), LC('\0'));
-            LSPRINTF(&msg[0], "unknown function '%s'", oldname);
+            LSPRINTF(&msg[0], L_VSTR(0xbe91,"unknown function '%s'"), oldname);
             lil_set_error_at(this, this->getHead(), &msg[0]); // #INTERP_ERR
             return nullptr;
         }
@@ -616,7 +615,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                                     {
                                         lil->getEnv()->setCatcher_for() = words->getValue(0);
                                         Lil_value_SPtr args(lil_list_to_value(lil, words, true)); // Delete on exit.
-                                        lil_set_var(lil, "args", args.v, LIL_SETVAR_LOCAL_NEW);
+                                        lil_set_var(lil, L_STR("args"), args.v, LIL_SETVAR_LOCAL_NEW);
                                         val = lil_parse(lil, lil->getCatcher(), 0, 1);
                                     }
                                     lil_pop_env(lil);
@@ -657,10 +656,10 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                         lil_push_env(lil); // Add new callframe.
                         lil->getEnv()->setFunc() = cmd; // Set this callframe function.
                         if (cmd->getArgnames()->getCount() == 1 &&
-                            !LSTRCMP(lil_to_string(cmd->getArgnames()->getValue(0)), "args")) {
+                            !LSTRCMP(lil_to_string(cmd->getArgnames()->getValue(0)), L_STR("args"))) {
                             // Handling of variable number of arguments.
                             Lil_value_SPtr args(lil_list_to_value(lil, words, true)); // Delete on exit.
-                            lil_set_var(lil, "args", args.v, LIL_SETVAR_LOCAL_NEW);
+                            lil_set_var(lil, L_STR("args"), args.v, LIL_SETVAR_LOCAL_NEW);
                         } else { // Handling of fix number of arguments.
                             size_t i;
                             for (i = 0; i <
@@ -782,7 +781,7 @@ Lil_value_Ptr lil_unused_name(LilInterp_Ptr lil, lcstrp part) {
 // Get string value from Lil_value.
 lcstrp lil_to_string(Lil_value_Ptr val) {
     assert(val!=nullptr);
-    return (val && val->getValueLen()) ? val->getValue() : "";
+    return (val && val->getValueLen()) ? val->getValue() : L_STR("");
 }
 
 // Get double value from Lil_value.
@@ -845,7 +844,7 @@ Lil_value_Ptr lil_alloc_string(LilInterp_Ptr lil, lcstrp str) {
 Lil_value_Ptr lil_alloc_double(LilInterp_Ptr lil, double num) {
     assert(lil!=nullptr);
     lchar buff[128]; // #magic
-    LSPRINTF(buff, "%f", num);
+    LSPRINTF(buff, ("%f"), num);
     return _alloc_value(lil, buff);
 }
 

@@ -73,7 +73,7 @@ const int ERROR_FIXHEAD = 2;
 #  define DBGPRINTF printf
 #endif
 
-struct [[nodiscard]] ErrorCode  {
+struct ND ErrorCode  {
 private:
     int v = 0;
 public:
@@ -264,10 +264,12 @@ private:
 public:
 
     Lil_value(LilInterp_Ptr lil) {
+        assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_value");
     }
     Lil_value(LilInterp_Ptr lil, lcstrp  str, size_t len) { // #ctor
+        assert(lil!=nullptr); assert(str!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_value");
         if (str) {
@@ -282,24 +284,24 @@ public:
     ~Lil_value() { // #dtor
         LIL_DTOR(sysInfo_, "Lil_value");
     }
-    [[nodiscard]] size_t getValueLen() const { return value_.length(); }
-    [[nodiscard]] lcstrp getValue() const { return (lstrp )value_.c_str(); }
-    [[nodiscard]] lchar  getChar(size_t i) const { return value_.at(i); }
+    ND size_t getValueLen() const { return value_.length(); }
+    ND lcstrp getValue() const { return (lstrp )value_.c_str(); }
+    ND lchar  getChar(size_t i) const { return value_.at(i); }
     void append(lchar ch) { value_.append(1, ch); }
-    void append(lcstrp  s, size_t len) { value_.append(s, len); }
-    void append(lcstrp  s) { append(s, LSTRLEN(s));  }
-    void append(Lil_value_CPtr v) { value_.append(v->value_); }
+    void append(lcstrp  s, size_t len) { assert(s!=nullptr); value_.append(s, len); }
+    void append(lcstrp  s) { assert(s!=nullptr); append(s, LSTRLEN(s));  }
+    void append(Lil_value_CPtr v) { assert(v!=nullptr); value_.append(v->value_); }
 };
 
 struct Lil_value_SPtr { // #class
     Lil_value_Ptr v = nullptr;
-    explicit Lil_value_SPtr(Lil_value_Ptr vD) : v(vD) { } // #ctor
+    explicit Lil_value_SPtr(Lil_value_Ptr vD) : v(vD) { assert(vD!=nullptr); } // #ctor
     ~Lil_value_SPtr() { if (v) lil_free_value(v); } // #dtor
 };
 
 struct Lil_list_SPtr { // #class
     Lil_list_Ptr v = nullptr;
-    explicit Lil_list_SPtr(Lil_list_Ptr vD) : v(vD) { } // #ctor
+    explicit Lil_list_SPtr(Lil_list_Ptr vD) : v(vD) { assert(vD!=nullptr); } // #ctor
     ~Lil_list_SPtr() { lil_free_list(v); } // #dtor
 };
 
@@ -312,8 +314,9 @@ private:
     Lil_value_Ptr       value_ = nullptr;
 public:
 
-    Lil_var(LilInterp_Ptr lil, lcstrp  nD, lstrp  wD, Lil_callframe* envD, Lil_value_Ptr vD)
+    Lil_var(LilInterp_Ptr lil, lcstrp  nD, lstrp  wD, Lil_callframe* envD, Lil_value_Ptr vD) // vD, wD might be nullptr
             : name_(nD),  thisCallframe_(envD), value_(vD) { // #ctor
+        assert(lil!=nullptr); assert(nD!=nullptr);  assert(envD!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_var");
         setWatchCode(wD);
@@ -323,26 +326,27 @@ public:
         if (this->getValue()) lil_free_value(this->getValue());
     }
     // Get variable name_.
-    [[nodiscard]] const lstring& getName() const { return name_; }
+    ND const lstring& getName() const { return name_; }
     // Get variable value_.
-    [[nodiscard]] lcstrp  getWatchCode() const { return watchCode_.c_str(); }
+    ND lcstrp  getWatchCode() const { return watchCode_.c_str(); }
     // Set variable value_.
-    void setWatchCode(lcstrp  value) {
+    void setWatchCode(lcstrp  value) { // value might be nullptr
         if (value==nullptr) {
             watchCode_.clear();
             return;
         }
         watchCode_ = value;
     }
-    [[nodiscard]] bool hasWatchcode() const { return watchCode_.length() > 0; }
+    ND bool hasWatchcode() const { return watchCode_.length() > 0; }
     // Get variable value_.
-    [[nodiscard]] Lil_value_Ptr getValue() const { return value_; }
+    ND Lil_value_Ptr getValue() const { return value_; }
     void setValue(Lil_value_Ptr vD) {
+        assert(vD!=nullptr);
         if (getValue()) lil_free_value(getValue());
         value_ = vD;
     }
     // Get callframe.
-    [[nodiscard]] Lil_callframe* getCallframe() const { return thisCallframe_; }
+    ND Lil_callframe* getCallframe() const { return thisCallframe_; }
 };
 
 struct Lil_callframe { // #class
@@ -360,10 +364,12 @@ private:
     bool          breakrun_    = false;
 public:
     explicit Lil_callframe(LilInterp_Ptr lil) {
+        assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_callframe");
     }
     explicit Lil_callframe(LilInterp_Ptr lil, Lil_callframe_Ptr parent) { // #ctor
+        assert(lil!=nullptr); assert(parent!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_callframe");
         this->parent_ = parent;
@@ -380,43 +386,46 @@ public:
     void varmap_reserve(Var_HashTable::size_type sz) { varmap_.reserve(sz); }
 
     // Does variable exists.
-    bool varExists(lcstrp name) { return varmap_.contains(name); }
+    bool varExists(lcstrp name) { assert(name!=nullptr); return varmap_.contains(name); }
     // Get a variable.
     Lil_var_Ptr getVar(lcstrp name) {
+        assert(name!=nullptr);
         auto it = varmap_.find(name); return (it == varmap_.end()) ? (nullptr) : (it->second); }
     // Add variable to hashmap.
-    void hashmap_put(lcstrp name, Lil_var_Ptr v) { varmap_[name] = v; }
+    void hashmap_put(lcstrp name, Lil_var_Ptr v) { assert(name!=nullptr); assert(v!=nullptr); varmap_[name] = v; }
     // Remove entry from hashmap
     void hashmap_remove(lcstrp name) {
+        assert(name!=nullptr);
         auto it = varmap_.find(name); if (it != varmap_.end()) varmap_.erase(it); }
 
     // Get function which created this callstack.
-    [[nodiscard]] Lil_func_Ptr getFunc() const { return func_; }
+    ND Lil_func_Ptr getFunc() const { return func_; }
     // Set function which is creating this callstack.
-    [[nodiscard]] Lil_func_Ptr& setFunc() { return func_; }
+    ND Lil_func_Ptr& setFunc() { return func_; }
 
     // Get previous call frame.
-    [[nodiscard]] Lil_callframe* getParent() const { return parent_; }
+    ND Lil_callframe* getParent() const { return parent_; }
 
     // Get return value_.
-    [[nodiscard]] Lil_value_Ptr getReturnVal() const { return retval_; }
-    [[nodiscard]] Lil_value_Ptr& setReturnVal() { return retval_; }
+    ND Lil_value_Ptr getReturnVal() const { return retval_; }
+    ND Lil_value_Ptr& setReturnVal() { return retval_; }
 
     void varsNamesToList(LilInterp_Ptr lil, Lil_list_Ptr list) {
+        assert(lil!=nullptr); assert(list!=nullptr);
         for (const auto& n : varmap_) {
             lil_list_append(list, lil_alloc_string(lil, n.first.c_str()));
         }
     }
 
     // Has return value_ been set?
-    [[nodiscard]] bool getRetval_set() const { return retval_set_; }
+    ND bool getRetval_set() const { return retval_set_; }
     // Set return value_ been set.
-    [[nodiscard]] bool& setRetval_set() { return retval_set_; }
+    ND bool& setRetval_set() { return retval_set_; }
 
-    [[nodiscard]] bool getBreakrun() const { return breakrun_; }
-    [[nodiscard]] bool& setBreakrun() { return breakrun_; }
+    ND bool getBreakrun() const { return breakrun_; }
+    ND bool& setBreakrun() { return breakrun_; }
 
-    [[nodiscard]] Lil_value_Ptr getCatcher_for() const { return catcher_for_; }
+    ND Lil_value_Ptr getCatcher_for() const { return catcher_for_; }
     Lil_value_Ptr& setCatcher_for() { return catcher_for_; }
 };
 
@@ -427,6 +436,7 @@ private:
     std::vector<Lil_value_Ptr> listRep_;
 public:
     Lil_list(LilInterp_Ptr lil) { // #ctor
+        assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_list");
     }
@@ -436,9 +446,9 @@ public:
             lil_free_value(v);
         }
     }
-    void append(Lil_value_Ptr val) { listRep_.push_back(val); }
-    [[nodiscard]] Lil_value_Ptr getValue(int index) const { return listRep_[index]; }
-    [[nodiscard]] size_t getCount() const { return listRep_.size(); }
+    void append(Lil_value_Ptr val) { assert(val!=nullptr); listRep_.push_back(val); }
+    ND Lil_value_Ptr getValue(int index) const { return listRep_[index]; }
+    ND size_t getCount() const { return listRep_.size(); }
     // Cmds are list we skip first word which is the command name.
     Lil_value_Ptr* getArgs() { return (&listRep_[0]) + 1; }
     void convertListToArrayForArgs(std::vector<Lil_value_Ptr>& argsArray) {
@@ -454,8 +464,8 @@ public:
 
     auto begin() { return listRep_.begin(); }
     auto end() { return listRep_.end(); }
-    [[nodiscard]] auto cbegin() const { return listRep_.cbegin(); }
-    [[nodiscard]] auto cend() const { return listRep_.cend(); }
+    ND auto cbegin() const { return listRep_.cbegin(); }
+    ND auto cend() const { return listRep_.cend(); }
 };
 
 struct Lil_func { // #class
@@ -467,6 +477,7 @@ private:
     lil_func_proc_t proc_     = nullptr; // Function pointer to binary command.
 public:
     Lil_func(LilInterp_Ptr lil, lcstrp  nameD) : name_(nameD) { // #ctor
+        assert(lil!=nullptr); assert(nameD!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_func");
     }
@@ -483,21 +494,22 @@ public:
         this->setProc(nullptr);
     }
     // Get function name_.
-    [[nodiscard]] const lstring& getName() const { return name_; }
+    ND const lstring& getName() const { return name_; }
 
     // Get function code_.
-    [[nodiscard]] Lil_value_Ptr getCode() const { return code_; }
+    ND Lil_value_Ptr getCode() const { return code_; }
     // Set function code_.
     void setCode(Lil_value_Ptr val) {
+        assert(val!=nullptr);
         code_ = lil_clone_value(val);
     }
 
     // Get list of arguments to function.
-    [[nodiscard]] Lil_list_Ptr getArgnames() const { return argnames_; }
+    ND Lil_list_Ptr getArgnames() const { return argnames_; }
     void setArgnames(Lil_list_Ptr v) { argnames_ = v; }
 
     // Get function pointer.
-    [[nodiscard]] lil_func_proc_t getProc() const { return proc_; }
+    ND lil_func_proc_t getProc() const { return proc_; }
     // Set function pointer.
     void setProc(lil_func_proc_t p) { proc_ = p; }
 };
@@ -511,7 +523,6 @@ private:
     lstring         err_msg_; // Error message.
 
     // NOTE: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_.
-    // NOTE: Copies may exist of LilInterp may exist so other references are possible.
     using Cmds_HashTable = std::unordered_map<lstring,Lil_func_Ptr>;
     Cmds_HashTable  cmdmap_;    // Hashmap of "commands".
     Cmds_HashTable  sysCmdMap_; // Hashmap of initial or system "commands".
@@ -548,13 +559,13 @@ private:
     // Set interp text.
     void setCode(lcstrp  ptr) { code_ = ptr; }
     // Set code_ length.
-    [[nodiscard]] size_t& setCodeLen() { return codeLen_; }
+    ND size_t& setCodeLen() { return codeLen_; }
     // Set current offset in code_.
-    [[nodiscard]] size_t& setHead() { return head_; }
+    ND size_t& setHead() { return head_; }
     // Set "catcher".
     void setCather(lstrp  ptr) { catcher_ = ptr; }
     // Set position in code_ where error occured.
-    [[nodiscard]] size_t& setErr_head() { return errPosition_; }
+    ND size_t& setErr_head() { return errPosition_; }
 
     // Register standard commands.
     void register_stdcmds();
@@ -575,22 +586,27 @@ public:
     void cmdmap_reserve(Cmds_HashTable::size_type sz) { cmdmap_.reserve(sz); }
 
     // Does command exists.
-    [[nodiscard]] bool cmdExists(lcstrp  target)  {
+    ND bool cmdExists(lcstrp  target)  {
+        assert(target!=nullptr);
         return cmdmap_.contains(target);
     }
     // Add command.
     void hashmap_addCmd(lcstrp  name, Lil_func_Ptr func) {
+        assert(name!=nullptr); assert(func!=nullptr);
         cmdmap_[name] = std::shared_ptr<Lil_func>(func);
     }
     // Remove command.
     void hashmap_removeCmd(lcstrp  name) {
+        assert(name!=nullptr);
         auto it = cmdmap_.find(name); if (it != cmdmap_.end()) cmdmap_.erase(it);
     }
     void duplicate_cmds(LilInterp_Ptr parent) {
+        assert(parent!=nullptr);
         cmdmap_ = parent->cmdmap_;
         sysCmdMap_ = parent->sysCmdMap_;
     }
     void jail_cmds(LilInterp_Ptr parent) {
+        assert(parent!=nullptr);
         cmdmap_ = parent->sysCmdMap_;
         sysCmdMap_ = parent->sysCmdMap_;
     }
@@ -600,6 +616,7 @@ public:
         }
     }
     void delete_cmds(Lil_func_Ptr cmdD) {
+        assert(cmdD!=nullptr);
         for (auto it = cmdmap_.begin(); it != cmdmap_.end(); ++it) {
             if (it->second == cmdD) {
                 cmdmap_.erase(it);
@@ -609,79 +626,82 @@ public:
     }
 
     // Get code_ length.
-    [[nodiscard]] size_t getClen() const { return codeLen_; }
+    ND size_t getClen() const { return codeLen_; }
 
     // Get original code_.
-    [[nodiscard]] lcstrp  getRootcode() const { return rootcode_; }
+    ND lcstrp  getRootcode() const { return rootcode_; }
     // Set original code_.
-    [[nodiscard]] lcstrp & setRootcode() { return rootcode_; }
+    ND lcstrp & setRootcode() { return rootcode_; }
 
     // Set interp text.
-    void setCode(lcstrp  codeD, size_t codelen, size_t headPos = 0) {
+    void setCode(lcstrp  codeD, size_t codelen, size_t headPos = 0) { // codeD could be nullptr.
         setCode( codeD );
         setCodeLen() = codelen;
         setHead()    = headPos;
     }
     // Get code_.
-    [[nodiscard]] lcstrp  getCode() const { return code_; }
+    ND lcstrp  getCode() const { return code_; }
     // Get current character.
-    [[nodiscard]] lchar getHeadChar() const { return code_[head_]; }
+    ND lchar getHeadChar() const { return code_[head_]; }
     // Get (current + i) character.
-    [[nodiscard]] lchar getHeadCharPlus(int i) const { return code_[head_ + i]; }
+    ND lchar getHeadCharPlus(int i) const { return code_[head_ + i]; }
     // Get current character and advance 1 character.
-    [[nodiscard]] lchar getHeadCharAndAdvance() { return code_[head_++]; }
+    ND lchar getHeadCharAndAdvance() { return code_[head_++]; }
     // Advance val characters.
     void incrHead(int v) { head_ += v; }
     // Get current offset in code_.
-    [[nodiscard]] size_t getHead() const { return head_; }
+    ND size_t getHead() const { return head_; }
 
     // Get callback function pointer.
-    [[nodiscard]] lil_callback_proc_t getCallback(LIL_CALLBACK_IDS index) { return callback_[index]; }
+    ND lil_callback_proc_t getCallback(LIL_CALLBACK_IDS index) { return callback_[index]; }
     // Set callbackk function pointer.
     void setCallback(LIL_CALLBACK_IDS index, lil_callback_proc_t val) {
-        assert(index > 0 || index < NUM_CALLBACKS);
+        assert(index > 0 || index < callback_.size());
         callback_[index] = val;
     }
-
+    int addCallback(lil_callback_proc_t val) {
+        callback_.push_back(val);
+        return callback_.size()-1;
+    }
     // Should we ignore EOL character?
-    [[nodiscard]] bool getIgnoreEol() const { return ignoreeol_; }
+    ND bool getIgnoreEol() const { return ignoreeol_; }
     // Set EOL character handling.
-    [[nodiscard]] bool& setIgnoreEol() { return ignoreeol_; }
+    ND bool& setIgnoreEol() { return ignoreeol_; }
 
     // Get number of commands.
-    [[nodiscard]] size_t getCmds() const { return sysCmdMap_.size(); }
+    ND size_t getCmds() const { return sysCmdMap_.size(); }
 
     // Get catcher if inside "catch" or nullptr if not.
-    [[nodiscard]] lchar* getCatcher() const { return catcher_; }
+    ND lchar* getCatcher() const { return catcher_; }
     // Set "catcher"
     void setCather(Lil_value_Ptr cmdD);
 
     // Are we in "catcher".
-    [[nodiscard]]  bool getIn_catcher() const { return in_catcher_; }
+    ND  bool getIn_catcher() const { return in_catcher_; }
     // Change number of "catchers".
     void incr_in_catcher(bool val) { in_catcher_ += val; }
 
-    [[nodiscard]] lstrp  getDollarprefix() const { return (lstrp )dollarprefix_.c_str(); }
+    ND lstrp  getDollarprefix() const { return (lstrp )dollarprefix_.c_str(); }
     void setDollarprefix(lcstrp  v) { dollarprefix_ = v; }
 
     // Get "empty" value_.
-    [[nodiscard]] Lil_value_Ptr getEmptyVal() const { return empty_; }
+    ND Lil_value_Ptr getEmptyVal() const { return empty_; }
 
     // Get saved "callframe".
-    [[nodiscard]] Lil_callframe_Ptr getDownEnv() const { return downenv_; }
+    ND Lil_callframe_Ptr getDownEnv() const { return downenv_; }
     // Set saved "callframe".
     void setDownEnv(Lil_callframe_Ptr v) { downenv_ = v; }
 
     // Get current "callframe".
-    [[nodiscard]] Lil_callframe_Ptr getEnv() const { return env_; }
+    ND Lil_callframe_Ptr getEnv() const { return env_; }
     // Set current "callframe".
     Lil_callframe_Ptr setEnv(Lil_callframe_Ptr v) { env_ = v; return env_; }
 
     // Get root/global "callframe".
-    [[nodiscard]] Lil_callframe_Ptr getRootEnv() const { return rootenv_; }
+    ND Lil_callframe_Ptr getRootEnv() const { return rootenv_; }
 
     // Get current parse depth.
-    [[nodiscard]] size_t getParse_depth() const { return parse_depth_; }
+    ND size_t getParse_depth() const { return parse_depth_; }
     // Change parse depth.
     void incrParse_depth(int n) {
         parse_depth_ += n;
@@ -689,15 +709,16 @@ public:
     }
 
     // Get position in code_ were error occurred.
-    [[nodiscard]] size_t getErr_head() const { return errPosition_; }
+    ND size_t getErr_head() const { return errPosition_; }
 
     // Get current error code_.
-    [[nodiscard]] ErrorCode getError() const { return errorCode_; }
+    ND ErrorCode getError() const { return errorCode_; }
     // Set current error code_.
-    [[nodiscard]] ErrorCode& setError() { return errorCode_; }
+    ND ErrorCode& setError() { return errorCode_; }
     void setError(const ErrorCode& ec) { errorCode_ = ec; }
 #define SETERROR(X) setError((X))
-    [[nodiscard]] int getErrorInfo(lcstrp * msg, size_t* pos) {
+    ND int getErrorInfo(lcstrp * msg, size_t* pos) {
+        assert(msg!=nullptr); assert(pos!=nullptr);
         if (!this->getError().inError()) { return 0; }
         *msg = this->err_msg_.c_str();
         *pos = this->getErr_head();
@@ -709,27 +730,27 @@ public:
         if (sysInfo_.logInterpInfo_) sysInfo_.numErrors_++;
         this->SETERROR(LIL_ERROR(ERROR_FIXHEAD));
         this->setErr_head() = 0;
-        this->err_msg_ = (msg ? msg : "");
+        this->err_msg_ = (msg ? msg : L_STR(""));
     }
     void setErrorAt(size_t pos, lcstrp  msg) {
         if (this->getError().inError()) { return; }
         if (sysInfo_.logInterpInfo_) sysInfo_.numErrors_++;
         this->SETERROR(LIL_ERROR(ERROR_DEFAULT));
         this->setErr_head() = pos;
-        this->err_msg_ = (msg ? msg : "");
+        this->err_msg_ = (msg ? msg : L_STR(""));
     }
     void setError(ErrorCode codeD, size_t head) {
         if (sysInfo_.logInterpInfo_) sysInfo_.numErrors_++;
         this->SETERROR(codeD);
         this->setErr_head() = head;
     }
-    [[nodiscard]] const lstring& getErrMsg() const { return err_msg_; }
+    ND const lstring& getErrMsg() const { return err_msg_; }
 
-    [[nodiscard]] Lil_func_Ptr find_cmd(lcstrp  name);
-    [[nodiscard]] Lil_func_Ptr add_func(lcstrp  name);
+    ND Lil_func_Ptr find_cmd(lcstrp  name);
+    ND Lil_func_Ptr add_func(lcstrp  name);
     void del_func(Lil_func_Ptr cmdD);
-    [[nodiscard]] Lil_value_Ptr rename_func(size_t argc, Lil_value_Ptr* argv);
-    [[nodiscard]] bool registerFunc(lcstrp  name, lil_func_proc_t proc);
+    ND Lil_value_Ptr rename_func(size_t argc, Lil_value_Ptr* argv);
+    ND bool registerFunc(lcstrp  name, lil_func_proc_t proc);
 };
 
 struct Lil_exprVal { // #class
@@ -744,9 +765,10 @@ private:
     int           errorCode_  = 0; // Error code_ (i.entries. EERR_*)
     Lil_value_Ptr inCode_ = nullptr;
 
-    [[nodiscard]] size_t& setLen() { return lenCode_; }
+    ND size_t& setLen() { return lenCode_; }
 public:
     explicit Lil_exprVal(LilInterp_Ptr lil, Lil_value_Ptr code) { // #ctor
+        assert(lil!=nullptr); assert(code!=nullptr);
         setSysInfo(lil, sysInfo_);
         this->inCode_ = code;
         this->code_   = lil_to_string(code);
@@ -767,26 +789,26 @@ public:
         if (sysInfo_ && sysInfo_->logObjectCount) sysInfo_->dtor("Lil_exprVal");
         lil_free_value(inCode_);
     }
-    [[nodiscard]] size_t getHead() const { return head_; }
-    [[nodiscard]] size_t& setHead() { return head_; }
-    [[nodiscard]] lchar getHeadChar(int n = 0) const { return code_[head_ + n]; }
+    ND size_t getHead() const { return head_; }
+    ND size_t& setHead() { return head_; }
+    ND lchar getHeadChar(int n = 0) const { return code_[head_ + n]; }
     void nextHead() { head_++; }
 
-    [[nodiscard]] size_t getLen() const { return lenCode_; }
+    ND size_t getLen() const { return lenCode_; }
 
-    [[nodiscard]] lilint_t getInteger() const { return integerVal_; }
-    [[nodiscard]] lilint_t& setInteger() { return integerVal_; }
+    ND lilint_t getInteger() const { return integerVal_; }
+    ND lilint_t& setInteger() { return integerVal_; }
 
-    [[nodiscard]] double getDouble() const { return doubleVal_; }
-    [[nodiscard]] double& setDouble() { return doubleVal_; }
+    ND double getDouble() const { return doubleVal_; }
+    ND double& setDouble() { return doubleVal_; }
 
-    [[nodiscard]] LilTypes getType() const { return type_; }
-    [[nodiscard]] LilTypes& setType() { return type_; }
+    ND LilTypes getType() const { return type_; }
+    ND LilTypes& setType() { return type_; }
 
-    [[nodiscard]] int getError() const { return errorCode_; }
-    [[nodiscard]] int& setError() { return errorCode_; }
+    ND int getError() const { return errorCode_; }
+    ND int& setError() { return errorCode_; }
 
-    [[nodiscard]] bool isEmptyExpression() const { return !code_[0]; }
+    ND bool isEmptyExpression() const { return !code_[0]; }
 };
 
 
