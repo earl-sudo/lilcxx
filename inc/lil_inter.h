@@ -291,6 +291,7 @@ public:
     void append(lcstrp  s, size_t len) { assert(s!=nullptr); value_.append(s, len); }
     void append(lcstrp  s) { assert(s!=nullptr); append(s, LSTRLEN(s));  }
     void append(Lil_value_CPtr v) { assert(v!=nullptr); value_.append(v->value_); }
+    size_t getSize() const { return value_.length(); }
 };
 
 struct Lil_value_SPtr { // #class
@@ -359,7 +360,7 @@ private:
 
     Lil_func_Ptr  func_        = nullptr; // The function that generated this callframe.
     Lil_value_Ptr catcher_for_ = nullptr; // Exception catcher.
-    Lil_value_Ptr retval_      = nullptr; // Return value_ from this callframe.
+    Lil_value_Ptr retval_      = nullptr; // Return value_ from this callframe. (can be nullptr)
     bool          retval_set_  = false;   // Has the retval_ been set.
     bool          breakrun_    = false;
 public:

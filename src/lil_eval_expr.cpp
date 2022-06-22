@@ -584,10 +584,10 @@ static void _ee_equals(Lil_exprVal* ee) { // #private
         _ee_skip_spaces(ee);
     while (_ee_validParseState(ee)  &&
            ((nextCharIs(ee, LC('=')) && ee->getHeadChar(1) == LC('=')) ||
-            (nextCharIs(ee, LC('!')) && ee->getHeadChar(1) == '='))) {
+            (nextCharIs(ee, LC('!')) && ee->getHeadChar(1) == LC('=')))) {
         double odval = getDouble(ee);
         lilint_t oival = getInt(ee);
-        int op = nextCharIs(ee, '=') ? 1 : 2;
+        int op = nextCharIs(ee, LC('=')) ? 1 : 2;
         ee->setHead() += 2;
 
         switch (op) {
@@ -650,7 +650,7 @@ static void _ee_bitwiseAnd(Lil_exprVal* ee) {// #private
         _ee_equals(ee);
         _ee_skip_spaces(ee);
     while (_ee_validParseState(ee) &&
-           (nextCharIs(ee, '&') && !_ee_invalidpunct(ee->getHeadChar(1)))) {
+           (nextCharIs(ee, LC('&')) && !_ee_invalidpunct(ee->getHeadChar(1)))) {
         double odval = getDouble(ee);
         lilint_t oival = getInt(ee);
         ee->nextHead();
@@ -687,7 +687,7 @@ static void _ee_bitwiseOr(Lil_exprVal* ee) { // #private
         _ee_bitwiseAnd(ee);
         _ee_skip_spaces(ee);
     while (_ee_validParseState(ee) &&
-           (nextCharIs(ee, '|') && !_ee_invalidpunct(ee->getHeadChar(1)))) {
+           (nextCharIs(ee, LC('|')) && !_ee_invalidpunct(ee->getHeadChar(1)))) {
         double odval = getDouble(ee);
         lilint_t oival = getInt(ee);
         ee->nextHead();
@@ -724,7 +724,7 @@ static void _ee_logicalAnd(Lil_exprVal* ee) {// #private
         _ee_bitwiseOr(ee);
         _ee_skip_spaces(ee);
     while (_ee_validParseState(ee) &&
-           (nextCharIs(ee, '&') && ee->getHeadChar(1) == '&')) {
+           (nextCharIs(ee, LC('&')) && ee->getHeadChar(1) == LC('&'))) {
         double odval = getDouble(ee);
         lilint_t oival = getInt(ee);
         ee->setHead() += 2;
@@ -761,7 +761,7 @@ static void _ee_logicalOr(Lil_exprVal* ee) {// #private
         _ee_logicalAnd(ee);
         _ee_skip_spaces(ee);
     while (_ee_validParseState(ee) &&
-           (nextCharIs(ee, '|') && ee->getHeadChar(1) == '|')) {
+           (nextCharIs(ee, LC('|')) && ee->getHeadChar(1) == LC('|'))) {
         double odval = getDouble(ee);
         lilint_t oival = getInt(ee);
         ee->setHead() += 2;

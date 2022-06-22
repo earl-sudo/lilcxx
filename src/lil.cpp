@@ -90,7 +90,7 @@ ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
         newname = lil_to_string(argv[1]);
         func = find_cmd(oldname);
         if (!func) {
-            std::vector<lchar> msg((24 + LSTRLEN(oldname)), LC('\0'));
+            std::vector<lchar> msg((24 + LSTRLEN(oldname)), LC('\0')); // #magic
             LSPRINTF(&msg[0], L_VSTR(0xbe91,"unknown function '%s'"), oldname);
             lil_set_error_at(this, this->getHead(), &msg[0]); // #INTERP_ERR
             return nullptr;
@@ -766,7 +766,7 @@ Lil_value_Ptr lil_eval_expr(LilInterp_Ptr lil, Lil_value_Ptr code) { // #topic n
 // Generate a unique name for unnamed command.
 Lil_value_Ptr lil_unused_name(LilInterp_Ptr lil, lcstrp part) {
     assert(lil!=nullptr); assert(part!=nullptr);
-    std::vector<lchar>   name((LSTRLEN(part) + 64), ' '); // #magic
+    std::vector<lchar>   name((LSTRLEN(part) + 64), LC(' ')); // #magic
     Lil_value_Ptr val;
     for (size_t   i     = 0; i < (size_t) -1; i++) {
         LSPRINTF(&name[0], L_VSTR(0x191e,"!!un!%s!%09u!nu!!"), part, (unsigned int) i);
@@ -825,8 +825,8 @@ bool lil_to_boolean(Lil_value_Ptr val) {
     size_t     dots = 0;
     if (!s[0]) { return false; }
     for (size_t i = 0; s[i]; i++) {
-        if (s[i] != '0' && s[i] != '.') { return true; }
-        if (s[i] == '.') {
+        if (s[i] != LC('0') && s[i] != LC('.')) { return true; }
+        if (s[i] == LC('.')) {
             if (dots) { return true; }
             dots = 1;
         }
