@@ -812,6 +812,15 @@ public:
     ND bool isEmptyExpression() const { return !code_[0]; }
 };
 
+// Functions from lil.cpp
+Lil_func_Ptr _find_cmd(LilInterp_Ptr lil, lcstrp name);
+Lil_func_Ptr _add_func(LilInterp_Ptr lil, lcstrp name);
+void         _del_func(LilInterp_Ptr lil, Lil_func_Ptr cmd);
+Lil_var_Ptr  _lil_find_local_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
+Lil_var_Ptr  _lil_find_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
+lstrp        _strclone(lstring_view s);
+Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
+Lil_value_Ptr _alloc_value(LilInterp_Ptr lil, lcstrp  str);
 
 #undef ND
 

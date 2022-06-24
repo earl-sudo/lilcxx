@@ -35,6 +35,7 @@
 NS_BEGIN(Lil)
 
 #define ND [[nodiscard]]
+#define CAST(X) (X)
 
 lstrp _strclone(lstring_view s);
 ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
@@ -295,7 +296,7 @@ Lil_var_Ptr lil_set_var(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr val, LIL_V
         // If var not exists and in root callframe or var exists and the variable is in root callframe.
         if (((!var && currCallFrame == lil->getRootEnv()) || (var && var->getCallframe() == lil->getRootEnv())) &&
             lil->getCallback(LIL_CALLBACK_SETVAR)) {
-            auto          proc   = (lil_setvar_callback_proc_t) lil->getCallback(LIL_CALLBACK_SETVAR);
+            auto          proc   = CAST(lil_setvar_callback_proc_t) lil->getCallback(LIL_CALLBACK_SETVAR);
             Lil_value_Ptr newval = val;
             int           r      = proc(lil, name, &newval);
             if (r < 0) return nullptr; // #ERR_RET ERROR:callback
@@ -338,7 +339,7 @@ Lil_value_Ptr lil_get_var_or(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr defva
     Lil_var_Ptr   var    = _lil_find_var(lil, lil->getEnv(), name);
     Lil_value_Ptr retval = var ? var->getValue() : defvalue;
     if (lil->getCallback(LIL_CALLBACK_GETVAR) && (!var || var->getCallframe() == lil->getRootEnv())) {
-        auto          proc      = (lil_getvar_callback_proc_t) lil->getCallback(LIL_CALLBACK_GETVAR);
+        auto          proc      = CAST(lil_getvar_callback_proc_t) lil->getCallback(LIL_CALLBACK_GETVAR);
         Lil_value_Ptr newretval = retval;
         if (proc(lil, name, &newretval)) {
             retval = newretval;
@@ -768,7 +769,7 @@ Lil_value_Ptr lil_unused_name(LilInterp_Ptr lil, lcstrp part) {
     assert(lil!=nullptr); assert(part!=nullptr);
     std::vector<lchar>   name((LSTRLEN(part) + 64), LC(' ')); // #magic
     Lil_value_Ptr val;
-    for (size_t   i     = 0; i < (size_t) -1; i++) {
+    for (size_t   i     = 0; i < CAST(size_t) -1; i++) {
         LSPRINTF(&name[0], L_VSTR(0x191e,"!!un!%s!%09u!nu!!"), part, (unsigned int) i);
         if (_find_cmd(lil, (&name[0]))) { continue; }
         if (_lil_find_var(lil, lil->getEnv(), (&name[0]))) { continue; }
@@ -815,7 +816,7 @@ lilint_t lil_to_integer(Lil_value_Ptr val, bool& inError) {
         DBGPRINTF("lil_to_intger counldn't parse; |%s|\n", lil_to_string(val));
         inError = true;
     }
-    return (lilint_t)ret;
+    return CAST(lilint_t)ret;
 }
 
 // Get boolean value from Lil_value.
@@ -864,7 +865,7 @@ void lil_free(LilInterp_Ptr lil) {
 void lil_write(LilInterp_Ptr lil, lcstrp msg) {
     assert(lil!=nullptr); assert(msg!=nullptr);
     if (lil->getCallback(LIL_CALLBACK_WRITE)) {
-        auto proc = (lil_write_callback_proc_t) lil->getCallback(LIL_CALLBACK_WRITE);
+        auto proc = CAST(lil_write_callback_proc_t) lil->getCallback(LIL_CALLBACK_WRITE);
         proc(lil, msg);
     } else { LPRINTF("%s", msg); }
 }
