@@ -336,7 +336,7 @@ static LILCALLBACK Lil_value_Ptr fnc_local(LilInterp_Ptr lil, size_t argc, Lil_v
             lil_set_var(lil, varname, lil->getEmptyVal(), LIL_SETVAR_LOCAL_NEW);
         }
     }
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 [[maybe_unused]] const auto fnc_write_doc = R"cmt(
@@ -354,7 +354,7 @@ static LILCALLBACK Lil_value_Ptr fnc_write(LilInterp_Ptr lil, size_t argc, Lil_v
         lil_append_val(msg.v, argv[i]);
     }
     lil_write(lil, lil_to_string(msg.v));
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 [[maybe_unused]] const auto fnc_print_doc = R"cmt(
@@ -366,7 +366,7 @@ static LILCALLBACK Lil_value_Ptr fnc_print(LilInterp_Ptr lil, size_t argc, Lil_v
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_print");
     fnc_write(lil, argc, argv);
     lil_write(lil, L_STR("\n"));
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 [[maybe_unused]] const auto fnc_eval_doc = R"cmt(
@@ -377,7 +377,7 @@ static LILCALLBACK Lil_value_Ptr fnc_print(LilInterp_Ptr lil, size_t argc, Lil_v
 static LILCALLBACK Lil_value_Ptr fnc_eval(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_eval");
-    if (argc == 1) { return lil_parse_value(lil, argv[0], 0); }
+    if (argc == 1) { CMD_SUCCESS_RET(lil_parse_value(lil, argv[0], 0)); }
     if (argc > 1) {
         Lil_value_Ptr val = _alloc_empty_value(lil), r; // #TODO reivew this doesn't make sense!
         for (size_t   i   = 0; i < argc; i++) {
@@ -386,7 +386,7 @@ static LILCALLBACK Lil_value_Ptr fnc_eval(LilInterp_Ptr lil, size_t argc, Lil_va
         }
         r = lil_parse_value(lil, val, 0);
         lil_free_value(val);
-        return r;
+        CMD_SUCCESS_RET(r);
     }
     ARGERR(true); // #argErr
 }
@@ -408,7 +408,7 @@ static LILCALLBACK Lil_value_Ptr fnc_topeval(LilInterp_Ptr lil, size_t argc, Lil
     Lil_value_Ptr r = fnc_eval(lil, argc, argv);
     lil->setDownEnv(thisdownenv);
     lil->setEnv(thisenv);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_upeval_doc = R"cmt(
@@ -428,13 +428,13 @@ static LILCALLBACK Lil_value_Ptr fnc_upeval(LilInterp_Ptr lil, size_t argc, Lil_
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_upeval");
     Lil_callframe_Ptr thisenv     = lil->getEnv();
     Lil_callframe_Ptr thisdownenv = lil->getDownEnv();
-    if (lil->getRootEnv() == thisenv) { return fnc_eval(lil, argc, argv); }
+    if (lil->getRootEnv() == thisenv) { CMD_SUCCESS_RET(fnc_eval(lil, argc, argv)); }
     lil->setEnv(thisenv->getParent());
     lil->setDownEnv(thisenv);
     Lil_value_Ptr r = fnc_eval(lil, argc, argv);
     lil->setEnv(thisenv);
     lil->setDownEnv(thisdownenv);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_downeval_doc = R"cmt(
@@ -448,13 +448,13 @@ static LILCALLBACK Lil_value_Ptr fnc_downeval(LilInterp_Ptr lil, size_t argc, Li
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_downeval");
     Lil_callframe_Ptr upenv   = lil->getEnv();
     Lil_callframe_Ptr downenv = lil->getDownEnv();
-    if (!downenv) { return fnc_eval(lil, argc, argv); }
+    if (!downenv) { CMD_SUCCESS_RET(fnc_eval(lil, argc, argv)); }
     lil->setDownEnv(nullptr);
     lil->setEnv(downenv);
     Lil_value_Ptr r = fnc_eval(lil, argc, argv);
     lil->setDownEnv(downenv);
     lil->setEnv(upenv);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_enveval_doc = R"cmt(
@@ -484,7 +484,7 @@ static LILCALLBACK Lil_value_Ptr fnc_enveval(LilInterp_Ptr lil, size_t argc, Lil
 
     // Given a value with a name look up variable by that name and clone it's value.
     auto cloneVar          = [&lil](Lil_value_Ptr var) {
-        return lil_clone_value(lil_get_var(lil, lil_to_string(var)));
+        CMD_SUCCESS_RET(lil_clone_value(lil_get_var(lil, lil_to_string(var))));
     };
     // From a list of variable names give indexed name, and from a vector of values set that value, then delete value in original array.
     auto arrayValuesToVars = [&lil](Lil_value_Ptr value, Lil_value_Ptr name, LIL_VAR_TYPE type) {
@@ -552,7 +552,7 @@ static LILCALLBACK Lil_value_Ptr fnc_enveval(LilInterp_Ptr lil, size_t argc, Lil
             }
         }
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_jaileval_doc = R"cmt(
@@ -578,7 +578,7 @@ static LILCALLBACK Lil_value_Ptr fnc_jaileval(LilInterp_Ptr lil, size_t argc, Li
         sublil->jail_cmds(lil);
     }
     Lil_value_Ptr r      = lil_parse_value(sublil.get(), argv[base], 1);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_count_doc = R"cmt(
@@ -589,10 +589,10 @@ static LILCALLBACK Lil_value_Ptr fnc_count(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_count");
     lchar buff[64]; // #magic
-    if (!argc) { return _alloc_value(lil, L_STR("0")); }
+    if (!argc) { CMD_SUCCESS_RET(_alloc_value(lil, L_STR("0"))); }
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
     LSPRINTF(buff, L_STR("%u"), (unsigned int) list.v->getCount());
-    return _alloc_value(lil, buff);
+    CMD_SUCCESS_RET(_alloc_value(lil, buff));
 }
 
 [[maybe_unused]] const auto fnc_index_doc = R"cmt(
@@ -608,13 +608,13 @@ static LILCALLBACK Lil_value_Ptr fnc_index(LilInterp_Ptr lil, size_t argc, Lil_v
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
     bool inError = false;
     auto          index = CAST(size_t) lil_to_integer(argv[1], inError);
-    // #TODO Error condition.
+    ARGERR(inError);
     if (index >= list.v->getCount()) {
         r = nullptr;
     } else {
         r = lil_clone_value(list.v->getValue(_NT(int,index)));
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_indexof_doc = R"cmt(
@@ -636,7 +636,7 @@ static LILCALLBACK Lil_value_Ptr fnc_indexof(LilInterp_Ptr lil, size_t argc, Lil
             break;
         }
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] auto fnc_append_doc = R"cmt(
@@ -665,7 +665,7 @@ static LILCALLBACK Lil_value_Ptr fnc_append(LilInterp_Ptr lil, size_t argc, Lil_
     }
     Lil_value_Ptr r = lil_list_to_value(lil, list.v, true);
     lil_set_var(lil, varname, r, access);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_slice_doc = R"cmt(
@@ -680,14 +680,14 @@ static LILCALLBACK Lil_value_Ptr fnc_slice(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_slice");
     ARGERR(argc < 1); // #argErr
-    if (argc < 2) { return lil_clone_value(argv[0]); }
+    if (argc < 2) { CMD_SUCCESS_RET(lil_clone_value(argv[0])); }
     bool inError = false;
     lilint_t from = lil_to_integer(argv[1], inError);
-    // #TODO Error condition.
+    ARGERR(inError);
     if (from < 0) { from = 0; }
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
     lilint_t      to = argc > 2 ? lil_to_integer(argv[2], inError) : CAST(lilint_t) list.v->getCount();
-    // #TODO Error condition.
+    ARGERR(inError);
     if (to > CAST(lilint_t) list.v->getCount()) { to = _NT(lilint_t,list.v->getCount()); }
     if (to < from) { to = from; }
     Lil_list_SPtr slice(lil_alloc_list(lil)); // Delete on exit.
@@ -695,7 +695,7 @@ static LILCALLBACK Lil_value_Ptr fnc_slice(LilInterp_Ptr lil, size_t argc, Lil_v
         lil_list_append(slice.v, lil_clone_value(list.v->getValue(_NT(int,i))));
     }
     Lil_value_Ptr r = lil_list_to_value(lil, slice.v, true);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_filter_doc = R"cmt(
@@ -715,7 +715,7 @@ static LILCALLBACK Lil_value_Ptr fnc_filter(LilInterp_Ptr lil, size_t argc, Lil_
     lcstrp varname = L_STR("x");
     int           base     = 0;
     ARGERR(argc < 1); // #argErr
-    if (argc < 2) { return lil_clone_value(argv[0]); }
+    if (argc < 2) { CMD_SUCCESS_RET(lil_clone_value(argv[0])); }
     if (argc > 2) {
         base    = 1;
         varname = lil_to_string(argv[0]);
@@ -731,7 +731,7 @@ static LILCALLBACK Lil_value_Ptr fnc_filter(LilInterp_Ptr lil, size_t argc, Lil_
         lil_free_value(r);
     }
     r               = lil_list_to_value(lil, filtered.v, true);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_list_doc = R"cmt(
@@ -746,7 +746,7 @@ static LILCALLBACK Lil_value_Ptr fnc_list(LilInterp_Ptr lil, size_t argc, Lil_va
         lil_list_append(list.v, lil_clone_value(argv[i]));
     }
     Lil_value_Ptr r = lil_list_to_value(lil, list.v, true);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_subst_doc = R"cmt(
@@ -763,7 +763,7 @@ static LILCALLBACK Lil_value_Ptr fnc_subst(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_subst");
     ARGERR(argc < 1); // #argErr
-    return lil_subst_to_value(lil, argv[0]);
+    CMD_SUCCESS_RET(lil_subst_to_value(lil, argv[0]));
 }
 
 [[maybe_unused]] const auto fnc_concat_doc = R"cmt(
@@ -783,7 +783,7 @@ static LILCALLBACK Lil_value_Ptr fnc_concat(LilInterp_Ptr lil, size_t argc, Lil_
             lil_append_val(r, tmp.v);
         }
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_foreach_doc = R"cmt(
@@ -815,7 +815,7 @@ static LILCALLBACK Lil_value_Ptr fnc_foreach(LilInterp_Ptr lil, size_t argc, Lil
         if (lil->getEnv()->getBreakrun() || lil->getError().inError()) { break; }
     }
     Lil_value_Ptr r = lil_list_to_value(lil, rlist.v, true);
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_return_doc = R"cmt(
@@ -832,7 +832,7 @@ static LILCALLBACK Lil_value_Ptr fnc_return(LilInterp_Ptr lil, size_t argc, Lil_
     lil_free_value(lil->getEnv()->getReturnVal());
     lil->getEnv()->setReturnVal()  = argc < 1 ? nullptr : lil_clone_value(argv[0]);
     lil->getEnv()->setRetval_set() = true;
-    return argc < 1 ? nullptr : lil_clone_value(argv[0]);
+    CMD_SUCCESS_RET(argc < 1 ? nullptr : lil_clone_value(argv[0]));
 }
 
 [[maybe_unused]] const auto fnc_result_doc = R"cmt(
@@ -853,7 +853,7 @@ static LILCALLBACK Lil_value_Ptr fnc_result(LilInterp_Ptr lil, size_t argc, Lil_
         lil->getEnv()->setReturnVal()  = lil_clone_value(argv[0]);
         lil->getEnv()->setRetval_set() = true;
     }
-    return lil->getEnv()->getRetval_set() ? lil_clone_value(lil->getEnv()->getReturnVal()) : nullptr;
+    CMD_SUCCESS_RET(lil->getEnv()->getRetval_set() ? lil_clone_value(lil->getEnv()->getReturnVal()) : nullptr);
 }
 
 [[maybe_unused]] const auto fnc_expr_doc = R"cmt(
@@ -897,7 +897,7 @@ static LILCALLBACK Lil_value_Ptr fnc_result(LilInterp_Ptr lil, size_t argc, Lil_
 static LILCALLBACK Lil_value_Ptr fnc_expr(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_expr");
-    if (argc == 1) { return lil_eval_expr(lil, argv[0]); }
+    if (argc == 1) { CMD_SUCCESS_RET(lil_eval_expr(lil, argv[0])); }
     if (argc > 1) {
         Lil_value_Ptr val = _alloc_empty_value(lil), r;
         for (size_t   i   = 0; i < argc; i++) {
@@ -906,9 +906,9 @@ static LILCALLBACK Lil_value_Ptr fnc_expr(LilInterp_Ptr lil, size_t argc, Lil_va
         }
         r = lil_eval_expr(lil, val);
         lil_free_value(val);
-        return r;
+        CMD_SUCCESS_RET(r);
     }
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 static Lil_value_Ptr _real_inc(LilInterp_Ptr lil, lcstrp varname, double v) {  // #private
@@ -917,14 +917,14 @@ static Lil_value_Ptr _real_inc(LilInterp_Ptr lil, lcstrp varname, double v) {  /
     Lil_value_Ptr pv = lil_get_var(lil, varname);
     bool inError = false;
     double        dv = lil_to_double(pv, inError) + v;
-    // #TODO Error condition.
+    ARGERR(inError);
     if (_NT(bool, fmod(dv, 1))) { // If remainder not an integer.
         pv = lil_alloc_double(lil, dv);
     } else { // No remainder, so it is an integer.
         pv = lil_alloc_integer(lil, (lilint_t) dv);
     }
     lil_set_var(lil, varname, pv, LIL_SETVAR_LOCAL);
-    return pv;
+    CMD_SUCCESS_RET(pv);
 }
 
 [[maybe_unused]] const auto fnc_inc_doc = R"cmt(
@@ -938,8 +938,8 @@ static LILCALLBACK Lil_value_Ptr fnc_inc(LilInterp_Ptr lil, size_t argc, Lil_val
     ARGERR(argc < 1); // #argErr
     bool inError = false;
     auto ret = _real_inc(lil, lil_to_string(argv[0]), argc > 1 ? lil_to_double(argv[1], inError) : 1);
-    // #TODO Handle error condition
-    return ret;
+    ARGERR(inError);
+    CMD_SUCCESS_RET(ret);
 }
 
 [[maybe_unused]] const auto fnc_dec_doc = R"cmt(
@@ -953,8 +953,8 @@ static LILCALLBACK Lil_value_Ptr fnc_dec(LilInterp_Ptr lil, size_t argc, Lil_val
     ARGERR(argc < 1); // #argErr
     bool inError = false;
     auto ret = _real_inc(lil, lil_to_string(argv[0]), -(argc > 1 ? lil_to_double(argv[1], inError) : 1));
-    // #TODO handle error condition.
-    return ret;
+    ARGERR(inError);
+    CMD_SUCCESS_RET(ret);
 }
 
 [[maybe_unused]] const auto fnc_read_doc = R"cmt(
@@ -976,7 +976,7 @@ static LILCALLBACK Lil_value_Ptr fnc_read(LilInterp_Ptr lil, size_t argc, Lil_va
         r = lil_alloc_string(lil, buffer.get());
     } else {
         FILE *f = fopen(lil_to_string(argv[0]), L_STR("rb"));
-        if (!f) { return nullptr; }
+        if (!f) { CMD_ERROR_RET(nullptr); }
         fseek(f, 0, SEEK_END);
         auto size = ftell(f);
         fseek(f, 0, SEEK_SET);
@@ -986,7 +986,7 @@ static LILCALLBACK Lil_value_Ptr fnc_read(LilInterp_Ptr lil, size_t argc, Lil_va
         fclose(f);
         r = lil_alloc_string(lil, &buffer[0]);
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_store_doc = R"cmt(
@@ -1005,12 +1005,12 @@ static LILCALLBACK Lil_value_Ptr fnc_store(LilInterp_Ptr lil, size_t argc, Lil_v
         proc(lil, lil_to_string(argv[0]), lil_to_string(argv[1]));
     } else {
         FILE *f = fopen(lil_to_string(argv[0]), "wb");
-        if (!f) { return nullptr; }
+        if (!f) { CMD_ERROR_RET(nullptr); }
         lcstrp buffer = lil_to_string(argv[1]);
         fwrite(buffer, 1, LSTRLEN(buffer), f);
         fclose(f);
     }
-    return lil_clone_value(argv[1]);
+    CMD_SUCCESS_RET(lil_clone_value(argv[1]));
 }
 
 [[maybe_unused]] const auto fnc_if_doc = R"cmt(
@@ -1030,7 +1030,7 @@ static LILCALLBACK Lil_value_Ptr fnc_if(LilInterp_Ptr lil, size_t argc, Lil_valu
     if (!LSTRCMP(lil_to_string(argv[0]), L_STR("bnot_"))) { base = bnot_ = 1; } // #option
     ARGERR(argc < CAST(size_t) base + 2); // #argErr
     Lil_value_SPtr val(lil_eval_expr(lil, argv[base])); // Delete on exit.
-    if (!val.v || lil->getError().inError()) { return nullptr; } // #argErr
+    if (!val.v || lil->getError().inError()) { CMD_ERROR_RET(nullptr); } // #argErr
     v = lil_to_boolean(val.v);
     if (bnot_) { v = !v; }
     if (v) {
@@ -1038,7 +1038,7 @@ static LILCALLBACK Lil_value_Ptr fnc_if(LilInterp_Ptr lil, size_t argc, Lil_valu
     } else if (argc > CAST(size_t) base + 2) {
         r = lil_parse_value(lil, argv[base + 2], 0);
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_while_doc = R"cmt(
@@ -1059,7 +1059,7 @@ static LILCALLBACK Lil_value_Ptr fnc_while(LilInterp_Ptr lil, size_t argc, Lil_v
     ARGERR(argc < CAST(size_t) base + 2); // #argErr
     while (!lil->getError().inError() && !lil->getEnv()->getBreakrun()) {
         Lil_value_SPtr val(lil_eval_expr(lil, argv[base])); // Delete on exit.
-        if (!val.v || lil->getError().inError()) { return nullptr; } // #argErr
+        if (!val.v || lil->getError().inError()) { CMD_ERROR_RET(nullptr); } // #argErr
         v = lil_to_boolean(val.v);
         if (bnot_) { v = !v; }
         if (!v) {
@@ -1068,7 +1068,7 @@ static LILCALLBACK Lil_value_Ptr fnc_while(LilInterp_Ptr lil, size_t argc, Lil_v
         if (r) { lil_free_value(r); }
         r = lil_parse_value(lil, argv[base + 1], 0);
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_for_doc = R"cmt(
@@ -1086,7 +1086,7 @@ static LILCALLBACK Lil_value_Ptr fnc_for(LilInterp_Ptr lil, size_t argc, Lil_val
     lil_free_value(lil_parse_value(lil, argv[0], 0));
     while (!lil->getError().inError() && !lil->getEnv()->getBreakrun()) {
         Lil_value_SPtr val(lil_eval_expr(lil, argv[1])); // Delete on exit.
-        if (!val.v || lil->getError().inError()) { return nullptr; } // #argErr
+        if (!val.v || lil->getError().inError()) { CMD_ERROR_RET(nullptr); } // #argErr
         if (!lil_to_boolean(val.v)) {
             break;
         }
@@ -1094,7 +1094,7 @@ static LILCALLBACK Lil_value_Ptr fnc_for(LilInterp_Ptr lil, size_t argc, Lil_val
         r = lil_parse_value(lil, argv[3], 0);
         lil_free_value(lil_parse_value(lil, argv[2], 0));
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] auto fnc_char_doc = R"cmt(
@@ -1111,9 +1111,10 @@ static LILCALLBACK Lil_value_Ptr fnc_char(LilInterp_Ptr lil, size_t argc, Lil_va
     ARGERR(!argc); // #argErr
     bool inError = false;
     s[0] = CAST(lchar) lil_to_integer(argv[0], inError);
+    ARGERR(inError);
     // #TODO Error condition.
     s[1] = 0;
-    return lil_alloc_string(lil, s);
+    CMD_SUCCESS_RET(lil_alloc_string(lil, s));
 }
 
 [[maybe_unused]] const auto fnc_charat_doc = R"cmt(
@@ -1131,10 +1132,10 @@ static LILCALLBACK Lil_value_Ptr fnc_charat(LilInterp_Ptr lil, size_t argc, Lil_
     bool inError = false;
     auto       index = CAST(size_t) lil_to_integer(argv[1], inError);
     // #TODO Error condition
-    if (index >= LSTRLEN(str)) { return nullptr; }
+    ARGERR(index >= LSTRLEN(str));
     chstr[0] = str[index];
     chstr[1] = 0;
-    return lil_alloc_string(lil, chstr);
+    CMD_SUCCESS_RET(lil_alloc_string(lil, chstr));
 }
 
 [[maybe_unused]] const auto fnc_codeat_doc = R"cmt(
@@ -1151,8 +1152,8 @@ static LILCALLBACK Lil_value_Ptr fnc_codeat(LilInterp_Ptr lil, size_t argc, Lil_
     bool inError = false;
     auto       index = CAST(size_t) lil_to_integer(argv[1], inError);
     // #TODO Error condition.
-    if (index >= LSTRLEN(str)) { return nullptr; }
-    return lil_alloc_integer(lil, str[index]);
+    ARGERR(index >= LSTRLEN(str));
+    CMD_SUCCESS_RET(lil_alloc_integer(lil, str[index]));
 }
 
 static auto str_to_integer(const char* val, bool& inError) {
@@ -1165,7 +1166,7 @@ static auto str_to_integer(const char* val, bool& inError) {
         // ERROR! #TODO what?
         inError = true;
     }
-    return ret;
+    CMD_SUCCESS_RET(ret);
 }
 
 [[maybe_unused]] const auto fnc_substr_doc = R"cmt(
@@ -1193,7 +1194,7 @@ static LILCALLBACK Lil_value_Ptr fnc_substr(LilInterp_Ptr lil, size_t argc, Lil_
     for (size_t   i = start; i < end; i++) {
         lil_append_char(r, str[i]);
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_strpos_doc = R"cmt(
@@ -1207,17 +1208,17 @@ static LILCALLBACK Lil_value_Ptr fnc_strpos(LilInterp_Ptr lil, size_t argc, Lil_
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_strpos");
     size_t min = 0;
-    if (argc < 2) { return lil_alloc_integer(lil, -1); }
+    if (argc < 2) { CMD_SUCCESS_RET(lil_alloc_integer(lil, -1)); }
     lcstrp hay = lil_to_string(argv[0]);
     if (argc > 2) {
         bool inError = false;
         min = CAST(size_t) str_to_integer(lil_to_string(argv[2]), inError);
         // #TODO error condition.
-        if (min >= LSTRLEN(hay)) { return lil_alloc_integer(lil, -1); }
+        if (min >= LSTRLEN(hay)) { CMD_SUCCESS_RET(lil_alloc_integer(lil, -1)); }
     }
     lcstrp str = LSTRSTR(hay + min, lil_to_string(argv[1]));
-    if (!str) { return lil_alloc_integer(lil, -1); }
-    return lil_alloc_integer(lil, str - hay);
+    if (!str) { CMD_SUCCESS_RET(lil_alloc_integer(lil, -1)); }
+    CMD_SUCCESS_RET(lil_alloc_integer(lil, str - hay));
 }
 
 [[maybe_unused]] const auto fnc_length_doc = R"cmt(
@@ -1232,7 +1233,7 @@ static LILCALLBACK Lil_value_Ptr fnc_length(LilInterp_Ptr lil, size_t argc, Lil_
         if (i) { total++; }
         total += LSTRLEN(lil_to_string(argv[i]));
     }
-    return lil_alloc_integer(lil, CAST(lilint_t) total);
+    CMD_SUCCESS_RET(lil_alloc_integer(lil, CAST(lilint_t) total));
 }
 
 static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, int left, int right) { // #private
@@ -1251,7 +1252,7 @@ static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, int
         s.get()[len] = 0;
         r = lil_alloc_string(lil, s.get());
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_trim_doc = R"cmt(
@@ -1265,7 +1266,7 @@ static LILCALLBACK Lil_value_Ptr fnc_trim(LilInterp_Ptr lil, size_t argc, Lil_va
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_trim");
     ARGERR(!argc); // #argErr
-    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 1, 1);
+    CMD_SUCCESS_RET(_real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 1, 1));
 }
 
 [[maybe_unused]] const auto fnc_ltrim_doc = R"cmt(
@@ -1277,7 +1278,7 @@ static LILCALLBACK Lil_value_Ptr fnc_ltrim(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_ltrim");
     ARGERR(!argc); // #argErr
-    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 1, 0);
+    CMD_SUCCESS_RET(_real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 1, 0));
 }
 
 [[maybe_unused]] const auto fnc_rtrim_doc = R"cmt(
@@ -1289,7 +1290,7 @@ static LILCALLBACK Lil_value_Ptr fnc_rtrim(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_rtrim");
     ARGERR(!argc); // #argErr
-    return _real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 0, 1);
+    CMD_SUCCESS_RET(_real_trim(lil, lil_to_string(argv[0]), argc < 2 ? L_STR(" \f\n\r\t\v") : lil_to_string(argv[1]), 0, 1));
 }
 
 [[maybe_unused]] const auto fnc_strcmp_doc = R"cmt(
@@ -1303,7 +1304,7 @@ static LILCALLBACK Lil_value_Ptr fnc_strcmp(LilInterp_Ptr lil, size_t argc, Lil_
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_strcmp");
     ARGERR(argc < 2); // #argErr
-    return lil_alloc_integer(lil, LSTRCMP(lil_to_string(argv[0]), lil_to_string(argv[1])));
+    CMD_SUCCESS_RET(lil_alloc_integer(lil, LSTRCMP(lil_to_string(argv[0]), lil_to_string(argv[1]))));
 }
 
 [[maybe_unused]] const auto fnc_streq_doc = R"cmt(
@@ -1314,7 +1315,7 @@ static LILCALLBACK Lil_value_Ptr fnc_streq(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_streq");
     ARGERR(argc < 2); // #argErr
-    return lil_alloc_integer(lil, LSTRCMP(lil_to_string(argv[0]), lil_to_string(argv[1])) ? 0 : 1);
+    CMD_SUCCESS_RET(lil_alloc_integer(lil, LSTRCMP(lil_to_string(argv[0]), lil_to_string(argv[1])) ? 0 : 1));
 }
 
 [[maybe_unused]] const auto fnc_repstr_doc = R"cmt(
@@ -1327,7 +1328,7 @@ static LILCALLBACK Lil_value_Ptr fnc_repstr(LilInterp_Ptr lil, size_t argc, Lil_
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_repstr");
     lcstrp sub;
     ARGERR(argc < 1); // #argErr
-    if (argc < 3) { return lil_clone_value(argv[0]); }
+    if (argc < 3) { CMD_SUCCESS_RET(lil_clone_value(argv[0])); }
     lcstrp from = lil_to_string(argv[1]);
     lcstrp to   = lil_to_string(argv[2]);
     ARGERR(!from[0]); // #argErr
@@ -1348,7 +1349,7 @@ static LILCALLBACK Lil_value_Ptr fnc_repstr(LilInterp_Ptr lil, size_t argc, Lil_
     }
     Lil_value_Ptr r = lil_alloc_string(lil, src);
     delete (src); //delete char*
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_split_doc = R"cmt(
@@ -1367,7 +1368,7 @@ static LILCALLBACK Lil_value_Ptr fnc_split(LilInterp_Ptr lil, size_t argc, Lil_v
     ARGERR(argc == 0); // #argErr
     if (argc > 1) {
         sep = lil_to_string(argv[1]);
-        if (!sep || !sep[0]) { return lil_clone_value(argv[0]); }
+        if (!sep || !sep[0]) { CMD_ERROR_RET(lil_clone_value(argv[0])); }
     }
     Lil_value_Ptr val  = lil_alloc_string(lil, L_STR(""));
     lcstrp str = lil_to_string(argv[0]);
@@ -1382,7 +1383,7 @@ static LILCALLBACK Lil_value_Ptr fnc_split(LilInterp_Ptr lil, size_t argc, Lil_v
     }
     lil_list_append(list.v, val);
     val = lil_list_to_value(lil, list.v, true);
-    return val;
+    CMD_SUCCESS_RET(val);
 }
 
 [[maybe_unused]] const auto fnc_try_doc = R"cmt(
@@ -1397,7 +1398,7 @@ static LILCALLBACK Lil_value_Ptr fnc_try(LilInterp_Ptr lil, size_t argc, Lil_val
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_try");
     ARGERR(argc < 1); // #argErr
-    if (lil->getError().inError()) { return nullptr; }
+    if (lil->getError().inError()) { CMD_ERROR_RET(nullptr); }
     Lil_value_Ptr r = lil_parse_value(lil, argv[0], 0);
     if (lil->getError().inError()) {
         lil->SETERROR(LIL_ERROR(ERROR_NOERROR));
@@ -1405,7 +1406,7 @@ static LILCALLBACK Lil_value_Ptr fnc_try(LilInterp_Ptr lil, size_t argc, Lil_val
         if (argc > 1) { r = lil_parse_value(lil, argv[1], 0); }
         else { r = nullptr; }
     }
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_error_doc = R"cmt(
@@ -1418,7 +1419,7 @@ static LILCALLBACK Lil_value_Ptr fnc_error(LilInterp_Ptr lil, size_t argc, Lil_v
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_error");
     lil_set_error(lil, argc > 0 ? lil_to_string(argv[0]) : nullptr); // #INTERP_ERR
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 [[maybe_unused]] const auto fnc_exit_doc = R"cmt(
@@ -1438,7 +1439,7 @@ static LILCALLBACK Lil_value_Ptr fnc_exit(LilInterp_Ptr lil, size_t argc, Lil_va
         auto proc = (lil_exit_callback_proc_t) lil->getCallback(LIL_CALLBACK_EXIT);
         proc(lil, argc > 0 ? argv[0] : nullptr);
     }
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 [[maybe_unused]] const auto fnc_source_doc = R"cmt(
@@ -1462,7 +1463,7 @@ static LILCALLBACK Lil_value_Ptr fnc_source(LilInterp_Ptr lil, size_t argc, Lil_
         buffer = proc(lil, lil_to_string(argv[0]));
     } else {
         FILE *f = fopen(lil_to_string(argv[0]), "rb");
-        if (!f) { return nullptr; }
+        if (!f) { CMD_ERROR_RET(nullptr); }
         fseek(f, 0, SEEK_END);
         auto size = ftell(f);
         fseek(f, 0, SEEK_SET);
@@ -1473,7 +1474,7 @@ static LILCALLBACK Lil_value_Ptr fnc_source(LilInterp_Ptr lil, size_t argc, Lil_
     }
     r = lil_parse(lil, buffer, 0, 0);
     delete (buffer); //delete char*
-    return r;
+    CMD_SUCCESS_RET(r);
 }
 
 [[maybe_unused]] const auto fnc_lmap_doc = R"cmt(
@@ -1494,7 +1495,7 @@ static LILCALLBACK Lil_value_Ptr fnc_lmap(LilInterp_Ptr lil, size_t argc, Lil_va
     for (size_t   i = 1; i < argc; i++) {
         lil_set_var(lil, lil_to_string(argv[i]), lil_list_get(list.v, i - 1), LIL_SETVAR_LOCAL);
     }
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 [[maybe_unused]] const auto fnc_rand_doc = R"cmt(
@@ -1505,7 +1506,7 @@ static LILCALLBACK Lil_value_Ptr fnc_rand(LilInterp_Ptr lil, size_t argc, Lil_va
     assert(lil!=nullptr); assert(argv!=nullptr);
     (void)argc;
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_rand");
-    return lil_alloc_double(lil, rand() / CAST(double) RAND_MAX);
+    CMD_SUCCESS_RET(lil_alloc_double(lil, rand() / CAST(double) RAND_MAX));
 }
 
 [[maybe_unused]] auto fnc_catcher_doc = R"cmt(
@@ -1549,11 +1550,11 @@ static LILCALLBACK Lil_value_Ptr fnc_catcher(LilInterp_Ptr lil, size_t argc, Lil
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_catcher");
     if (argc == 0) {
-        return lil_alloc_string(lil, lil->getCatcher());
+        CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getCatcher()));
     } else {
         lil->setCather(argv[0]);
     }
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 [[maybe_unused]] const auto fnc_watch_doc = R"cmt(
@@ -1576,7 +1577,7 @@ static LILCALLBACK Lil_value_Ptr fnc_watch(LilInterp_Ptr lil, size_t argc, Lil_v
         if (!v) { v = lil_set_var(lil, vname, nullptr, LIL_SETVAR_LOCAL_NEW); }
         v->setWatchCode(CAST(lcstrp ) (wcode[0] ? (wcode) : nullptr));
     }
-    return nullptr;
+    CMD_SUCCESS_RET(nullptr);
 }
 
 
