@@ -1112,7 +1112,6 @@ static LILCALLBACK Lil_value_Ptr fnc_char(LilInterp_Ptr lil, size_t argc, Lil_va
     bool inError = false;
     s[0] = CAST(lchar) lil_to_integer(argv[0], inError);
     ARGERR(inError);
-    // #TODO Error condition.
     s[1] = 0;
     CMD_SUCCESS_RET(lil_alloc_string(lil, s));
 }
@@ -1131,7 +1130,7 @@ static LILCALLBACK Lil_value_Ptr fnc_charat(LilInterp_Ptr lil, size_t argc, Lil_
     lcstrp     str  = lil_to_string(argv[0]);
     bool inError = false;
     auto       index = CAST(size_t) lil_to_integer(argv[1], inError);
-    // #TODO Error condition
+    ARGERR(inError);
     ARGERR(index >= LSTRLEN(str));
     chstr[0] = str[index];
     chstr[1] = 0;
@@ -1151,7 +1150,7 @@ static LILCALLBACK Lil_value_Ptr fnc_codeat(LilInterp_Ptr lil, size_t argc, Lil_
     lcstrp str  = lil_to_string(argv[0]);
     bool inError = false;
     auto       index = CAST(size_t) lil_to_integer(argv[1], inError);
-    // #TODO Error condition.
+    ARGERR(inError);
     ARGERR(index >= LSTRLEN(str));
     CMD_SUCCESS_RET(lil_alloc_integer(lil, str[index]));
 }
@@ -1213,7 +1212,7 @@ static LILCALLBACK Lil_value_Ptr fnc_strpos(LilInterp_Ptr lil, size_t argc, Lil_
     if (argc > 2) {
         bool inError = false;
         min = CAST(size_t) str_to_integer(lil_to_string(argv[2]), inError);
-        // #TODO error condition.
+        ARGERR(inError);
         if (min >= LSTRLEN(hay)) { CMD_SUCCESS_RET(lil_alloc_integer(lil, -1)); }
     }
     lcstrp str = LSTRSTR(hay + min, lil_to_string(argv[1]));
