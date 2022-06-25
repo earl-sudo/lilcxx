@@ -184,7 +184,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     if (!LSTRCMP(type, L_STR("this"))) { // #subcmd
         Lil_callframe_Ptr env = lil->getEnv();
         while (env != lil->getRootEnv() && !env->getCatcher_for() && !env->getFunc()) { env = env->getParent(); }
-        if (env->getCatcher_for()) { CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getCatcher())); }
+        if (env->getCatcher_for()) { CMD_SUCCESS_RET(new Lil_value(lil, lil->getCatcher())); }
         if (env == lil->getRootEnv()) { CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getRootcode())); }
         CMD_SUCCESS_RET(env->setFunc() ? lil_clone_value(env->getFunc()->getCode()) : nullptr);
     }
@@ -1665,7 +1665,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_catcher");
     if (argc == 0) {
-        CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getCatcher()));
+        CMD_SUCCESS_RET(new Lil_value(lil, lil->getCatcher()));
     } else {
         lil->setCather(argv[0]);
     }

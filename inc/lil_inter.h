@@ -679,7 +679,7 @@ public:
     ND size_t getCmds() const { return sysCmdMap_.size(); }
 
     // Get catcher if inside "catch" or nullptr if not.
-    ND lcstrp getCatcher() const { return catcher_.c_str(); }
+    ND const lstring & getCatcher() const { return catcher_; }
     ND bool isCatcherEmpty() const { return catcher_.empty(); }
     // Set "catcher"
     void setCather(Lil_value_Ptr cmdD);

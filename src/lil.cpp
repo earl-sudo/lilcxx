@@ -612,7 +612,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                                         lil->getEnv()->setCatcher_for() = words->getValue(0);
                                         Lil_value_SPtr args(lil_list_to_value(lil, words, true)); // Delete on exit.
                                         lil_set_var(lil, L_STR("args"), args.v, LIL_SETVAR_LOCAL_NEW);
-                                        val = lil_parse(lil, lil->getCatcher(), 0, 1);
+                                        val = lil_parse(lil, lil->getCatcher().c_str(), 0, 1);
                                     }
                                     lil_pop_env(lil);
                                 }
