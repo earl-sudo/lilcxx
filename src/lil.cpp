@@ -198,9 +198,8 @@ Lil_value_Ptr lil_list_get(Lil_list_CPtr list, size_t index) {
     return index >= list->getCount() ? nullptr : list->getValue(_NT(int,index));
 }
 
-ND static bool _needs_escape(lcstrp str) { // #private
-    assert(str!=nullptr);
-    if (!str || !str[0]) { return true; }
+ND static bool _needs_escape(lstring_view str) { // #private
+    if (!str.empty() || !str[0]) { return true; }
     for (size_t i = 0; str[i]; i++) {
         if (LISPUNCT(str[i]) || isspace(str[i])) { return true; }
     }
@@ -216,7 +215,7 @@ Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_e
     for (auto it = list->cbegin(); it != list->cend(); ++it) {
         // *it => Lil_value(); it->getValue() => lcstrp
         auto strval = (*it)->getValue();
-        auto valLen = LSTRLEN((*it)->getValue());
+        auto valLen = strval.length();
 
         bool escape = do_escape ? _needs_escape(strval) : false;
         if (i) { lil_append_char(val, LC(' ')); } // Separate each value with ' '.
@@ -713,8 +712,8 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
 
 Lil_value_Ptr lil_parse_value(LilInterp_Ptr lil, Lil_value_Ptr val, int funclevel) {
     assert(lil!=nullptr); assert(val!=nullptr);
-    if (!val || !val->getValue() || !val->getValueLen()) { return _alloc_empty_value(lil); }
-    return lil_parse(lil, val->getValue(), val->getValueLen(), funclevel);
+    if (!val || val->getValue().empty() || !val->getValueLen()) { return _alloc_empty_value(lil); }
+    return lil_parse(lil, val->getValue().c_str(), val->getValueLen(), funclevel);
 }
 
 void lil_callback(LilInterp_Ptr lil, LIL_CALLBACK_IDS cb, lil_callback_proc_t proc) {
@@ -788,7 +787,7 @@ Lil_value_Ptr lil_unused_name(LilInterp_Ptr lil, lcstrp part) {
 // Get string value from Lil_value.
 lcstrp lil_to_string(Lil_value_Ptr val) {
     assert(val!=nullptr);
-    return (val && val->getValueLen()) ? val->getValue() : L_STR("");
+    return (val && val->getValueLen()) ? val->getValue().c_str() : L_STR("");
 }
 
 // Get double value from Lil_value.

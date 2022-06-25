@@ -290,7 +290,7 @@ public:
         LIL_DTOR(sysInfo_, "Lil_value");
     }
     ND size_t getValueLen() const { return value_.length(); }
-    ND lcstrp getValue() const { return (lstrp )value_.c_str(); }
+    ND lstring getValue() const { return value_; }
     ND lchar  getChar(size_t i) const { return value_.at(i); }
     void append(lchar ch) { value_.append(1, ch); }
     void append(lcstrp  s, size_t len) { assert(s!=nullptr); value_.append(s, len); }
