@@ -535,7 +535,7 @@ private:
 
     lstring         dollarprefix_; // own memory
 
-    lstring         code_; /* need save on parse */ // Don't own data
+    lstring         code_; /* need save on parse */ // Waste some space owning, but simplify conception.
     size_t          head_    = 0; // Position in code_ (need save on parse)
     size_t          codeLen_ = 0; // Length of code_  (need save on parse)
     lcstrp          rootcode_ = nullptr; // The original code_
