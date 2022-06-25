@@ -799,11 +799,9 @@ double lil_to_double(Lil_value_Ptr val, bool& inError) {
         ret = std::stod(lil_to_string(val));
         inError = false;
     } catch(std::invalid_argument& ia) {
-        // ERROR! #TODO what?
         DBGPRINTF("lil_to_double() couldn't parse, invalid_argument |%s|\n", lil_to_string(val));
         inError = true;
     } catch(std::out_of_range& ofr) {
-        // ERROR! #TODO what?
         DBGPRINTF("lil_to_double() couldn't parse, out_of_range: |%s|\n", lil_to_string(val));
         inError = true;
     }
@@ -818,7 +816,6 @@ lilint_t lil_to_integer(Lil_value_Ptr val, bool& inError) {
     auto ret = strtoll(lil_to_string(val), nullptr, 0);
     inError = false;
     if (errno == ERANGE && (ret == LLONG_MAX || ret == LLONG_MIN)) {
-        // ERROR! #TODO what?
         DBGPRINTF("lil_to_intger counldn't parse; |%s|\n", lil_to_string(val));
         inError = true;
     }

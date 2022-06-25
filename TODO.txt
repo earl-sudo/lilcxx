@@ -23,6 +23,9 @@
 - What to do about failure to parse integers and floats. - DONE
 - Put SysInfo in "thread_local" - 1 main interp per thread.  Access via function. - DONE
 - Connect sub LilInterp to main one for stats. - DONE
+- Deal with character types. - DONE
+- Fix miss matched Lil::_real_trim() delete() and Lil::_strclone() new[]. - DONE
+- Fix miss matched Lil::_strclone() new[] and Lil::LilInterp::setCather() delete. - DONE
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -31,13 +34,10 @@
 - Make argument error, action error, parser error, null return all distinct in commands.
 - Add documentation.
 - Put git version info into binary.
-- Deal with character types.
 
 - ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_.
 - ERROR: Copies may exist of LilInterp may exist so other references are possible.
 - Review algorithms for substitutions.
-- Fix miss matched Lil::_strclone() new[] and Lil::LilInterp::setCather() delete.
-- Fix miss matched Lil::_real_trim() delete() and Lil::_strclone() new[].
 - Fix "invalid read of size 1", ~Lil_value().
 - Object cache
 - configure hashtables.
@@ -63,7 +63,7 @@
 
 - Better expr (from tcl7.6)
 - Better int/double parsing (from tcl8)
-- Command hlpe
+- Command help
 - Command arg check
 - Cmd error management
 - C API

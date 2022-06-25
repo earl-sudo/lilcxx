@@ -1243,7 +1243,6 @@ static auto _str_to_integer(const char* val, bool& inError) {
     auto ret = strtoll(val, nullptr, 0);
     inError = false;
     if (errno == ERANGE && (ret == LLONG_MAX || ret == LLONG_MIN)) {
-        // ERROR! #TODO what?
         inError = true;
     }
     CMD_SUCCESS_RET(ret);
