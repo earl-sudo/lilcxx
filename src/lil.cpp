@@ -380,11 +380,11 @@ ND static bool _ateol(LilInterp_Ptr lil) { // #private
 // Called from lil_parse(), _next_word(), substitue()
 static void _skip_spaces(LilInterp_Ptr lil) { // #private
     assert(lil!=nullptr);
-    while (lil->getHead() < lil->getClen()) {
+    while (lil->getHead() < lil->getCodeLen()) {
         if (lil->getHeadChar() == LC('#')) { // Lil comment.
             if (lil->getHeadCharPlus(1) == LC('#') && lil->getHeadCharPlus(2) != LC('#')) {
                 lil->incrHead(2);
-                while (lil->getHead() < lil->getClen()) {
+                while (lil->getHead() < lil->getCodeLen()) {
                     if ((lil->getHeadChar() == LC('#')) && (lil->getHeadCharPlus(1) == LC('#')) &&
                         (lil->getHeadCharPlus(2) != LC('#'))) {
                         lil->incrHead(2);
@@ -393,18 +393,18 @@ static void _skip_spaces(LilInterp_Ptr lil) { // #private
                     lil->incrHead(1);
                 }
             } else {
-                while (lil->getHead() < lil->getClen() && !_eolchar(lil->getHeadChar())) { lil->incrHead(1); }
+                while (lil->getHead() < lil->getCodeLen() && !_eolchar(lil->getHeadChar())) { lil->incrHead(1); }
             }
         } else if (lil->getHeadChar() == LC('\\') && _eolchar(lil->getHeadCharPlus(1))) { // Lil continuation.
             lil->incrHead(1);
-            while (lil->getHead() < lil->getClen() && _eolchar(lil->getHeadChar())) { lil->incrHead(1); }
+            while (lil->getHead() < lil->getCodeLen() && _eolchar(lil->getHeadChar())) { lil->incrHead(1); }
         } else if (_eolchar(lil->getHeadChar())) { // Lil EOL handling.
             if (lil->getIgnoreEol()) { lil->incrHead(1); }
             else { break; }
         } else if (LISSPACE(lil->getHeadChar())) { // Lil space handling
             lil->incrHead(1);
         } else { break; }
-    } // while (lil->getHead() < lil->getClen())
+    } // while (lil->getHead() < lil->getCodeLen())
 }
 
 // Called from _next_word()
@@ -417,7 +417,7 @@ ND static Lil_value_Ptr _get_bracketpart(LilInterp_Ptr lil) { // #private
 
     lil->setIgnoreEol() = false;
     lil->incrHead(1);
-    while (lil->getHead() < lil->getClen()) {
+    while (lil->getHead() < lil->getCodeLen()) {
         if (lil->getHeadChar() == LC('[')) {
             lil->incrHead(1);
             cnt++;
@@ -458,7 +458,7 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
         size_t cnt = 1;
         lil->incrHead(1);
         val = new Lil_value(lil);
-        while (lil->getHead() < lil->getClen()) {
+        while (lil->getHead() < lil->getCodeLen()) {
             if (lil->getHeadChar() == LC('{')) {
                 lil->incrHead(1);
                 cnt++;
@@ -470,13 +470,13 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
             } else {
                 lil_append_char(val, lil->getHeadCharAndAdvance());
             }
-        } // while (lil->getHead() < lil->getClen())
+        } // while (lil->getHead() < lil->getCodeLen())
     } else if (lil->getHeadChar() == LC('[')) { // Start of a command.
         val = _get_bracketpart(lil);
     } else if (lil->getHeadChar() == LC('"') || lil->getHeadChar() == LC('\'')) {
         lchar sc = lil->getHeadCharAndAdvance();
         val = new Lil_value(lil);
-        while (lil->getHead() < lil->getClen()) {
+        while (lil->getHead() < lil->getCodeLen()) {
             if (lil->getHeadChar() == LC('[') || lil->getHeadChar() == LC('$')) { // Deref a value.
                 Lil_value_SPtr tmp(lil->getHeadChar() == LC('$') ? _get_dollarpart(lil) : _get_bracketpart(lil)); // Delete on exit
                 lil_append_val(val, tmp.v);
@@ -503,10 +503,10 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
                 lil_append_char(val, lil->getHeadChar());
             }
             lil->incrHead(1);
-        } // while (lil->getHead() < lil->getClen())
+        } // while (lil->getHead() < lil->getCodeLen())
     } else {
         start = lil->getHead();
-        while (lil->getHead() < lil->getClen() && !LISSPACE(lil->getHeadChar()) && !_islilspecial(lil->getHeadChar())) {
+        while (lil->getHead() < lil->getCodeLen() && !LISSPACE(lil->getHeadChar()) && !_islilspecial(lil->getHeadChar())) {
             lil->incrHead(1);
         }
         val = new Lil_value(lil, lil->getCodeObj().substr(start));
@@ -520,7 +520,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
     Lil_list_Ptr words = lil_alloc_list(lil);
 
         _skip_spaces(lil);
-    while (lil->getHead() < lil->getClen() && !_ateol(lil) && !lil->getError().inError()) {
+    while (lil->getHead() < lil->getCodeLen() && !_ateol(lil) && !lil->getError().inError()) {
         Lil_value_Ptr w = new Lil_value(lil);
         do {
             size_t        head = lil->getHead();
@@ -531,11 +531,11 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
                 return nullptr; // #ERR_RET ERROR:parsing
             }
             lil_append_val(w, wp.v);
-        } while (lil->getHead() < lil->getClen() && !_eolchar(lil->getHeadChar()) && !LISSPACE(lil->getHeadChar()) && !lil->getError().inError());
+        } while (lil->getHead() < lil->getCodeLen() && !_eolchar(lil->getHeadChar()) && !LISSPACE(lil->getHeadChar()) && !lil->getError().inError());
         _skip_spaces(lil);
 
         lil_list_append(words, w);
-    } // while (lil->getHead() < lil->getClen() && !ateol(lil) && !lil->getError())
+    } // while (lil->getHead() < lil->getCodeLen() && !ateol(lil) && !lil->getError())
 
     return words;
 }
@@ -544,7 +544,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
 Lil_list_Ptr lil_subst_to_list(LilInterp_Ptr lil, Lil_value_Ptr code) {
     assert(lil!=nullptr); assert(code!=nullptr);
     lcstrp save_code = lil->getCode();
-    size_t     save_clen  = lil->getClen();
+    size_t     save_clen  = lil->getCodeLen();
     size_t     save_head  = lil->getHead();
     int        save_igeol = lil->getIgnoreEol();
     lil->setCode(lil_to_string(code), code->getValueLen());
@@ -567,8 +567,8 @@ Lil_value_Ptr lil_subst_to_value(LilInterp_Ptr lil, Lil_value_Ptr code) {
 // Top level parser.
 Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int funclevel) {
     assert(lil!=nullptr); assert(code!=nullptr);  // #topic parsedCalls, codeLen, parsedDepth, foundCmds, notFoundCmds, numProcCalls
-    lcstrp save_code = lil->getCode();
-    size_t        save_clen  = lil->getClen();
+    auto save_code = lil->getCodeObj();
+    size_t        save_clen  = lil->getCodeLen();
     size_t        save_head  = lil->getHead();
     Lil_value_Ptr val        = nullptr;
     Lil_list_Ptr  words      = nullptr;
@@ -576,7 +576,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
     struct lil_parse_exit : std::exception { };
 
     try {
-        if (!save_code) { lil->setRootcode() = code; }
+        if (save_code.empty()) { lil->setRootcode() = code; }
         lil->setCode(code, codelen ? codelen : LSTRLEN(code));
         _skip_spaces(lil);
         lil->incrParse_depth(1); // Start new parse level.
@@ -589,7 +589,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
         }
         if (lil->getParse_depth() == 1) { lil->SETERROR(ErrorCode()); }
         if (funclevel) { lil->getEnv()->setBreakrun() = false; }
-        while (lil->getHead() < lil->getClen() && !lil->getError().inError()) {
+        while (lil->getHead() < lil->getCodeLen() && !lil->getError().inError()) {
             if (words) { lil_free_list(words); }
             if (val) { lil_free_value(val); }
             val = nullptr;
@@ -687,7 +687,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
             _skip_spaces(lil);
             while (_ateol(lil)) lil->incrHead(1);
             _skip_spaces(lil);
-        } // while (lil->getHead() < lil->getClen() && !lil->getError())
+        } // while (lil->getHead() < lil->getCodeLen() && !lil->getError())
     } catch (const lil_parse_exit& lpe) {
         // Nothing to do.
     }
@@ -698,7 +698,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
         proc(lil, lil->getErr_head(), lil->getErrMsg().c_str());
     }
     if (words) { lil_free_list(words); }
-    lil->setCode(save_code, save_clen, save_head); // Restore code to original.
+    lil->setCode(save_code.c_str(), save_clen, save_head); // Restore code to original.
     if (funclevel && lil->getEnv()->getRetval_set()) { // Handle return value.
         if (val) { lil_free_value(val); }
         val = lil->getEnv()->getReturnVal();

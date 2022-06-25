@@ -121,7 +121,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
         CMD_SUCCESS_RET(lil_clone_value(func->getCode()));
     }
     if (!LSTRCMP(type, L_STR("func-count"))) { // #subcmd
-        CMD_SUCCESS_RET(lil_alloc_integer(lil, _NT(lilint_t,lil->getCmds())));
+        CMD_SUCCESS_RET(lil_alloc_integer(lil, _NT(lilint_t, lil->getNumCmds())));
     }
     if (!LSTRCMP(type, L_STR("funcs"))) { // #subcmd
         Lil_list_SPtr funcs(lil_alloc_list(lil)); // Delete on exit.

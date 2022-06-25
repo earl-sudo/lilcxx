@@ -564,8 +564,6 @@ private:
     void defineSystemCmds() { sysCmdMap_ = cmdmap_; }
     // Set interp text.
     void setCode(lcstrp  ptr) { code_ = ptr; }
-    // Set code_ length.
-    ND size_t& setCodeLen() { return codeLen_; }
     // Set current offset in code_.
     ND size_t& setHead() { return head_; }
     // Set "catcher".
@@ -633,7 +631,7 @@ public:
     }
 
     // Get code_ length.
-    ND size_t getClen() const { return codeLen_; }
+    ND size_t getCodeLen() const { return codeLen_; }
 
     // Get original code_.
     ND lcstrp  getRootcode() const { return rootcode_; }
@@ -643,7 +641,7 @@ public:
     // Set interp text.
     void setCode(lcstrp  codeD, size_t codelen, size_t headPos = 0) { // codeD could be nullptr.
         setCode( codeD );
-        setCodeLen() = codelen;
+        codeLen_ = codelen;
         setHead()    = headPos;
     }
     // Get code_.
@@ -677,7 +675,7 @@ public:
     ND bool& setIgnoreEol() { return ignoreeol_; }
 
     // Get number of commands.
-    ND size_t getCmds() const { return sysCmdMap_.size(); }
+    ND size_t getNumCmds() const { return sysCmdMap_.size(); }
 
     // Get catcher if inside "catch" or nullptr if not.
     ND const lstring & getCatcher() const { return catcher_; }
