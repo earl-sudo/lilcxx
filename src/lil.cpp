@@ -55,9 +55,9 @@ NS_BEGIN(Lil)
         register_stdcmds();
     }
     void LilInterp::setCather(Lil_value_Ptr cmdD) {
-        lcstrp  catcherD = lil_to_string(cmdD);
-        if (catcherD[0]) {
-            this->setCatcher(catcherD);
+        auto& catcherObj = cmdD->getValue();
+        if (catcherObj[0]) {
+            this->setCatcher(catcherObj.c_str());
         } else {
             this->setCatcherEmpty();
         }
@@ -83,20 +83,20 @@ NS_BEGIN(Lil)
         lcstrp  oldname;
         lcstrp  newname;
         if (argc < 2) return nullptr; // #argErr
-        oldname = lil_to_string(argv[0]);
-        newname = lil_to_string(argv[1]);
-        func = find_cmd(oldname);
+        auto& oldnameObj = argv[0]->getValue();
+        auto& newnameObj = argv[1]->getValue();
+        func = find_cmd(oldnameObj.c_str());
         if (!func) {
-            std::vector<lchar> msg((24 + LSTRLEN(oldname)), LC('\0')); // #magic
-            LSPRINTF(&msg[0], L_VSTR(0xbe91,"unknown function '%s'"), oldname);
+            std::vector<lchar> msg((24 + oldnameObj.length()), LC('\0')); // #magic
+            LSPRINTF(&msg[0], L_VSTR(0xbe91,"unknown function '%s'"), oldnameObj.c_str());
             lil_set_error_at(this, this->getHead(), &msg[0]); // #INTERP_ERR
             return nullptr;
         }
         r = new Lil_value(this, func->getName());
-        if (newname[0]) {
+        if (newnameObj[0]) {
             hashmap_removeCmd(oldname);
-            hashmap_addCmd(newname, func);
-            func->name_ = (newname);
+            hashmap_addCmd(newnameObj.c_str(), func);
+            func->name_ = newnameObj;
         } else {
             del_func(func);
         }
@@ -547,7 +547,7 @@ Lil_list_Ptr lil_subst_to_list(LilInterp_Ptr lil, Lil_value_Ptr code) {
     size_t     save_clen  = lil->getCodeLen();
     size_t     save_head  = lil->getHead();
     int        save_igeol = lil->getIgnoreEol();
-    lil->setCode(lil_to_string(code), code->getValueLen());
+    lil->setCode(code->getValue().c_str(), code->getValueLen());
     lil->setIgnoreEol() = true;
     Lil_list_Ptr words = _substitute(lil);
     if (!words) { words = lil_alloc_list(lil); }
@@ -600,7 +600,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
             }
 
             if (words->getCount()) {
-                Lil_func_Ptr cmd = _find_cmd(lil, lil_to_string(words->getValue(0))); // Try dispatch on first word.
+                Lil_func_Ptr cmd = _find_cmd(lil, words->getValue(0)->getValue().c_str()); // Try dispatch on first word.
                 if (!cmd) { // Found a command.
                     if (words->getValue(0)->getValueLen()) {
                         if (lil->isCatcherEmpty()) {
@@ -648,7 +648,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                         } catch (std::exception& ex) {
                             // Command threw an exception
                             printf("ERROR: Command threw exception: cmd %s type: %s msg %s\n",
-                                   lil_to_string(words->getValue(0)), typeid(ex).name(), ex.what());
+                                   words->getValue(0)->getValue().c_str(), typeid(ex).name(), ex.what());
                             // TODO: make this conditional so C++ cmds can use this to signal errors.
                             throw; // Rethrow the exception.
                         }
