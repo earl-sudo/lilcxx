@@ -621,13 +621,13 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                                 std::vector <lchar> msg((words->getValue(0)->getValueLen() + 64), LC('\0')); // #magic
                                 LSPRINTF(&msg[0], L_VSTR(0xace4,
                                                          "catcher limit reached while trying to call unknown function %s"),
-                                         words->getValue(0)->getValue());
+                                         words->getValue(0)->getValue().c_str());
                                 lil_set_error_at(lil, lil->getHead(), &msg[0]); // #INTERP_ERR
                                 throw lil_parse_exit();
                             }
                         } else {
                             std::vector <lchar> msg((words->getValue(0)->getValueLen() + 32), LC('\0')); // #magic
-                            LSPRINTF(&msg[0], L_VSTR(0xef08, "unknown function %s"), words->getValue(0)->getValue());
+                            LSPRINTF(&msg[0], L_VSTR(0xef08, "unknown function %s"), words->getValue(0)->getValue().c_str());
                             lil_set_error_at(lil, lil->getHead(), &msg[0]); // #INTERP_ERR
                             throw lil_parse_exit();
                         }

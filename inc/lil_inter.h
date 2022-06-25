@@ -645,7 +645,6 @@ public:
         setHead()    = headPos;
     }
     // Get code_.
-    ND lcstrp  getCode() const { return code_.c_str(); }
     ND const lstring& getCodeObj() const { return code_; }
     // Get current character.
     ND lchar getHeadChar() const { return code_[head_]; }
