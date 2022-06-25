@@ -509,7 +509,7 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
         while (lil->getHead() < lil->getClen() && !LISSPACE(lil->getHeadChar()) && !_islilspecial(lil->getHeadChar())) {
             lil->incrHead(1);
         }
-        val = _alloc_value_len(lil, lil->getCode() + start, lil->getHead() - start);
+        val = new Lil_value(lil, {lil->getCode() + start, lil->getHead() - start});
     }
     return val ? val : new Lil_value(lil);
 }
