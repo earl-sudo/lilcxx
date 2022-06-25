@@ -56,6 +56,19 @@
 - thread safe
 - string class
 - Move private code to private section.
+- Add exception handling to where we call command function pointers.
+- Add command callback wrappers.
+
+- Better expr (from tcl7.6)
+- Better int/double parsing (from tcl8)
+- Command hlpe
+- Command arg check
+- Cmd error management
+- C API
+- Generate random number table
+- Make Lil_value more string link.
+- Use std::array where arrays needed.
+- Put SysInfo in "thread_local" - 1 main interp per thread.  Access via function.
 
 =================== Additions
 - handles interface

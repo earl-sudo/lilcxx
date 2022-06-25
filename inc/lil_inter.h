@@ -822,6 +822,17 @@ lstrp        _strclone(lstring_view s);
 Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
 Lil_value_Ptr _alloc_value(LilInterp_Ptr lil, lcstrp  str);
 
+struct Module {
+    lstring     name_;
+    int         version_[2] = {0,0};
+};
+
+// using lil_func_proc_t = std::function<Lil_value_Ptr(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr* argv)>;
+
+struct CommandAdaptor {
+    virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr* argv) { }
+};
+
 #undef ND
 
 NS_END(Lil)
