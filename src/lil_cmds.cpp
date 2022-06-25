@@ -127,7 +127,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
         Lil_list_SPtr funcs(lil_alloc_list(lil)); // Delete on exit.
         auto appendFuncName = [&funcs, &lil](const lstring& name, const Lil_func_Ptr f) {
             (void)f;
-            lil_list_append(funcs.v, lil_alloc_string(lil, name.c_str()));
+            lil_list_append(funcs.v, new Lil_value(lil, name));
         };
         lil->applyToFuncs(appendFuncName);
         r = lil_list_to_value(lil, funcs.v, true);
@@ -173,7 +173,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
         CMD_SUCCESS_RET(nullptr);
     }
     if (!LSTRCMP(type, L_STR("error"))) { // #subcmd
-        CMD_SUCCESS_RET(lil->getErrMsg().length() ? lil_alloc_string(lil, lil->getErrMsg().c_str()) : nullptr);
+        CMD_SUCCESS_RET(lil->getErrMsg().length() ? new Lil_value(lil, lil->getErrMsg()) : nullptr);
     }
     if (!LSTRCMP(type, L_STR("dollar-prefix"))) { // #subcmd
         if (argc == 1) { CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getDollarprefix())); }
@@ -193,7 +193,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
         while (env != lil->getRootEnv() && !env->getCatcher_for() && !env->getFunc()) { env = env->getParent(); }
         if (env->getCatcher_for()) { CMD_SUCCESS_RET(env->getCatcher_for()); }
         if (env == lil->getRootEnv()) { CMD_SUCCESS_RET(nullptr); }
-        CMD_SUCCESS_RET(env->setFunc() ? lil_alloc_string(lil, env->getFunc()->getName().c_str()) : nullptr);
+        CMD_SUCCESS_RET(env->setFunc() ? new Lil_value(lil, env->getFunc()->getName()) : nullptr);
     }
     ARGERR(true);
 }
@@ -259,7 +259,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
         lil_set_error_at(lil, lil->getHead(), &msg[0]); // #INTERP_ERR
         CMD_ERROR_RET(nullptr);
     }
-    r = lil_alloc_string(lil, func->getName().c_str());
+    r = new Lil_value(lil, func->getName());
     if (newname[0]) {
         lil->hashmap_removeCmd(oldname);
         lil->hashmap_addCmd(newname, func);
@@ -1335,7 +1335,7 @@ static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, int
         size_t len = s.length();
         while (len && LSTRCHR(chars, s[len - 1])) { len--; }
         s[len] = 0;
-        r = lil_alloc_string(lil, s.c_str());
+        r = new Lil_value(lil, s);
     }
     return(r);
 }
