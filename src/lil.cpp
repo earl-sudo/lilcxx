@@ -305,7 +305,7 @@ Lil_var_Ptr lil_set_var(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr val, LIL_V
             if (var->hasWatchcode()) {
                 Lil_callframe_Ptr save_env = lil->getEnv();
                 lil->setEnv(var->getCallframe());
-                lil_free_value(lil_parse(lil, var->getWatchCode(), 0, 1));
+                lil_free_value(lil_parse(lil, var->getWatchCode().c_str(), 0, 1));
                 lil->setEnv(save_env);
             }
             return var;

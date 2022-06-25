@@ -334,7 +334,7 @@ public:
     // Get variable name_.
     ND const lstring& getName() const { return name_; }
     // Get variable value_.
-    ND lcstrp  getWatchCode() const { return watchCode_.c_str(); }
+    ND const lstring & getWatchCode() const { return watchCode_; }
     // Set variable value_.
     void setWatchCode(lcstrp  value) { // value might be nullptr
         if (value==nullptr) {
@@ -419,7 +419,7 @@ public:
     void varsNamesToList(LilInterp_Ptr lil, Lil_list_Ptr list) {
         assert(lil!=nullptr); assert(list!=nullptr);
         for (const auto& n : varmap_) {
-            lil_list_append(list, lil_alloc_string(lil, n.first.c_str()));
+            lil_list_append(list, new Lil_value(lil, n.first));
         }
     }
 
