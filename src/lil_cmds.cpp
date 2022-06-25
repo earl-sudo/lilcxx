@@ -1332,13 +1332,13 @@ static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, int
 
     }
     if (right) {
-        std::unique_ptr<lchar>   s(_strclone(str + base));
-        size_t len = LSTRLEN(s.get());
-        while (len && LSTRCHR(chars, s.get()[len - 1])) { len--; }
-        s.get()[len] = 0;
-        r = lil_alloc_string(lil, s.get());
+        std::string   s(str+ base);
+        size_t len = s.length();
+        while (len && LSTRCHR(chars, s[len - 1])) { len--; }
+        s[len] = 0;
+        r = lil_alloc_string(lil, s.c_str());
     }
-    CMD_SUCCESS_RET(r);
+    return(r);
 }
 
 [[maybe_unused]] const auto fnc_trim_doc = R"cmt(
@@ -1445,7 +1445,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
         src[srclen] = 0;
     }
     Lil_value_Ptr r = lil_alloc_string(lil, src);
-    delete (src); //delete char*
+    delete [] (src); //delete char*
     CMD_SUCCESS_RET(r);
 }
 } fnc_repstr;

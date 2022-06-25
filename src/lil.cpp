@@ -96,7 +96,7 @@ NS_BEGIN(Lil)
         if (newname[0]) {
             hashmap_removeCmd(oldname);
             hashmap_addCmd(newname, func);
-            func->name_ = _strclone(newname);
+            func->name_ = (newname);
         } else {
             del_func(func);
         }
