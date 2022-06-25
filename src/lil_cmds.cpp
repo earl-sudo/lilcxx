@@ -97,7 +97,8 @@ NS_BEGIN(Lil)
    if the code is executed at root level (or the name of the current
    function is unknown))cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_reflect(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_reflect_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_reflect");
     Lil_func_Ptr  func;
@@ -196,12 +197,14 @@ static LILCALLBACK Lil_value_Ptr fnc_reflect(LilInterp_Ptr lil, size_t argc, Lil
     }
     ARGERR(true);
 }
+} fnc_reflect;
 
 [[maybe_unused]] const auto fnc_func_doc = R"cmt(
  func [name] [argument list | "args"] <code>
    register a new function.  See the section 2 for more information)cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_func(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_func_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, ("fnc_func"));
     Lil_value_Ptr name;
@@ -231,6 +234,7 @@ static LILCALLBACK Lil_value_Ptr fnc_func(LilInterp_Ptr lil, size_t argc, Lil_va
     }
     CMD_SUCCESS_RET(name);
 }
+} fnc_func;
 
 [[maybe_unused]] const auto fnc_rename_doc = R"cmt(
  rename <oldname> <newname>
@@ -240,7 +244,8 @@ static LILCALLBACK Lil_value_Ptr fnc_func(LilInterp_Ptr lil, size_t argc, Lil_va
    function returns the <oldname>.  If <newname> is set to an empty
    string, the function will be deleted)cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_rename(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_rename_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, ("fnc_rename"));
     Lil_value_Ptr r;
@@ -264,6 +269,7 @@ static LILCALLBACK Lil_value_Ptr fnc_rename(LilInterp_Ptr lil, size_t argc, Lil_
     }
     CMD_SUCCESS_RET(r);
 }
+} fnc_rename;
 
 [[maybe_unused]] const auto fnc_unusedname_doc = R"cmt(
  unusedname [part]
@@ -284,7 +290,8 @@ struct func_unusedname_type : CommandAdaptor { // #cmd
  quote [...]
    return the arguments as a single space-separated string)cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_quote(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_quote_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_quote");
     ARGERR(argc < 1); // #argErr
@@ -295,6 +302,7 @@ static LILCALLBACK Lil_value_Ptr fnc_quote(LilInterp_Ptr lil, size_t argc, Lil_v
     }
     CMD_SUCCESS_RET(r);
 }
+} fnc_quote;
 
 [[maybe_unused]] const auto fnc_set_doc = R"cmt(
  set ["global"] [name [value] ...]
@@ -303,7 +311,8 @@ static LILCALLBACK Lil_value_Ptr fnc_quote(LilInterp_Ptr lil, size_t argc, Lil_v
    the same name as the last argument.  Otherwise an empty value is
    returned.  See section 2 for details)cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_set(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_set_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_set");
     size_t      i      = 0;
@@ -321,6 +330,7 @@ static LILCALLBACK Lil_value_Ptr fnc_set(LilInterp_Ptr lil, size_t argc, Lil_val
     }
     CMD_SUCCESS_RET(var ? lil_clone_value(var->getValue()) : nullptr);
 }
+} fnc_set;
 
 [[maybe_unused]] const auto fnc_local_doc = R"cmt(
  local [...]
@@ -330,7 +340,8 @@ static LILCALLBACK Lil_value_Ptr fnc_set(LilInterp_Ptr lil, size_t argc, Lil_val
    for reusable functions that want to make sure they will not modify
    existing global variables)cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_local(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_local_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_local");
     for (size_t i = 0; i < argc; i++) {
@@ -341,6 +352,7 @@ static LILCALLBACK Lil_value_Ptr fnc_local(LilInterp_Ptr lil, size_t argc, Lil_v
     }
     CMD_SUCCESS_RET(nullptr);
 }
+} fnc_local;
 
 [[maybe_unused]] const auto fnc_write_doc = R"cmt(
  write [...]
@@ -348,7 +360,8 @@ static LILCALLBACK Lil_value_Ptr fnc_local(LilInterp_Ptr lil, size_t argc, Lil_v
    default this is the standard output but a program can override this
    using the LIL_CALLBACK_WRITE callback)cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_write(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_write_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_write");
     Lil_value_SPtr msg(_alloc_empty_value(lil)); // Delete on exit.
@@ -359,18 +372,21 @@ static LILCALLBACK Lil_value_Ptr fnc_write(LilInterp_Ptr lil, size_t argc, Lil_v
     lil_write(lil, lil_to_string(msg.v));
     CMD_SUCCESS_RET(nullptr);
 }
+} fnc_write;
 
 [[maybe_unused]] const auto fnc_print_doc = R"cmt(
  print [...]
    like write but adds a newline at the end)cmt";
 
-static LILCALLBACK Lil_value_Ptr fnc_print(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+struct fnc_print_type : CommandAdaptor { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_print");
     fnc_write(lil, argc, argv);
     lil_write(lil, L_STR("\n"));
     CMD_SUCCESS_RET(nullptr);
 }
+} fnc_print;
 
 [[maybe_unused]] const auto fnc_eval_doc = R"cmt(
  eval [...]
@@ -378,7 +394,7 @@ static LILCALLBACK Lil_value_Ptr fnc_print(LilInterp_Ptr lil, size_t argc, Lil_v
    code.  The function returns the result of the LIL code)cmt";
 
 struct fnc_eval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_eval");
     if (argc == 1) { CMD_SUCCESS_RET(lil_parse_value(lil, argv[0], 0)); }
@@ -486,7 +502,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
 )cmt";
 
 struct fnc_enveval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_enveval");
     std::unique_ptr<Lil_list>  invars  = nullptr; // Input vars.
@@ -803,7 +819,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
    returns all strings combined into one)cmt";
 
 struct fnc_concat_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) { // #cmd
+Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(lil->sysInfo_, "fnc_concat");
     ARGERR(argc < 1); // #argErr
