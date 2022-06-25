@@ -535,7 +535,7 @@ private:
 
     lstring         dollarprefix_; // own memory
 
-    lcstrp          code_    = nullptr; /* need save on parse */ // Don't own data
+    lstring         code_; /* need save on parse */ // Don't own data
     size_t          head_    = 0; // Position in code_ (need save on parse)
     size_t          codeLen_ = 0; // Length of code_  (need save on parse)
     lcstrp          rootcode_ = nullptr; // The original code_
@@ -647,7 +647,7 @@ public:
         setHead()    = headPos;
     }
     // Get code_.
-    ND lcstrp  getCode() const { return code_; }
+    ND lcstrp  getCode() const { return code_.c_str(); }
     // Get current character.
     ND lchar getHeadChar() const { return code_[head_]; }
     // Get (current + i) character.
