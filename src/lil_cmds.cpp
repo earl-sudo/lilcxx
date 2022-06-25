@@ -621,10 +621,10 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_count");
     lchar buff[64]; // #magic
-    if (!argc) { CMD_SUCCESS_RET(_alloc_value(lil, L_STR("0"))); }
+    if (!argc) { CMD_SUCCESS_RET(new Lil_value(lil, L_STR("0"))); }
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
     LSPRINTF(buff, L_STR("%u"), (unsigned int) list.v->getCount());
-    CMD_SUCCESS_RET(_alloc_value(lil, buff));
+    CMD_SUCCESS_RET(new Lil_value(lil, buff));
 }
 } fnc_count;
 

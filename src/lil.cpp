@@ -840,7 +840,7 @@ bool lil_to_boolean(Lil_value_Ptr val) {
 // Convert string to Lil_value.
 Lil_value_Ptr lil_alloc_string(LilInterp_Ptr lil, lcstrp str) {
     assert(lil!=nullptr); assert(str!=nullptr);
-    return _alloc_value(lil, str);
+    return new Lil_value(lil, str);
 }
 
 // Convert double to Lil_value.
@@ -848,7 +848,7 @@ Lil_value_Ptr lil_alloc_double(LilInterp_Ptr lil, double num) {
     assert(lil!=nullptr);
     lchar buff[128]; // #magic
     LSPRINTF(buff, ("%f"), num);
-    return _alloc_value(lil, buff);
+    return new Lil_value(lil, buff);
 }
 
 // Convert integer into Lil_value.
@@ -856,7 +856,7 @@ Lil_value_Ptr lil_alloc_integer(LilInterp_Ptr lil, lilint_t num) {
     assert(lil!=nullptr);
     lchar buff[128]; // #magic
     LSPRINTF(buff, "%li", num);
-    return _alloc_value(lil, buff);
+    return new Lil_value(lil, buff);
 }
 
 // Free Lil interpeter.
