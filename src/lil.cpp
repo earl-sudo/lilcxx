@@ -92,7 +92,7 @@ NS_BEGIN(Lil)
             lil_set_error_at(this, this->getHead(), &msg[0]); // #INTERP_ERR
             return nullptr;
         }
-        r = lil_alloc_string(this, func->getName().c_str());
+        r = new Lil_value(this, func->getName());
         if (newname[0]) {
             hashmap_removeCmd(oldname);
             hashmap_addCmd(newname, func);
