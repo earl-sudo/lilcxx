@@ -549,7 +549,7 @@ private:
     Lil_value_Ptr       empty_                   = nullptr; // A "empty" Lil_value. (own memory)
     std::vector<lil_callback_proc_t> callback_{NUM_CALLBACKS}; // index LIL_CALLBACK_*
 
-    lstrp  catcher_ = nullptr; // Pointer to "catch" command (own memory)
+    lstring  catcher_; // Pointer to "catch" command (own memory)
     bool   in_catcher_ = false; // Are we in a "catch" command?
 
     ErrorCode errorCode_; // Error code_.
@@ -569,8 +569,10 @@ private:
     // Set current offset in code_.
     ND size_t& setHead() { return head_; }
     // Set "catcher".
-    void setCather(lstrp  ptr) { catcher_ = ptr; }
-    // Set position in code_ where error occured.
+    void setCatcher(lcstrp  ptr) { catcher_ = ptr; }
+    // Set "catcher" to empty.
+    void setCatcherEmpty() { catcher_.clear(); }
+    // Set position in code_ where error occurred.
     ND size_t& setErr_head() { return errPosition_; }
 
     // Register standard commands.
@@ -585,7 +587,6 @@ public:
             lil_free_env(this->getEnv());
             this->setEnv(next);
         }
-        delete(this->getCatcher()); //delete char*
     }
 
     // Size commands hashtable.  #optimization
@@ -678,7 +679,8 @@ public:
     ND size_t getCmds() const { return sysCmdMap_.size(); }
 
     // Get catcher if inside "catch" or nullptr if not.
-    ND lchar* getCatcher() const { return catcher_; }
+    ND lcstrp getCatcher() const { return catcher_.c_str(); }
+    ND bool isCatcherEmpty() const { return catcher_.empty(); }
     // Set "catcher"
     void setCather(Lil_value_Ptr cmdD);
 

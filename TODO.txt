@@ -30,6 +30,7 @@
 - Convert Lil_list to std::list<> and change calling convention to use a std::list<> from C-array.
 - Make argument error, action error, parser error, null return all distinct in commands.
 - Add documentation.
+- Put git version info into binary.
 
 - ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_.
 - ERROR: Copies may exist of LilInterp may exist so other references are possible.

@@ -56,8 +56,11 @@ NS_BEGIN(Lil)
     }
     void LilInterp::setCather(Lil_value_Ptr cmdD) {
         lcstrp  catcherD = lil_to_string(cmdD);
-        delete(this->getCatcher()); //delete char*
-        this->setCather(catcherD[0] ? _strclone(catcherD) : nullptr );
+        if (catcherD[0]) {
+            this->setCatcher(catcherD);
+        } else {
+            this->setCatcherEmpty();
+        }
     }
     inline Lil_func_Ptr LilInterp::find_cmd(lcstrp name) {
         auto it = cmdmap_.find(name); return (it == cmdmap_.end()) ? (nullptr) : (it->second);
@@ -601,7 +604,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                 Lil_func_Ptr cmd = _find_cmd(lil, lil_to_string(words->getValue(0))); // Try dispatch on first word.
                 if (!cmd) { // Found a command.
                     if (words->getValue(0)->getValueLen()) {
-                        if (lil->getCatcher()) {
+                        if (lil->isCatcherEmpty()) {
                             if (lil->getIn_catcher() < LilInterp::MAX_CATCHER_DEPTH) {
                                 lil->incr_in_catcher(true);
                                 {
