@@ -273,12 +273,12 @@ public:
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_value");
     }
-    Lil_value(LilInterp_Ptr lil, lcstrp  str, size_t len) { // #ctor
-        assert(lil!=nullptr); assert(str!=nullptr);
+    Lil_value(LilInterp_Ptr lil, const lstring&  str) { // #ctor
+        assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_value");
-        if (str) {
-            value_ = lstring(str, len);
+        if (!str.empty()) {
+            value_ = lstring(str);
         }
     }
     Lil_value(const Lil_value& src) { // #ctor

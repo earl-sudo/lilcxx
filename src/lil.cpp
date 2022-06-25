@@ -129,12 +129,12 @@ lstrp _strclone(lstring_view s) { // #private
 
 ND static Lil_value_Ptr _alloc_value_len(LilInterp_Ptr lil, lcstrp str, size_t len) { // #private
     assert(lil!=nullptr); assert(str!=nullptr);
-    return new Lil_value(lil, str, len); //alloc Lil_value_Ptr
+    return new Lil_value(lil, {str, len}); //alloc Lil_value_Ptr
 }
 
 ND Lil_value_Ptr _alloc_value(LilInterp_Ptr lil, lcstrp str) { // #private
     assert(lil!=nullptr); assert(str!=nullptr);
-    return str ? (_alloc_value_len(lil, str, LSTRLEN(str))):(_alloc_empty_value(lil));
+    return str ? (new Lil_value(lil, str)):(new Lil_value(lil));
 }
 
 ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil) { // #private

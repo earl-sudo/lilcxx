@@ -60,6 +60,8 @@
 - string class
 - Move private code to private section.
 - Add command callback wrappers.
+- Review #magic
+- get rid of most ".c_str()"
 
 - Better expr (from tcl7.6)
 - Better int/double parsing (from tcl8)
