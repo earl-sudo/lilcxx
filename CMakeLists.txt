@@ -118,7 +118,7 @@ target_compile_options(lil PRIVATE -pedantic -Wall -Wextra -Wcast-align -Wcast-q
         -Wvariadic-macros -Wno-float-equal
         -Wwrite-strings -Wsign-conversion
 
-        -Wno-unknown-pragmas -Wno-sign-compare)
+        -Wno-unknown-pragmas -Wno-sign-compare -Wno-inline)
 
 # <help> target_compile_definitions(<target>
 #        <INTERFACE|PUBLIC|PRIVATE> [items1...]

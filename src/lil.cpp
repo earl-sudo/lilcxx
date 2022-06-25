@@ -37,17 +37,9 @@ NS_BEGIN(Lil)
 #define ND [[nodiscard]]
 #define CAST(X) (X)
 
-lstrp _strclone(lstring_view s);
-ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
-
 // ===============================
     static Lil_value_Ptr _next_word(LilInterp_Ptr lil);
 
-    ND Lil_func_Ptr _add_func(LilInterp_Ptr lil, lcstrp name);
-    void            _del_func(LilInterp_Ptr lil, Lil_func_Ptr cmd);
-    ND Lil_func_Ptr _find_cmd(LilInterp_Ptr lil, lcstrp name);
-    ND Lil_var_Ptr  _lil_find_local_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
-    ND Lil_var_Ptr  _lil_find_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
     void            _ee_expr(Lil_exprVal* ee);
 
     LilInterp::LilInterp() { // #ctor
@@ -755,6 +747,8 @@ Lil_value_Ptr lil_eval_expr(LilInterp_Ptr lil, Lil_value_Ptr code) { // #topic n
             case EERR_SYNTAX_ERROR:
                 lil_set_error(lil, L_VSTR(0xb26c,"expression syntax error")); // #INTERP_ERR
                 break;
+            default:
+                assert(false);
         }
         return nullptr; // #ERR_RET
     }
