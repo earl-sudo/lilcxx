@@ -55,6 +55,9 @@ using lstrp = char*;
 #define LSTRCHR  strchr
 #define LSPRINTF sprintf
 #define LPRINTF  printf
+#define LISPUNCT ispunct
+#define LISSPACE isspace
+#define LISDIGIT isdigit
 
 inline const char* LIL_VERSION_STRING = "0.1cxx";
 

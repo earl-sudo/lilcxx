@@ -40,12 +40,12 @@ ND static inline double getDouble(Lil_exprVal* ee) { return ee->getDouble(); }
 ND static inline bool _ee_validParseState(Lil_exprVal* ee) { return ee->getHead() < ee->getLen() && !ee->getError(); }
 
 ND static bool _ee_invalidpunct(int ch) { // #private
-    return ispunct(ch) && ch != LC('!') && ch != LC('~') && ch != LC('(') && ch != LC(')') && ch != LC('-') && ch != LC('+');
+    return LISPUNCT(ch) && ch != LC('!') && ch != LC('~') && ch != LC('(') && ch != LC(')') && ch != LC('-') && ch != LC('+');
 }
 
 static void _ee_skip_spaces(Lil_exprVal *ee) { // #private
     assert(ee!=nullptr);
-    while (ee->getHead() < ee->getLen() && isspace(ee->getHeadChar())) { ee->nextHead(); }
+    while (ee->getHead() < ee->getLen() && LISSPACE(ee->getHeadChar())) { ee->nextHead(); }
 }
 
 // Convert text to integer or float value.
@@ -61,7 +61,7 @@ static void _ee_numeric_element(Lil_exprVal* ee) { // #private
             if (ee->getType() == EE_FLOAT) break;
             isFloat(ee);
             ee->nextHead();
-        } else if (!isdigit(ee->getHeadChar())) break;
+        } else if (!LISDIGIT(ee->getHeadChar())) break;
         if (ee->getType() == EE_INT)
             ee->setInteger() = getInt(ee)*10 + (ee->getHeadChar() - LC('0'));
         else {
@@ -77,7 +77,7 @@ static void _ee_numeric_element(Lil_exprVal* ee) { // #private
 
 static void _ee_element(Lil_exprVal *ee) { // #private
     assert(ee!=nullptr);
-    if (isdigit(ee->getHeadChar())) {
+    if (LISDIGIT(ee->getHeadChar())) {
         _ee_numeric_element(ee);
         return;
     }

@@ -202,7 +202,7 @@ ND static bool _needs_escape(lcstrp str) { // #private
     assert(str!=nullptr);
     if (!str || !str[0]) { return true; }
     for (size_t i = 0; str[i]; i++) {
-        if (ispunct(str[i]) || isspace(str[i])) { return true; }
+        if (LISPUNCT(str[i]) || isspace(str[i])) { return true; }
     }
     return false;
 }
@@ -402,7 +402,7 @@ static void _skip_spaces(LilInterp_Ptr lil) { // #private
         } else if (_eolchar(lil->getHeadChar())) { // Lil EOL handling.
             if (lil->getIgnoreEol()) { lil->incrHead(1); }
             else { break; }
-        } else if (isspace(lil->getHeadChar())) { // Lil space handling
+        } else if (LISSPACE(lil->getHeadChar())) { // Lil space handling
             lil->incrHead(1);
         } else { break; }
     } // while (lil->getHead() < lil->getClen())
@@ -507,7 +507,7 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
         } // while (lil->getHead() < lil->getClen())
     } else {
         start = lil->getHead();
-        while (lil->getHead() < lil->getClen() && !isspace(lil->getHeadChar()) && !_islilspecial(lil->getHeadChar())) {
+        while (lil->getHead() < lil->getClen() && !LISSPACE(lil->getHeadChar()) && !_islilspecial(lil->getHeadChar())) {
             lil->incrHead(1);
         }
         val = _alloc_value_len(lil, lil->getCode() + start, lil->getHead() - start);
@@ -532,7 +532,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
                 return nullptr; // #ERR_RET ERROR:parsing
             }
             lil_append_val(w, wp.v);
-        } while (lil->getHead() < lil->getClen() && !_eolchar(lil->getHeadChar()) && !isspace(lil->getHeadChar()) && !lil->getError().inError());
+        } while (lil->getHead() < lil->getClen() && !_eolchar(lil->getHeadChar()) && !LISSPACE(lil->getHeadChar()) && !lil->getError().inError());
         _skip_spaces(lil);
 
         lil_list_append(words, w);
