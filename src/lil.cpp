@@ -543,7 +543,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
 // Convert a variable to a list.
 Lil_list_Ptr lil_subst_to_list(LilInterp_Ptr lil, Lil_value_Ptr code) {
     assert(lil!=nullptr); assert(code!=nullptr);
-    lcstrp save_code = lil->getCode();
+    auto save_code = lil->getCodeObj();
     size_t     save_clen  = lil->getCodeLen();
     size_t     save_head  = lil->getHead();
     int        save_igeol = lil->getIgnoreEol();
@@ -551,7 +551,7 @@ Lil_list_Ptr lil_subst_to_list(LilInterp_Ptr lil, Lil_value_Ptr code) {
     lil->setIgnoreEol() = true;
     Lil_list_Ptr words = _substitute(lil);
     if (!words) { words = lil_alloc_list(lil); }
-    lil->setCode(save_code, save_clen, save_head);
+    lil->setCode(save_code.c_str(), save_clen, save_head);
     lil->setIgnoreEol() = save_igeol;
     return words;
 }
