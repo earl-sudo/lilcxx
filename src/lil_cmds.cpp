@@ -176,8 +176,8 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
         CMD_SUCCESS_RET(lil->getErrMsg().length() ? new Lil_value(lil, lil->getErrMsg()) : nullptr);
     }
     if (!LSTRCMP(type, L_STR("dollar-prefix"))) { // #subcmd
-        if (argc == 1) { CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getDollarprefix())); }
-        Lil_value_Ptr rr = lil_alloc_string(lil, lil->getDollarprefix());
+        if (argc == 1) { CMD_SUCCESS_RET(new Lil_value(lil, lil->getDollarprefix())); }
+        Lil_value_Ptr rr = new Lil_value(lil, lil->getDollarprefix());
         lil->setDollarprefix(lil_to_string(argv[1]));
         CMD_SUCCESS_RET(rr);
     }

@@ -440,7 +440,7 @@ ND static Lil_value_Ptr _get_dollarpart(LilInterp_Ptr lil) { // #private
     assert(lil!=nullptr);
     lil->incrHead(1);
     Lil_value_SPtr name(_next_word(lil)); // Delete on exit.
-    Lil_value_SPtr tmp(_alloc_value(lil, lil->getDollarprefix())); // Delete on exit
+    Lil_value_SPtr tmp(new Lil_value(lil, lil->getDollarprefix())); // Delete on exit
     lil_append_val(tmp.v, name.v);
     Lil_value_Ptr val = lil_parse_value(lil, tmp.v, 0);
     return val;

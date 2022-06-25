@@ -689,7 +689,7 @@ public:
     // Change number of "catchers".
     void incr_in_catcher(bool val) { in_catcher_ += val; }
 
-    ND lstrp  getDollarprefix() const { return (lstrp )dollarprefix_.c_str(); }
+    ND const lstring & getDollarprefix() const { return dollarprefix_; }
     void setDollarprefix(lcstrp  v) { dollarprefix_ = v; }
 
     // Get "empty" value_.
