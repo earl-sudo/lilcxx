@@ -50,7 +50,7 @@ NS_BEGIN(Lil)
         sysInfo_ = Lil_getSysInfo();
         LIL_CTOR(sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );
-        this->setEmptyVal(_alloc_empty_value(this) );
+        this->setEmptyVal(new Lil_value(this) );
         this->dollarprefix_ = L_VSTR(0x59e0,"set ");
         register_stdcmds();
     }
@@ -111,7 +111,7 @@ NS_BEGIN(Lil)
         return true;
     }
 
-    inline void setSysInfo(LilInterp_Ptr lil, SysInfo*& sysInfo) {
+    void setSysInfo(LilInterp_Ptr lil, SysInfo*& sysInfo) {
         sysInfo = lil->sysInfo_;
     }
 // ===============================
@@ -209,7 +209,7 @@ ND static bool _needs_escape(lstring_view str) { // #private
 // Convert list to string representation.
 Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_escape) {
     assert(lil!=nullptr); assert(list!=nullptr); // #topic listStrLength
-    Lil_value_Ptr val = _alloc_empty_value(lil);
+    Lil_value_Ptr val = new Lil_value(lil);
 
     int i = 0;
     for (auto it = list->cbegin(); it != list->cend(); ++it) {
@@ -413,7 +413,7 @@ ND static Lil_value_Ptr _get_bracketpart(LilInterp_Ptr lil) { // #private
     size_t        cnt      = 1;
     bool          save_eol = lil->getIgnoreEol();
     Lil_value_Ptr val;
-    Lil_value_SPtr cmd(_alloc_empty_value(lil)); // Delete on exit
+    Lil_value_SPtr cmd(new Lil_value(lil)); // Delete on exit
 
     lil->setIgnoreEol() = false;
     lil->incrHead(1);
@@ -457,7 +457,7 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
     } else if (lil->getHeadChar() == LC('{')) { // Start of a list.
         size_t cnt = 1;
         lil->incrHead(1);
-        val = _alloc_empty_value(lil);
+        val = new Lil_value(lil);
         while (lil->getHead() < lil->getClen()) {
             if (lil->getHeadChar() == LC('{')) {
                 lil->incrHead(1);
@@ -475,7 +475,7 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
         val = _get_bracketpart(lil);
     } else if (lil->getHeadChar() == LC('"') || lil->getHeadChar() == LC('\'')) {
         lchar sc = lil->getHeadCharAndAdvance();
-        val = _alloc_empty_value(lil);
+        val = new Lil_value(lil);
         while (lil->getHead() < lil->getClen()) {
             if (lil->getHeadChar() == LC('[') || lil->getHeadChar() == LC('$')) { // Deref a value.
                 Lil_value_SPtr tmp(lil->getHeadChar() == LC('$') ? _get_dollarpart(lil) : _get_bracketpart(lil)); // Delete on exit
@@ -511,7 +511,7 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
         }
         val = _alloc_value_len(lil, lil->getCode() + start, lil->getHead() - start);
     }
-    return val ? val : _alloc_empty_value(lil);
+    return val ? val : new Lil_value(lil);
 }
 
 // Called from lil_parse(), lil_subst_to_list()
@@ -521,7 +521,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
 
         _skip_spaces(lil);
     while (lil->getHead() < lil->getClen() && !_ateol(lil) && !lil->getError().inError()) {
-        Lil_value_Ptr w = _alloc_empty_value(lil);
+        Lil_value_Ptr w = new Lil_value(lil);
         do {
             size_t        head = lil->getHead();
             Lil_value_SPtr wp(_next_word(lil)); // Delete on exit.
@@ -707,12 +707,12 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
         lil->getEnv()->setBreakrun()   = false;
     }
     lil->incrParse_depth(-1); // Done with this parse level.
-    return val ? val : _alloc_empty_value(lil); // Return value or nullptr.
+    return val ? val : new Lil_value(lil); // Return value or nullptr.
 }
 
 Lil_value_Ptr lil_parse_value(LilInterp_Ptr lil, Lil_value_Ptr val, int funclevel) {
     assert(lil!=nullptr); assert(val!=nullptr);
-    if (!val || val->getValue().empty() || !val->getValueLen()) { return _alloc_empty_value(lil); }
+    if (!val || val->getValue().empty() || !val->getValueLen()) { return new Lil_value(lil); }
     return lil_parse(lil, val->getValue().c_str(), val->getValueLen(), funclevel);
 }
 

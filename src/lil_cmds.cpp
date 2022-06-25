@@ -295,7 +295,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_quote");
     ARGERR(argc < 1); // #argErr
-    Lil_value_Ptr r = _alloc_empty_value(lil);
+    Lil_value_Ptr r = new Lil_value(lil);
     for (size_t   i = 0; i < argc; i++) {
         if (i) { lil_append_char(r, LC(' ')); }
         lil_append_val(r, argv[i]);
@@ -364,7 +364,7 @@ struct fnc_write_type : CommandAdaptor { // #cmd
 Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_write");
-    Lil_value_SPtr msg(_alloc_empty_value(lil)); // Delete on exit.
+    Lil_value_SPtr msg(new Lil_value(lil)); // Delete on exit.
     for (size_t    i = 0; i < argc; i++) {
         if (i) { lil_append_char(msg.v, LC(' ')); }
         lil_append_val(msg.v, argv[i]);
@@ -399,7 +399,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_eval");
     if (argc == 1) { CMD_SUCCESS_RET(lil_parse_value(lil, argv[0], 0)); }
     if (argc > 1) {
-        Lil_value_Ptr val = _alloc_empty_value(lil), r; // #TODO reivew this doesn't make sense!
+        Lil_value_Ptr val = new Lil_value(lil), r; // #TODO reivew this doesn't make sense!
         for (size_t   i   = 0; i < argc; i++) {
             if (i) { lil_append_char(val, LC(' ')); }
             lil_append_val(val, argv[i]);
@@ -956,7 +956,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_expr");
     if (argc == 1) { CMD_SUCCESS_RET(lil_eval_expr(lil, argv[0])); }
     if (argc > 1) {
-        Lil_value_Ptr val = _alloc_empty_value(lil), r;
+        Lil_value_Ptr val = new Lil_value(lil), r;
         for (size_t   i   = 0; i < argc; i++) {
             if (i) { lil_append_char(val, LC(' ')); }
             lil_append_val(val, argv[i]);
@@ -1327,7 +1327,7 @@ static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, int
     Lil_value_Ptr r    = nullptr;
     if (left) {
         while (str[base] && LSTRCHR(chars, str[base])) { base++; }
-        if (!right) { r = str[base] ? (lil_alloc_string(lil, str + base)):(_alloc_empty_value(lil)); }
+        if (!right) { r = str[base] ? (lil_alloc_string(lil, str + base)):(new Lil_value(lil)); }
 
     }
     if (right) {
