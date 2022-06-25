@@ -633,14 +633,22 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                 if (cmd) { // Got a command.
                     if (cmd->getProc()) { // Got a "binary" command.
                         size_t shead = lil->getHead();
+                        try {
 #ifdef LIL_LIST_IS_ARRAY
-                        val          = cmd->getProc()(lil, words->getCount() - 1, words->getArgs());
+                            val = cmd->getProc()(lil, words->getCount() - 1, words->getArgs());
 #else
-                        // Call our command function pointer.
-                        std::vector<Lil_value_Ptr> listRep;
-                        words->convertListToArrayForArgs(listRep);
-                        val          = cmd->getProc()(lil, words->getCount() - 1, &listRep[0]);
+                            // Call our command function pointer.
+                            std::vector<Lil_value_Ptr> listRep;
+                            words->convertListToArrayForArgs(listRep);
+                            val          = cmd->getProc()(lil, words->getCount() - 1, &listRep[0]);
 #endif
+                        } catch (std::exception& ex) {
+                            // Command threw an exception
+                            printf("ERROR: Command threw exception: cmd %s type: %s msg %s\n",
+                                   lil_to_string(words->getValue(0)), typeid(ex).name(), ex.what());
+                            // TODO: make this conditional so C++ cmds can use this to signal errors.
+                            throw; // Rethrow the exception.
+                        }
 
                         if (lil->getError().val() == ERROR_FIXHEAD) {
                             lil->setError(LIL_ERROR(ERROR_DEFAULT), shead);
