@@ -47,7 +47,8 @@ NS_BEGIN(Lil)
 //        sysInfo_.outputCoverageOnExit_ = true; sysInfo_.doCoverage_ = true;
 //        sysInfo_.doTiming_ = true;             sysInfo_.doTimeOnExit_ = true;
 //        sysInfo_.logObjectCount = true;        sysInfo_.doObjectCountOnExit_ = true;
-        LIL_CTOR(&sysInfo_, "LilInterp");
+        sysInfo_ = Lil_getSysInfo();
+        LIL_CTOR(sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );
         this->setEmptyVal(_alloc_empty_value(this) );
         this->dollarprefix_ = L_VSTR(0x59e0,"set ");
@@ -102,13 +103,13 @@ NS_BEGIN(Lil)
     inline bool LilInterp::registerFunc(lcstrp  name, lil_func_proc_t proc) {
         Lil_func_Ptr cmdD = add_func(name);
         if (!cmdD) { return false; }
-        if (sysInfo_.logInterpInfo_) sysInfo_.numCommands_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numCommands_++;
         cmdD->setProc(proc);
         return true;
     }
 
     inline void setSysInfo(LilInterp_Ptr lil, SysInfo*& sysInfo) {
-        sysInfo = &lil->sysInfo_;
+        sysInfo = lil->sysInfo_;
     }
 // ===============================
 
@@ -870,6 +871,11 @@ void lil_write(LilInterp_Ptr lil, lcstrp msg) {
         auto proc = CAST(lil_write_callback_proc_t) lil->getCallback(LIL_CALLBACK_WRITE);
         proc(lil, msg);
     } else { LPRINTF("%s", msg); }
+}
+
+SysInfo* Lil_getSysInfo() {
+    thread_local SysInfo sysInfo; // NOTE: thread_local works like a static declaration.
+    return &sysInfo;
 }
 
 #undef ND

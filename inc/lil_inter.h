@@ -229,6 +229,11 @@ struct SysInfo { // #class
     }
 };
 
+// The idea is to have at most 1 SysInfo per thread, and use Lil_getSysInfo() to access these specialized
+// parameters.  On the other side of the coin that means all stats are kept per thread and some other
+// way to combine threads stats will be needed if you want to do that.
+SysInfo* Lil_getSysInfo();
+
 #ifdef NO_OBJCOUNT
 #  define LIL_CTOR(SYSINFO, NAME)
 #  define LIL_DTOR(SYSINFO, NAME)
@@ -519,7 +524,7 @@ struct LilInterp { // #class
     static const int MAX_CATCHER_DEPTH = 16384;
     static const int NUM_CALLBACKS = 9;
 
-    SysInfo         sysInfo_;
+    SysInfo*        sysInfo_ = nullptr;
 private:
     lstring         err_msg_; // Error message.
 
@@ -573,7 +578,7 @@ private:
 public:
     LilInterp();
     ~LilInterp() { // #dtor
-        LIL_DTOR((&sysInfo_), "LilInterp");
+        LIL_DTOR((sysInfo_), "LilInterp");
         lil_free_value(this->getEmptyVal());
         while (this->getEnv()) {
             Lil_callframe_Ptr next = this->getEnv()->getParent();
@@ -706,7 +711,7 @@ public:
     // Change parse depth.
     void incrParse_depth(int n) {
         parse_depth_ += n;
-        if (sysInfo_.logInterpInfo_ && parse_depth_ > sysInfo_.maxParseDepth_) sysInfo_.maxParseDepth_ = parse_depth_;
+        if (sysInfo_->logInterpInfo_ && parse_depth_ > sysInfo_->maxParseDepth_) sysInfo_->maxParseDepth_ = parse_depth_;
     }
 
     // Get position in code_ were error occurred.
@@ -728,20 +733,20 @@ public:
     }
     void setError(lcstrp  msg) {
         if (this->getError().inError()) { return; }
-        if (sysInfo_.logInterpInfo_) sysInfo_.numErrors_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numErrors_++;
         this->SETERROR(LIL_ERROR(ERROR_FIXHEAD));
         this->setErr_head() = 0;
         this->err_msg_ = (msg ? msg : L_STR(""));
     }
     void setErrorAt(size_t pos, lcstrp  msg) {
         if (this->getError().inError()) { return; }
-        if (sysInfo_.logInterpInfo_) sysInfo_.numErrors_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numErrors_++;
         this->SETERROR(LIL_ERROR(ERROR_DEFAULT));
         this->setErr_head() = pos;
         this->err_msg_ = (msg ? msg : L_STR(""));
     }
     void setError(ErrorCode codeD, size_t head) {
-        if (sysInfo_.logInterpInfo_) sysInfo_.numErrors_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numErrors_++;
         this->SETERROR(codeD);
         this->setErr_head() = head;
     }
