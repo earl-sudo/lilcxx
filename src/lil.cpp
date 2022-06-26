@@ -223,9 +223,9 @@ Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_e
             lil_append_char(val, LC('{')); // Embrace with "{...}".
             for (size_t j = 0; j < valLen; j++) {
                 if (strval[j] == LC('{')) {
-                    lil_append_string(val, R"(}"\o"{)");
+                    lil_append_string(val, L_STR(R"(}"\o"{)"));
                 } else if (strval[j] == LC('}')) {
-                    lil_append_string(val, R"(}"\c"{)");
+                    lil_append_string(val, L_STR(R"(}"\c"{)"));
                 } else { lil_append_char(val, strval[j]); }
             }
             lil_append_char(val, LC('}')); // Embrace with "{...}".
