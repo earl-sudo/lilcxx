@@ -291,6 +291,7 @@ public:
     }
     ND size_t getValueLen() const { return value_.length(); }
     ND const lstring& getValue() const { return value_; }
+    ND lstring& getRValue() { return value_; }
     ND lchar  getChar(size_t i) const { return value_.at(i); }
     void append(lchar ch) { value_.append(1, ch); }
     void append(lcstrp  s, size_t len) { assert(s!=nullptr); value_.append(s, len); }

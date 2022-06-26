@@ -250,20 +250,20 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     LIL_BEENHERE_CMD(*lil->sysInfo_, ("fnc_rename"));
     Lil_value_Ptr r;
     ARGERR(argc < 2); // #argErr
-    lcstrp oldname = lil_to_string(argv[0]);
-    lcstrp newname = lil_to_string(argv[1]);
-    Lil_func_Ptr func     = _find_cmd(lil, oldname);
+    auto& oldnameObj = argv[0]->getValue();
+    auto& newnameObj = argv[1]->getValue();
+    Lil_func_Ptr func     = _find_cmd(lil, oldnameObj.c_str());
     if (!func) {
-        std::vector<lchar> msg(24 + LSTRLEN(oldname)); // #magic
-        LSPRINTF(&msg[0], L_VSTR(0x38eb, "unknown function '%s'"), oldname);
+        std::vector<lchar> msg(24 + oldnameObj.length()); // #magic
+        LSPRINTF(&msg[0], L_VSTR(0x38eb, "unknown function '%s'"), oldnameObj.c_str());
         lil_set_error_at(lil, lil->getHead(), &msg[0]); // #INTERP_ERR
         CMD_ERROR_RET(nullptr);
     }
     r = new Lil_value(lil, func->getName());
-    if (newname[0]) {
-        lil->hashmap_removeCmd(oldname);
-        lil->hashmap_addCmd(newname, func);
-        func->name_ = (newname);
+    if (newnameObj[0]) {
+        lil->hashmap_removeCmd(oldnameObj.c_str());
+        lil->hashmap_addCmd(newnameObj.c_str(), func);
+        func->name_ = newnameObj;
     } else {
         _del_func(lil, func);
     }
@@ -319,7 +319,8 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     Lil_var_Ptr var    = nullptr;
     LIL_VAR_TYPE       access = LIL_SETVAR_LOCAL;
     ARGERR(!argc); // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("global"))) {
+    auto& argv0 = argv[0]->getValue();
+    if (argv0 == L_STR("global")) {
         i      = 1;
         access = LIL_SETVAR_GLOBAL;
     }
@@ -597,7 +598,8 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_jaileval");
     bool base = false;
     ARGERR(!argc); // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("clean"))) { // #option
+    auto& argv0 = argv[0]->getValue();
+    if (argv0 == L_STR("clean")) { // #option
         base = true;
         ARGERR(argc == 1); // #argErr
     }
@@ -667,7 +669,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     ARGERR(argc < 2); // #argErr
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
     for (size_t   index = 0; index < list.v->getCount(); index++) {
-        if (!LSTRCMP(lil_to_string(list.v->getValue(_NT(int,index))), lil_to_string(argv[1]))) {
+        if (list.v->getValue(_NT(int,index))->getValue() == argv[1]->getValue()) {
             r = lil_alloc_integer(lil, _NT(lilint_t,index));
             break;
         }
@@ -690,19 +692,19 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     size_t base   = 1;
     LIL_VAR_TYPE    access = LIL_SETVAR_LOCAL;
     ARGERR(argc < 2); // #argErr
-    lcstrp varname = lil_to_string(argv[0]);
-    if (!LSTRCMP(varname, L_STR("global"))) { // #option
+    auto varnameObj = argv[0]->getValue();
+    if (varnameObj == L_STR("global")) { // #option
         ARGERR(argc < 3); // #argErr
-        varname = lil_to_string(argv[1]);
+        varnameObj = argv[1]->getValue();
         base    = 2;
         access  = LIL_SETVAR_GLOBAL;
     }
-    Lil_list_SPtr list(lil_subst_to_list(lil, lil_get_var(lil, varname)));
+    Lil_list_SPtr list(lil_subst_to_list(lil, lil_get_var(lil, varnameObj.c_str())));
     for (size_t   i = base; i < argc; i++) {
         lil_list_append(list.v, lil_clone_value(argv[i]));
     }
     Lil_value_Ptr r = lil_list_to_value(lil, list.v, true);
-    lil_set_var(lil, varname, r, access);
+    lil_set_var(lil, varnameObj.c_str(), r, access);
     CMD_SUCCESS_RET(r);
 }
 } fnc_append;
@@ -1097,7 +1099,8 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     Lil_value_Ptr r    = nullptr;
     int           base = 0, bnot_ = 0, v;
     ARGERR(argc < 1); // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("bnot_"))) { base = bnot_ = 1; } // #option
+    auto& argv0 = argv[0]->getValue();
+    if (argv0 == L_STR("bnot_")) { base = bnot_ = 1; } // #option
     ARGERR(argc < CAST(size_t) base + 2); // #argErr
     Lil_value_SPtr val(lil_eval_expr(lil, argv[base])); // Delete on exit.
     if (!val.v || lil->getError().inError()) { CMD_ERROR_RET(nullptr); } // #argErr
@@ -1127,7 +1130,8 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     Lil_value_Ptr r    = nullptr;
     int           base = 0, bnot_ = 0, v;
     ARGERR(argc < 1); // #argErr
-    if (!LSTRCMP(lil_to_string(argv[0]), L_STR("bnot_"))) { base = bnot_ = 1; } // #option
+    auto& argv0 = argv[0]->getValue();
+    if (argv0 == L_STR("bnot_")) { base = bnot_ = 1; } // #option
     ARGERR(argc < CAST(size_t) base + 2); // #argErr
     while (!lil->getError().inError() && !lil->getEnv()->getBreakrun()) {
         Lil_value_SPtr val(lil_eval_expr(lil, argv[base])); // Delete on exit.
@@ -1396,7 +1400,8 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_strcmp");
     ARGERR(argc < 2); // #argErr
-    CMD_SUCCESS_RET(lil_alloc_integer(lil, LSTRCMP(lil_to_string(argv[0]), lil_to_string(argv[1]))));
+    auto& argv0 = argv[0]->getValue(); auto& argv1 = argv[1]->getValue();
+    CMD_SUCCESS_RET(lil_alloc_integer(lil, LSTRCMP(argv0.c_str(),argv1.c_str())));
 }
 } fnc_strcmp;
 
@@ -1409,7 +1414,8 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_streq");
     ARGERR(argc < 2); // #argErr
-    CMD_SUCCESS_RET(lil_alloc_integer(lil, LSTRCMP(lil_to_string(argv[0]), lil_to_string(argv[1])) ? 0 : 1));
+    auto& argv0 = argv[0]->getValue(); auto& argv1 = argv[1]->getValue();
+    CMD_SUCCESS_RET(lil_alloc_integer(lil, (argv0 == argv1) ? 0 : 1));
 }
 } fnc_streq;
 
@@ -1418,6 +1424,18 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
    returns the string <str> with all occurences of <from> replaced with
    <to>)cmt";
 
+static void FindAndReplace(std::string &data, std::string Searching, std::string replaceStr) {
+    // Getting the first occurrence
+    size_t position = data.find(Searching);
+    // Repeating till end is reached
+    while (position != std::string::npos) {
+        // Replace this occurrence of Sub String
+        data.replace(position, Searching.size(), replaceStr);
+        // Get the next occurrence from the current position
+        position = data.find(Searching, position + replaceStr.size());
+    }
+}
+
 struct fnc_repstr_type : CommandAdaptor { // #cmd
 Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
@@ -1425,27 +1443,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
     lcstrp sub;
     ARGERR(argc < 1); // #argErr
     if (argc < 3) { CMD_SUCCESS_RET(lil_clone_value(argv[0])); }
-    lcstrp from = lil_to_string(argv[1]);
-    lcstrp to   = lil_to_string(argv[2]);
-    ARGERR(!from[0]); // #argErr
-    lstrp src    = _strclone(lil_to_string(argv[0]));
-    size_t        srclen  = LSTRLEN(src);
-    size_t        fromlen = LSTRLEN(from);
-    size_t        tolen   = LSTRLEN(to);
-    while ((sub     = LSTRSTR(src, from))) {
-        auto newsrc = new lchar[(srclen - fromlen + tolen + 1)]; // alloc char*
-        size_t idx     = sub - src;
-        if (idx) { memcpy(newsrc, src, idx); }
-        memcpy(newsrc + idx, to, tolen);
-        memcpy(newsrc + idx + tolen, src + idx + fromlen, srclen - idx - fromlen);
-        srclen = srclen - fromlen + tolen;
-        delete (src); //delete char*
-        src = newsrc;
-        src[srclen] = 0;
-    }
-    Lil_value_Ptr r = lil_alloc_string(lil, src);
-    delete [] (src); //delete char*
-    CMD_SUCCESS_RET(r);
+    auto srcObj = argv[0]->getValue();
+    auto& fromObj = argv[1]->getValue();
+    auto& toObj   = argv[2]->getValue();
+
+    FindAndReplace(srcObj, fromObj, toObj);
+
+    CMD_SUCCESS_RET(new Lil_value(lil, srcObj));
 }
 } fnc_repstr;
 

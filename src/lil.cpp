@@ -659,8 +659,8 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                     } else { // Got a "proc" command.
                         lil_push_env(lil); // Add new callframe.
                         lil->getEnv()->setFunc() = cmd; // Set this callframe function.
-                        if (cmd->getArgnames()->getCount() == 1 &&
-                            !LSTRCMP(lil_to_string(cmd->getArgnames()->getValue(0)), L_STR("args"))) {
+                        auto& elem0 = cmd->getArgnames()->getValue(0)->getValue();
+                        if (cmd->getArgnames()->getCount() == 1 && (elem0 == L_STR("args"))) {
                             // Handling of variable number of arguments.
                             Lil_value_SPtr args(lil_list_to_value(lil, words, true)); // Delete on exit.
                             lil_set_var(lil, L_STR("args"), args.v, LIL_SETVAR_LOCAL_NEW);
