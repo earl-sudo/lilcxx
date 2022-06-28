@@ -140,7 +140,7 @@ static void _ee_unaryOperators(Lil_exprVal* ee) { // #private
                     default: setInvalidTypeError(ee); break; // #ERR_RET
                 }
                 break;
-            default: assert(1);
+            default: assert(false);
         }
     } else {
         _ee_paren(ee);
@@ -223,7 +223,7 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
                         }
                         break;
                     default:
-                        assert(1);
+                        assert(false);
                 }
                 break;
             case LC('/'):
@@ -263,7 +263,7 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
                         }
                         break;
                     default:
-                        assert(1);
+                        assert(false);
                 }
                 break;
             case LC('\\'):
@@ -376,7 +376,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                 }
                 break;
             default:
-                assert(1);
+                assert(false);
         }
 
         _ee_skip_spaces(ee);
@@ -448,8 +448,7 @@ static void _ee_shift(Lil_exprVal* ee) { // #private
                     default: setInvalidTypeError(ee); break; // #ERR_RET
                 }
                 break;
-            default:
-                assert(1);
+            default: assert(false);
         }
 
         _ee_skip_spaces(ee);
@@ -570,7 +569,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                     default: setInvalidTypeError(ee);  break; // #ERR_RET
                 }
                 break;
-            default: assert(1);
+            default: assert(false);
         }
 
         _ee_skip_spaces(ee);
@@ -637,7 +636,7 @@ static void _ee_equals(Lil_exprVal* ee) { // #private
                     default: setInvalidTypeError(ee); break; // #ERR_RET
                 } // switch (ee->getType())
                 break;
-            default: assert(1);
+            default: assert(false);
         } // switch (op)
 
         _ee_skip_spaces(ee);

@@ -106,7 +106,7 @@ NS_BEGIN(Lil)
     inline bool LilInterp::registerFunc(lcstrp  name, lil_func_proc_t proc) {
         Lil_func_Ptr cmdD = add_func(name);
         if (!cmdD) { return false; }
-        if (sysInfo_->logInterpInfo_) sysInfo_->numCommands_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numCommandsRegisteredTotal_++;
         cmdD->setProc(proc);
         return true;
     }
@@ -182,7 +182,7 @@ void lil_free_list(Lil_list_Ptr list) {
     delete (list); //delete Lil_list_Ptr
 }
 
-void lil_list_append(Lil_list_Ptr list, Lil_value_Ptr val) { // #topic listLength
+void lil_list_append(Lil_list_Ptr list, Lil_value_Ptr val) {
     assert(list!=nullptr); assert(val!=nullptr);
     list->append(val);
 }
@@ -604,7 +604,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                 if (!cmd) { // Found a command.
                     if (words->getValue(0)->getValueLen()) {
                         if (lil->isCatcherEmpty()) {
-                            if (lil->getIn_catcher() < LilInterp::MAX_CATCHER_DEPTH) {
+                            if (lil->getIn_catcher() < lil->sysInfo_->limit_Parsedepth_) { // #topic
                                 lil->incr_in_catcher(true);
                                 {
                                     lil_push_env(lil);
@@ -721,12 +721,12 @@ void lil_callback(LilInterp_Ptr lil, LIL_CALLBACK_IDS cb, lil_callback_proc_t pr
     lil->setCallback(cb, proc);
 }
 
-void lil_set_error(LilInterp_Ptr lil, lcstrp msg) { // #topic numErrors
+void lil_set_error(LilInterp_Ptr lil, lcstrp msg) {
     assert(lil!=nullptr); assert(msg!=nullptr);
     lil->setError(msg);
 }
 
-void lil_set_error_at(LilInterp_Ptr lil, size_t pos, lcstrp msg) { // #topic numErrors
+void lil_set_error_at(LilInterp_Ptr lil, size_t pos, lcstrp msg) {
     assert(lil!=nullptr); assert(msg!=nullptr);
     lil->setErrorAt(pos, msg);
 }

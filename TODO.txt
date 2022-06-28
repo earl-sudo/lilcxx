@@ -26,6 +26,12 @@
 - Deal with character types. - DONE
 - Fix miss matched Lil::_real_trim() delete() and Lil::_strclone() new[]. - DONE
 - Fix miss matched Lil::_strclone() new[] and Lil::LilInterp::setCather() delete. - DONE
+- Add command callback wrappers. - DONE
+- Review #magic - DONE
+- ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_. - used shared pointer - DONE
+- Push to github - DONE
+- fix asserts - DONE
+- destructors noexcept
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -35,7 +41,6 @@
 - Add documentation.
 - Put git version info into binary.
 
-- ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_.
 - ERROR: Copies may exist of LilInterp may exist so other references are possible.
 - Review algorithms for substitutions.
 - Fix "invalid read of size 1", ~Lil_value().
@@ -48,7 +53,6 @@
 - cache Lil_list and Lil_value.
 - Info fields
 - Add system to associate binary/alternate representations to string representations and deal with changes.
-- Push to github
 - Publish
 - Add dict type
 - Make more like tcl ("func" => "proc" and like)
@@ -59,9 +63,22 @@
 - thread safe
 - string class
 - Move private code to private section.
-- Add command callback wrappers.
-- Review #magic
-- get rid of most ".c_str()"
+- get rid of most ".c_str()" - 70%
+- add in conditional binary value caching
+- add to add runtime binary types for caching.
+- [] => span<> or array<>
+- {} for constructors
+- make expr code "re-usable"
+- Add module support
+- Add holding area for functions.
+- Add resource handles
+- From Jim borrow
+    - ref/getref/setref
+    - info stacktrce
+    - static varfs
+    - command line edition
+    - expression shorthand
+    - defer
 
 - Better expr (from tcl7.6)
 - Better int/double parsing (from tcl8)

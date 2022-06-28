@@ -23,6 +23,7 @@
  * Kostas Michalopoulos <badsector@runtimeterror.com>
  */
 
+#include <exception>
 #include <vector>
 #include <list>
 #include <unordered_map>
@@ -135,7 +136,7 @@ struct SysInfo { // #class
     struct TimerInfo {
         std::clock_t    totalTime_ = 0;
         std::clock_t    maxTime_ = 0;
-        size_t            numCalls_ = 0;
+        size_t          numCalls_ = 0;
         friend std::ostream& operator<<(std::ostream& os, const TimerInfo& dt) {
             os << " (timerInfo " << dt.totalTime_ << " " << dt.maxTime_ << " " << dt.numCalls_ << ") ";
             return os;
@@ -159,7 +160,7 @@ struct SysInfo { // #class
             startTime_ = std::clock();
             timeInfo_ = &it->second;
         }
-        ~Timer() {
+        ~Timer() noexcept {
             if (!si_->doTiming_) return;
             auto endTime = std::clock();
             timeInfo_->numCalls_++;
@@ -188,17 +189,19 @@ struct SysInfo { // #class
     bool        logInterpInfo_ = false;
     bool        outputInterpInfoOnExit_ = false;
 
-    clock_t    startTime_ = 0;
+    clock_t     startTime_ = 0;
 
-    int         numCalls_ = 0;
-    int         numCommands_ = 0;
-    int         numErrors_ = 0;
-    int         maxParseDepth_ = 0;
+    int numCommandsRegisteredTotal_ = 0;
+    int numErrorsSetInterpreter_ = 0;
+    int maxParseDepthAcheved_ = 0;
+    int maxListLengthAcheved_ = 0;
+
+    int limit_Parsedepth_           = 0xFFFF;
 
     SysInfo() { // #ctor
         startTime_ = std::clock();
     }
-    ~SysInfo() { // #dtor
+    ~SysInfo() noexcept { // #dtor
         auto print_key_value = [](const auto& key, const auto& value) {
             std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
         };
@@ -220,10 +223,9 @@ struct SysInfo { // #class
         }
         if (logInterpInfo_ && outputInterpInfoOnExit_) {
             #define SYSINFO_ENTRY(X) std::cerr << #X << " = " << (X) << "\n";
-            SYSINFO_ENTRY(numCalls_);
-            SYSINFO_ENTRY(numCommands_);
-            SYSINFO_ENTRY(numErrors_);
-            SYSINFO_ENTRY(maxParseDepth_);
+            SYSINFO_ENTRY(numCommandsRegisteredTotal_);
+            SYSINFO_ENTRY(numErrorsSetInterpreter_);
+            SYSINFO_ENTRY(maxParseDepthAcheved_);
             #undef SYSINFO_ENTRY
         }
     }
@@ -286,7 +288,7 @@ public:
         LIL_CTOR(sysInfo_, "Lil_value");
         this->value_ = src.value_; // alloc char*
     }
-    ~Lil_value() { // #dtor
+    ~Lil_value() noexcept { // #dtor
         LIL_DTOR(sysInfo_, "Lil_value");
     }
     ND size_t getValueLen() const { return value_.length(); }
@@ -303,13 +305,13 @@ public:
 struct Lil_value_SPtr { // #class
     Lil_value_Ptr v = nullptr;
     explicit Lil_value_SPtr(Lil_value_Ptr vD) : v(vD) { assert(vD!=nullptr); } // #ctor
-    ~Lil_value_SPtr() { if (v) lil_free_value(v); } // #dtor
+    ~Lil_value_SPtr() noexcept { if (v) lil_free_value(v); } // #dtor
 };
 
 struct Lil_list_SPtr { // #class
     Lil_list_Ptr v = nullptr;
     explicit Lil_list_SPtr(Lil_list_Ptr vD) : v(vD) { assert(vD!=nullptr); } // #ctor
-    ~Lil_list_SPtr() { lil_free_list(v); } // #dtor
+    ~Lil_list_SPtr() noexcept { lil_free_list(v); } // #dtor
 };
 
 struct Lil_var { // #class
@@ -328,7 +330,7 @@ public:
         LIL_CTOR(sysInfo_, "Lil_var");
         setWatchCode(wD);
     }
-    ~Lil_var() { // #dtor
+    ~Lil_var() noexcept { // #dtor
         LIL_DTOR(sysInfo_, "Lil_var");
         if (this->getValue()) lil_free_value(this->getValue());
     }
@@ -381,7 +383,7 @@ public:
         LIL_CTOR(sysInfo_, "Lil_callframe");
         this->parent_ = parent;
     }
-    ~Lil_callframe() { // #dtor
+    ~Lil_callframe() noexcept { // #dtor
         LIL_DTOR(sysInfo_, "Lil_callframe");
         lil_free_value(this->getReturnVal());
 
@@ -447,13 +449,18 @@ public:
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_list");
     }
-    ~Lil_list() { // #dtor
+    ~Lil_list() noexcept { // #dtor
         LIL_DTOR(sysInfo_, "Lil_list");
         for (auto v : listRep_) {
             lil_free_value(v);
         }
     }
-    void append(Lil_value_Ptr val) { assert(val!=nullptr); listRep_.push_back(val); }
+    void append(Lil_value_Ptr val) {
+        assert(val!=nullptr);
+        listRep_.push_back(val);
+        if (listRep_.size() > sysInfo_->maxListLengthAcheved_)
+            sysInfo_->maxListLengthAcheved_ = listRep_.size(); // #topic
+    }
     ND Lil_value_Ptr getValue(int index) const { return listRep_[index]; }
     ND size_t getCount() const { return listRep_.size(); }
     // Cmds are list we skip first word which is the command name.
@@ -488,7 +495,7 @@ public:
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_func");
     }
-    ~Lil_func() { // #dtor
+    ~Lil_func() noexcept { // #dtor
         LIL_DTOR(sysInfo_, "Lil_func");
         if (this->getArgnames()) { lil_free_list(this->getArgnames()); }
         if (this->getCode())     { lil_free_value(this->getCode()); }
@@ -522,7 +529,6 @@ public:
 };
 
 struct LilInterp { // #class
-    static const int MAX_CATCHER_DEPTH = 16384;
     static const int NUM_CALLBACKS = 9;
 
     SysInfo*        sysInfo_ = nullptr;
@@ -578,7 +584,7 @@ private:
     void register_stdcmds();
 public:
     LilInterp();
-    ~LilInterp() { // #dtor
+    ~LilInterp() noexcept { // #dtor
         LIL_DTOR((sysInfo_), "LilInterp");
         lil_free_value(this->getEmptyVal());
         while (this->getEnv()) {
@@ -712,7 +718,13 @@ public:
     // Change parse depth.
     void incrParse_depth(int n) {
         parse_depth_ += n;
-        if (sysInfo_->logInterpInfo_ && parse_depth_ > sysInfo_->maxParseDepth_) sysInfo_->maxParseDepth_ = parse_depth_;
+        if (parse_depth_ > sysInfo_->maxParseDepthAcheved_) { // #topic
+            sysInfo_->maxParseDepthAcheved_ = parse_depth_;
+            if (sysInfo_->maxParseDepthAcheved_ >= sysInfo_->limit_Parsedepth_) {
+                DBGPRINTF("EXCEPTION: Exceeded max parse depth\n"); // #TODO string
+                throw std::runtime_error{"Exceeded max parse depth"}; // #TODO string
+            }
+        }
     }
 
     // Get position in code_ were error occurred.
@@ -734,20 +746,20 @@ public:
     }
     void setError(lcstrp  msg) {
         if (this->getError().inError()) { return; }
-        if (sysInfo_->logInterpInfo_) sysInfo_->numErrors_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numErrorsSetInterpreter_++; // #topic
         this->SETERROR(LIL_ERROR(ERROR_FIXHEAD));
         this->setErr_head() = 0;
         this->err_msg_ = (msg ? msg : L_STR(""));
     }
     void setErrorAt(size_t pos, lcstrp  msg) {
         if (this->getError().inError()) { return; }
-        if (sysInfo_->logInterpInfo_) sysInfo_->numErrors_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numErrorsSetInterpreter_++; // #topic
         this->SETERROR(LIL_ERROR(ERROR_DEFAULT));
         this->setErr_head() = pos;
         this->err_msg_ = (msg ? msg : L_STR(""));
     }
     void setError(ErrorCode codeD, size_t head) {
-        if (sysInfo_->logInterpInfo_) sysInfo_->numErrors_++;
+        if (sysInfo_->logInterpInfo_) sysInfo_->numErrorsSetInterpreter_++; // #topic
         this->SETERROR(codeD);
         this->setErr_head() = head;
     }
@@ -791,7 +803,7 @@ public:
         LIL_CTOR(sysInfo_, "Lil_exprVal");
         if (sysInfo_ && sysInfo_->logObjectCount) sysInfo_->ctor("Lil_exprVal");
     }
-    ~Lil_exprVal() { // #dtor
+    ~Lil_exprVal() noexcept { // #dtor
         LIL_DTOR((sysInfo_), "Lil_exprVal");
         if (sysInfo_ && sysInfo_->logObjectCount) sysInfo_->dtor("Lil_exprVal");
         lil_free_value(inCode_);
@@ -824,9 +836,6 @@ Lil_func_Ptr _add_func(LilInterp_Ptr lil, lcstrp name);
 void         _del_func(LilInterp_Ptr lil, Lil_func_Ptr cmd);
 Lil_var_Ptr  _lil_find_local_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
 Lil_var_Ptr  _lil_find_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
-lstrp        _strclone(lstring_view s);
-Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
-Lil_value_Ptr _alloc_value(LilInterp_Ptr lil, lcstrp  str);
 
 struct Module {
     lstring     name_;
