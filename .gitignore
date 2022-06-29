@@ -14,6 +14,8 @@ build/
 *.mk
 *.lb1
 *.exe
+/lil1
+/fileio.txt
 
 *.tds
 /cmake-build-debug/
