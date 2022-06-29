@@ -90,16 +90,29 @@ public:
     bool inError() const { return v != 0; }
 };
 
+struct LilException : std::runtime_error {
+    LilException(const char* sv) : std::runtime_error{sv} { }
+};
+
 // We might want to add file/line what ever so use a macro during creation.
 #define LIL_ERROR(X) ErrorCode((X))
 
-/* note: static lil_xxx functions might become public later */
-
-
-struct SysInfo { // #class
+struct ObjCounter {
     // Number of objects created. =========================================
-    bool         logObjectCount = false; // Do we actually log counts?
-    bool         doObjectCountOnExit_ = false;
+    bool logObjectCount_      = false; // Do we actually log counts?
+    bool doObjectCountOnExit_ = false;
+
+    ~ObjCounter() noexcept {
+        auto print_key_value = [](const auto& key, const auto& value) {
+            std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
+        };
+
+        if (logObjectCount_ && doObjectCountOnExit_) {
+            for( const auto& n : objectCounts_ ) {
+                print_key_value(n.first, n.second);
+            }
+        }
+    }
     struct ObjCount {
         size_t  numCtor_ = 0;
         size_t  numDtor_ = 0;
@@ -128,11 +141,24 @@ struct SysInfo { // #class
         }
         it->second.numDtor_++;
     }
+};
 
+struct FuncTimer {
     // Timing of things ===================================================
     bool doTiming_     = false;
     bool doTimeOnExit_ = false;
 
+    ~FuncTimer() noexcept {
+        auto print_key_value = [](const auto& key, const auto& value) {
+            std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
+        };
+
+        if (doTiming_ && doTimeOnExit_) {
+            for( const auto& n : timerInfo_ ) {
+                print_key_value(n.first, n.second);
+            }
+        }
+    }
     struct TimerInfo {
         std::clock_t    totalTime_ = 0;
         std::clock_t    maxTime_ = 0;
@@ -146,11 +172,11 @@ struct SysInfo { // #class
 
     struct Timer {
         lcstrp          name_;
-        SysInfo*        si_;
+        FuncTimer*        si_;
         std::clock_t    startTime_;
         TimerInfo*      timeInfo_;
 
-        Timer(lcstrp  name, SysInfo* si) : name_(name), si_(si) {
+        Timer(lcstrp  name, FuncTimer* si) : name_(name), si_(si) {
             if (!si_->doTiming_) return;
             auto it = si_->timerInfo_.find(name);
             if (it == si_->timerInfo_.end()) {
@@ -169,21 +195,41 @@ struct SysInfo { // #class
             if (timeInfo_->maxTime_ < timeLapse) timeInfo_->maxTime_ = timeLapse;
         }
     };
+};
+
+struct Coverage {
     // Coverage specific ==================================================
     bool        doCoverage_ = false;
     bool        outputCoverageOnExit_ = false;
 
     std::unordered_map<lstring, int>  coverageMap_;
 
-    void beenHere(lcstrp  name) {
-            if (!doCoverage_) return;
-            auto it = coverageMap_.find(name);
-            if (it == coverageMap_.end()) {
-                coverageMap_[name] = 0;
-                it = coverageMap_.find(name);
+    ~Coverage() {
+        auto print_key_value = [](const auto& key, const auto& value) {
+            std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
+        };
+
+        if (doCoverage_ && outputCoverageOnExit_) {
+            for( const auto& n : coverageMap_ ) {
+                print_key_value(n.first, n.second);
             }
-            it->second++;
+        }
     }
+    void beenHere(lcstrp  name) {
+        if (!doCoverage_) return;
+        auto it = coverageMap_.find(name);
+        if (it == coverageMap_.end()) {
+            coverageMap_[name] = 0;
+            it = coverageMap_.find(name);
+        }
+        it->second++;
+    }
+};
+
+struct SysInfo { // #class
+    ObjCounter   objCounter_;
+    FuncTimer   funcTimer_;
+    Coverage    converage_;
 
     // Interpreter specific ================================================
     bool        logInterpInfo_ = false;
@@ -195,6 +241,12 @@ struct SysInfo { // #class
     int numErrorsSetInterpreter_ = 0;
     int maxParseDepthAcheved_ = 0;
     int maxListLengthAcheved_ = 0;
+    int numCommandsRun_ = 0;
+    int numExceptionsInCommands_ = 0;
+    int numProcsRuns_ = 0;
+    int numUnfoundCommands_ = 0;
+    int numExpressions_ = 0;
+    int numEvalCalls_ = 0;
 
     int limit_Parsedepth_           = 0xFFFF;
 
@@ -202,30 +254,18 @@ struct SysInfo { // #class
         startTime_ = std::clock();
     }
     ~SysInfo() noexcept { // #dtor
-        auto print_key_value = [](const auto& key, const auto& value) {
-            std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
-        };
-
-        if (logObjectCount && doObjectCountOnExit_) {
-            for( const auto& n : objectCounts_ ) {
-                print_key_value(n.first, n.second);
-            }
-        }
-        if (doTiming_ && doTimeOnExit_) {
-            for( const auto& n : timerInfo_ ) {
-                print_key_value(n.first, n.second);
-            }
-        }
-        if (doCoverage_ && outputCoverageOnExit_) {
-            for( const auto& n : coverageMap_ ) {
-                print_key_value(n.first, n.second);
-            }
-        }
         if (logInterpInfo_ && outputInterpInfoOnExit_) {
             #define SYSINFO_ENTRY(X) std::cerr << #X << " = " << (X) << "\n";
             SYSINFO_ENTRY(numCommandsRegisteredTotal_);
             SYSINFO_ENTRY(numErrorsSetInterpreter_);
             SYSINFO_ENTRY(maxParseDepthAcheved_);
+            SYSINFO_ENTRY(numCommandsRun_);
+            SYSINFO_ENTRY(numExceptionsInCommands_);
+            //-
+            SYSINFO_ENTRY(numProcsRuns_);
+            SYSINFO_ENTRY(numUnfoundCommands_);
+            SYSINFO_ENTRY(numExpressions_);
+            SYSINFO_ENTRY(numEvalCalls_);
             #undef SYSINFO_ENTRY
         }
     }
@@ -234,23 +274,23 @@ struct SysInfo { // #class
 // The idea is to have at most 1 SysInfo per thread, and use Lil_getSysInfo() to access these specialized
 // parameters.  On the other side of the coin that means all stats are kept per thread and some other
 // way to combine threads stats will be needed if you want to do that.
-SysInfo* Lil_getSysInfo();
+SysInfo* Lil_getSysInfo(bool reset = false);
 
 #ifdef NO_OBJCOUNT
 #  define LIL_CTOR(SYSINFO, NAME)
 #  define LIL_DTOR(SYSINFO, NAME)
 #else
-#  define LIL_CTOR(SYSINFO, NAME) if ((SYSINFO) && (SYSINFO)->logObjectCount) (SYSINFO)->ctor((NAME))
-#  define LIL_DTOR(SYSINFO, NAME) if ((SYSINFO) && (SYSINFO)->logObjectCount) (SYSINFO)->dtor((NAME))
+#  define LIL_CTOR(SYSINFO, NAME) if ((SYSINFO) && (SYSINFO)->objCounter_.logObjectCount_) (SYSINFO)->objCounter_.ctor((NAME))
+#  define LIL_DTOR(SYSINFO, NAME) if ((SYSINFO) && (SYSINFO)->objCounter_.logObjectCount_) (SYSINFO)->objCounter_.dtor((NAME))
 #endif
 #ifdef NO_BEENHERE
     #define LIL_BEENHERE_CMD(SYSINFO, NAME)
     #define LIL_BEENHERE_PROC(SYSINFO, NAME)
     #define LIL_BEENHERE(SYSINFO, NAME)
 #else
-    #define LIL_BEENHERE_CMD(SYSINFO, NAME)    if ((SYSINFO).logInterpInfo_) { (SYSINFO).beenHere((NAME)); }
-    #define LIL_BEENHERE_PROC(SYSINFO, NAME)    if ((SYSINFO).logInterpInfo_) { (SYSINFO).beenHere((NAME)); }
-    #define LIL_BEENHERE(SYSINFO, NAME)    if ((SYSINFO).logInterpInfo_) { (SYSINFO).beenHere((NAME)); }
+    #define LIL_BEENHERE_CMD(SYSINFO, NAME)     { (SYSINFO).converage_.beenHere((NAME)); }
+    #define LIL_BEENHERE_PROC(SYSINFO, NAME)    { (SYSINFO).converage_.beenHere((NAME)); }
+    #define LIL_BEENHERE(SYSINFO, NAME)         { (SYSINFO).converage_.beenHere((NAME)); }
 #endif
 #ifdef NO_TIMER
     #define LII_TIMER_CMD(SYSINFO, NAME)
@@ -722,7 +762,7 @@ public:
             sysInfo_->maxParseDepthAcheved_ = parse_depth_;
             if (sysInfo_->maxParseDepthAcheved_ >= sysInfo_->limit_Parsedepth_) {
                 DBGPRINTF("EXCEPTION: Exceeded max parse depth\n"); // #TODO string
-                throw std::runtime_error{"Exceeded max parse depth"}; // #TODO string
+                throw LilException{"Exceeded max parse depth"}; // #TODO string
             }
         }
     }
@@ -801,11 +841,9 @@ public:
     Lil_exprVal(LilInterp_Ptr lil) { //  #ctor
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_exprVal");
-        if (sysInfo_ && sysInfo_->logObjectCount) sysInfo_->ctor("Lil_exprVal");
     }
     ~Lil_exprVal() noexcept { // #dtor
         LIL_DTOR((sysInfo_), "Lil_exprVal");
-        if (sysInfo_ && sysInfo_->logObjectCount) sysInfo_->dtor("Lil_exprVal");
         lil_free_value(inCode_);
     }
     ND size_t getHead() const { return head_; }

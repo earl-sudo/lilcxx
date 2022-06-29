@@ -46,7 +46,6 @@ NS_BEGIN(Lil)
 //        sysInfo_.logInterpInfo_ = true;        sysInfo_.outputInterpInfoOnExit_ = true;
 //        sysInfo_.outputCoverageOnExit_ = true; sysInfo_.doCoverage_ = true;
 //        sysInfo_.doTiming_ = true;             sysInfo_.doTimeOnExit_ = true;
-//        sysInfo_.logObjectCount = true;        sysInfo_.doObjectCountOnExit_ = true;
         sysInfo_ = Lil_getSysInfo();
         LIL_CTOR(sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );
@@ -344,14 +343,14 @@ Lil_value_Ptr lil_get_var_or(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr defva
 }
 
 // Add new callframe.
-Lil_callframe_Ptr lil_push_env(LilInterp_Ptr lil) { // #topic numCallFrame
+Lil_callframe_Ptr lil_push_env(LilInterp_Ptr lil) {
     assert(lil!=nullptr);
     Lil_callframe_Ptr env = lil_alloc_env(lil, lil->getEnv());
     lil->setEnv(env);
     return env;
 }
 
-void lil_pop_env(LilInterp_Ptr lil) { // #topic numCallFrame
+void lil_pop_env(LilInterp_Ptr lil) {
     assert(lil!=nullptr);
     if (lil->getEnv()->getParent()) {
         Lil_callframe_Ptr next = lil->getEnv()->getParent();
@@ -567,6 +566,7 @@ Lil_value_Ptr lil_subst_to_value(LilInterp_Ptr lil, Lil_value_Ptr code) {
 // Top level parser.
 Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int funclevel) {
     assert(lil!=nullptr); assert(code!=nullptr);  // #topic parsedCalls, codeLen, parsedDepth, foundCmds, notFoundCmds, numProcCalls
+    lil->sysInfo_->numEvalCalls_++;
     auto save_code = lil->getCodeObj();
     size_t        save_clen  = lil->getCodeLen();
     size_t        save_head  = lil->getHead();
@@ -581,7 +581,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
         _skip_spaces(lil);
         lil->incrParse_depth(1); // Start new parse level.
         //LPRINTF("DEBUG> code_ %s level %d\n", (std::string(code_, 20).c_str()), lil->getParse_depth());
-        if (LIL_ENABLE_RECLIMIT) { // Do we limit recursion?
+        if (LIL_ENABLE_RECLIMIT) { // Do we limit recursion? #TODO
             if (lil->getParse_depth() > LIL_ENABLE_RECLIMIT) {
                 lil_set_error(lil, L_VSTR(0xee78, "Too many recursive calls")); // #INTERP_ERR
                 throw lil_parse_exit();
@@ -602,6 +602,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
             if (words->getCount()) {
                 Lil_func_Ptr cmd = _find_cmd(lil, words->getValue(0)->getValue().c_str()); // Try dispatch on first word.
                 if (!cmd) { // Found a command.
+                    lil->sysInfo_->numUnfoundCommands_++;
                     if (words->getValue(0)->getValueLen()) {
                         if (lil->isCatcherEmpty()) {
                             if (lil->getIn_catcher() < lil->sysInfo_->limit_Parsedepth_) { // #topic
@@ -635,6 +636,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                 } // if (!cmdArray_)
                 if (cmd) { // Got a command.
                     if (cmd->getProc()) { // Got a "binary" command.
+                        lil->sysInfo_->numCommandsRun_++;
                         size_t shead = lil->getHead();
                         try {
 #ifdef LIL_LIST_IS_ARRAY
@@ -647,6 +649,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
 #endif
                         } catch (std::exception& ex) {
                             // Command threw an exception
+                            lil->sysInfo_->numExceptionsInCommands_++;
                             printf("ERROR: Command threw exception: cmd %s type: %s msg %s\n",
                                    words->getValue(0)->getValue().c_str(), typeid(ex).name(), ex.what());
                             // TODO: make this conditional so C++ cmds can use this to signal errors.
@@ -657,6 +660,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                             lil->setError(LIL_ERROR(ERROR_DEFAULT), shead);
                         }
                     } else { // Got a "proc" command.
+                        lil->sysInfo_->numProcsRuns_++;
                         lil_push_env(lil); // Add new callframe.
                         lil->getEnv()->setFunc() = cmd; // Set this callframe function.
                         auto& elem0 = cmd->getArgnames()->getValue(0)->getValue();
@@ -738,6 +742,7 @@ int lil_error(LilInterp_Ptr lil, lcstrp *msg, size_t *pos) {
 
 Lil_value_Ptr lil_eval_expr(LilInterp_Ptr lil, Lil_value_Ptr code) { // #topic numExprErrors
     assert(lil!=nullptr); assert(code!=nullptr);
+    lil->sysInfo_->numExpressions_;
     code = lil_subst_to_value(lil, code);
     if (lil->getError().inError()) return nullptr; // #ERR_RET
     Lil_exprVal ee(lil, code);
@@ -872,8 +877,11 @@ void lil_write(LilInterp_Ptr lil, lcstrp msg) {
     } else { LPRINTF("%s", msg); }
 }
 
-SysInfo* Lil_getSysInfo() {
+SysInfo* Lil_getSysInfo(bool reset) {
     thread_local SysInfo sysInfo; // NOTE: thread_local works like a static declaration.
+    if (reset) {
+        sysInfo = SysInfo();
+    }
     return &sysInfo;
 }
 

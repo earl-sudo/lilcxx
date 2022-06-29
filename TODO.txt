@@ -31,7 +31,9 @@
 - ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_. - used shared pointer - DONE
 - Push to github - DONE
 - fix asserts - DONE
-- destructors noexcept
+- destructors noexcept - DONE
+- Add reset to Lil_getSysInfo() - DONE
+- Add own exception type. - DONE
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -41,6 +43,8 @@
 - Add documentation.
 - Put git version info into binary.
 
+- Make SysInfo work mostly off callbacks.
+- justifications
 - ERROR: Copies may exist of LilInterp may exist so other references are possible.
 - Review algorithms for substitutions.
 - Fix "invalid read of size 1", ~Lil_value().
