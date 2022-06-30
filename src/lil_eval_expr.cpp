@@ -39,7 +39,7 @@ ND static inline double getDouble(Lil_exprVal* ee) { return ee->getDouble(); }
    static inline void setInvalidTypeError(Lil_exprVal* ee) { ee->setError() = EERR_INVALID_TYPE; }
 ND static inline bool _ee_validParseState(Lil_exprVal* ee) { return ee->getHead() < ee->getLen() && !ee->getError(); }
 
-ND static bool _ee_invalidpunct(int ch) { // #private
+ND static bool _ee_invalidpunct(INT ch) { // #private
     return LISPUNCT(ch) && ch != LC('!') && ch != LC('~') && ch != LC('(') && ch != LC(')') && ch != LC('-') && ch != LC('+');
 }
 
@@ -467,7 +467,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
             (nextCharIs(ee, LC('>')) && ee->getHeadChar(1) == LC('=')))) {
         double odval = getDouble(ee);
         lilint_t oival = getInt(ee);
-        int op = 4;
+        INT op = 4;
         if (nextCharIs(ee, LC('<')) && !_ee_invalidpunct(ee->getHeadChar(1))) op = 1;
         else if (nextCharIs(ee, LC('>')) && !_ee_invalidpunct(ee->getHeadChar(1))) op = 2;
         else if (nextCharIs(ee, LC('<')) && ee->getHeadChar(1) == LC('=')) op = 3;
@@ -586,7 +586,7 @@ static void _ee_equals(Lil_exprVal* ee) { // #private
             (nextCharIs(ee, LC('!')) && ee->getHeadChar(1) == LC('=')))) {
         double odval = getDouble(ee);
         lilint_t oival = getInt(ee);
-        int op = nextCharIs(ee, LC('=')) ? 1 : 2;
+        INT op = nextCharIs(ee, LC('=')) ? 1 : 2;
         ee->setHead() += 2;
 
         switch (op) {

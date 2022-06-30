@@ -85,7 +85,11 @@ enum LIL_CALLBACK_IDS {
 #define LILCALLBACK
 
 
-typedef int64_t lilint_t;
+typedef int             INT;
+typedef unsigned int    UINT;
+typedef size_t          SIZE_T;
+
+typedef int64_t         lilint_t;
 
 struct Lil_func;
 struct Lil_value;
@@ -105,7 +109,7 @@ typedef struct Lil_list*        Lil_list_Ptr;
 typedef const struct Lil_list*  Lil_list_CPtr;
 typedef struct LilInterp*       LilInterp_Ptr;
 
-using lil_func_proc_t = std::function<Lil_value_Ptr(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr* argv)>;
+using lil_func_proc_t = std::function<Lil_value_Ptr(LilInterp_Ptr lil, SIZE_T argc, Lil_value_Ptr* argv)>;
 using Lil_func_Ptr    = std::shared_ptr<Lil_func>;
 
 typedef LILCALLBACK void    (*lil_exit_callback_proc_t)(LilInterp_Ptr lil, Lil_value_Ptr arg);
@@ -113,9 +117,9 @@ typedef LILCALLBACK void    (*lil_write_callback_proc_t)(LilInterp_Ptr lil, lcst
 typedef LILCALLBACK lstrp   (*lil_read_callback_proc_t)(LilInterp_Ptr lil, lcstrp name);
 typedef LILCALLBACK lstrp   (*lil_source_callback_proc_t)(LilInterp_Ptr lil, lcstrp name);
 typedef LILCALLBACK void    (*lil_store_callback_proc_t)(LilInterp_Ptr lil, lcstrp name, lcstrp data);
-typedef LILCALLBACK void    (*lil_error_callback_proc_t)(LilInterp_Ptr lil, size_t pos, lcstrp msg);
-typedef LILCALLBACK int     (*lil_setvar_callback_proc_t)(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr* value);
-typedef LILCALLBACK int     (*lil_getvar_callback_proc_t)(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr* value);
+typedef LILCALLBACK void    (*lil_error_callback_proc_t)(LilInterp_Ptr lil, SIZE_T pos, lcstrp msg);
+typedef LILCALLBACK INT     (*lil_setvar_callback_proc_t)(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr* value);
+typedef LILCALLBACK INT     (*lil_getvar_callback_proc_t)(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr* value);
 typedef LILCALLBACK void    (*lil_callback_proc_t)();
 
 LILAPI ND LilInterp_Ptr    lil_new();
@@ -123,14 +127,14 @@ LILAPI void                lil_free(LilInterp_Ptr lil);
 
 LILAPI /*ND*/ bool         lil_register(LilInterp_Ptr lil, lcstrp name, lil_func_proc_t proc);
 
-LILAPI ND Lil_value_Ptr    lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int funclevel);
-LILAPI ND Lil_value_Ptr    lil_parse_value(LilInterp_Ptr lil, Lil_value_Ptr val, int funclevel);
+LILAPI ND Lil_value_Ptr    lil_parse(LilInterp_Ptr lil, lcstrp code, SIZE_T codelen, INT funclevel);
+LILAPI ND Lil_value_Ptr    lil_parse_value(LilInterp_Ptr lil, Lil_value_Ptr val, INT funclevel);
 
 LILAPI void                lil_callback(LilInterp_Ptr lil, LIL_CALLBACK_IDS cb, lil_callback_proc_t proc);
 
 LILAPI void                lil_set_error(LilInterp_Ptr lil, lcstrp msg);
-LILAPI void                lil_set_error_at(LilInterp_Ptr lil, size_t pos, lcstrp msg);
-LILAPI int                 lil_error(LilInterp_Ptr lil, lcstrp* msg, size_t* pos);
+LILAPI void                lil_set_error_at(LilInterp_Ptr lil, SIZE_T pos, lcstrp msg);
+LILAPI INT                 lil_error(LilInterp_Ptr lil, lcstrp* msg, SIZE_T* pos);
 
 LILAPI ND lcstrp           lil_to_string(Lil_value_Ptr val);
 LILAPI ND double           lil_to_double(Lil_value_Ptr val, bool& inError);
@@ -150,8 +154,8 @@ LILAPI void                lil_append_val(Lil_value_Ptr val, Lil_value_CPtr v);
 LILAPI ND Lil_list_Ptr     lil_alloc_list(LilInterp_Ptr lil);
 LILAPI void                lil_free_list(Lil_list_Ptr list);
 LILAPI void                lil_list_append(Lil_list_Ptr list, Lil_value_Ptr val);
-LILAPI ND size_t           lil_list_size(Lil_list_Ptr list);
-LILAPI ND Lil_value_Ptr    lil_list_get(Lil_list_CPtr list, size_t index);
+LILAPI ND SIZE_T           lil_list_size(Lil_list_Ptr list);
+LILAPI ND Lil_value_Ptr    lil_list_get(Lil_list_CPtr list, SIZE_T index);
 LILAPI ND Lil_value_Ptr    lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_escape);
 
 LILAPI ND Lil_list_Ptr     lil_subst_to_list(LilInterp_Ptr lil, Lil_value_Ptr code);

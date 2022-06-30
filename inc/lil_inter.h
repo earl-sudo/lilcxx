@@ -58,15 +58,15 @@ enum LilTypes {
 
 #define XNUM(X) (X)
 
-const int EERR_NO_ERROR = 0;
-const int EERR_SYNTAX_ERROR = 1;
-const int EERR_INVALID_TYPE = 2; // Type was not in LilTypes.
-const int EERR_DIVISION_BY_ZERO = 3;
-const int EERR_INVALID_EXPRESSION = 4;
+const INT EERR_NO_ERROR = 0;
+const INT EERR_SYNTAX_ERROR = 1;
+const INT EERR_INVALID_TYPE = 2; // Type was not in LilTypes.
+const INT EERR_DIVISION_BY_ZERO = 3;
+const INT EERR_INVALID_EXPRESSION = 4;
 
-const int ERROR_NOERROR = 0;
-const int ERROR_DEFAULT = 1;
-const int ERROR_FIXHEAD = 2;
+const INT ERROR_NOERROR = 0;
+const INT ERROR_DEFAULT = 1;
+const INT ERROR_FIXHEAD = 2;
 
 #ifdef NO_DBG
    inline void DBGPRINTF(...) { }
@@ -76,17 +76,17 @@ const int ERROR_FIXHEAD = 2;
 
 struct ND ErrorCode  {
 private:
-    int v = 0;
+    INT v = 0;
 public:
     ErrorCode() = default;
-    explicit ErrorCode(int vD) : v(vD) { }
+    explicit ErrorCode(INT vD) : v(vD) { }
     ErrorCode(const ErrorCode& rhs) : v(rhs.v) { }
     const ErrorCode& operator=(const ErrorCode& rhs) {
         if (&rhs == this) { return *this; }
         v = rhs.v;
         return *this;
     }
-    int val() const { return v; }
+    INT val() const { return v; }
     bool inError() const { return v != 0; }
 };
 
@@ -114,9 +114,9 @@ struct ObjCounter {
         }
     }
     struct ObjCount {
-        size_t  numCtor_ = 0;
-        size_t  numDtor_ = 0;
-        size_t  maxNum_ = 0;
+        SIZE_T  numCtor_ = 0;
+        SIZE_T  numDtor_ = 0;
+        SIZE_T  maxNum_ = 0;
         friend std::ostream& operator<<(std::ostream& os, const ObjCount& dt) {
             os << " (objCount " << dt.numCtor_ << " " << dt.numDtor_ << " " << dt.maxNum_ << ") ";
             return os;
@@ -162,7 +162,7 @@ struct FuncTimer {
     struct TimerInfo {
         std::clock_t    totalTime_ = 0;
         std::clock_t    maxTime_ = 0;
-        size_t          numCalls_ = 0;
+        SIZE_T          numCalls_ = 0;
         friend std::ostream& operator<<(std::ostream& os, const TimerInfo& dt) {
             os << " (timerInfo " << dt.totalTime_ << " " << dt.maxTime_ << " " << dt.numCalls_ << ") ";
             return os;
@@ -202,7 +202,7 @@ struct Coverage {
     bool        doCoverage_ = false;
     bool        outputCoverageOnExit_ = false;
 
-    std::unordered_map<lstring, int>  coverageMap_;
+    std::unordered_map<lstring, INT>  coverageMap_;
 
     ~Coverage() {
         auto print_key_value = [](const auto& key, const auto& value) {
@@ -237,18 +237,18 @@ struct SysInfo { // #class
 
     clock_t     startTime_ = 0;
 
-    int numCommandsRegisteredTotal_ = 0;
-    int numErrorsSetInterpreter_ = 0;
-    int maxParseDepthAcheved_ = 0;
-    int maxListLengthAcheved_ = 0;
-    int numCommandsRun_ = 0;
-    int numExceptionsInCommands_ = 0;
-    int numProcsRuns_ = 0;
-    int numUnfoundCommands_ = 0;
-    int numExpressions_ = 0;
-    int numEvalCalls_ = 0;
+    INT numCommandsRegisteredTotal_ = 0;
+    INT numErrorsSetInterpreter_ = 0;
+    INT maxParseDepthAcheved_ = 0;
+    INT maxListLengthAcheved_ = 0;
+    INT numCommandsRun_ = 0;
+    INT numExceptionsInCommands_ = 0;
+    INT numProcsRuns_ = 0;
+    INT numUnfoundCommands_ = 0;
+    INT numExpressions_ = 0;
+    INT numEvalCalls_ = 0;
 
-    int limit_Parsedepth_           = 0xFFFF;
+    INT limit_Parsedepth_           = 0xFFFF;
 
     SysInfo() { // #ctor
         startTime_ = std::clock();
@@ -331,15 +331,15 @@ public:
     ~Lil_value() noexcept { // #dtor
         LIL_DTOR(sysInfo_, "Lil_value");
     }
-    ND size_t getValueLen() const { return value_.length(); }
+    ND SIZE_T getValueLen() const { return value_.length(); }
     ND const lstring& getValue() const { return value_; }
     ND lstring& getRValue() { return value_; }
-    ND lchar  getChar(size_t i) const { return value_.at(i); }
+    ND lchar  getChar(SIZE_T i) const { return value_.at(i); }
     void append(lchar ch) { value_.append(1, ch); }
-    void append(lcstrp  s, size_t len) { assert(s!=nullptr); value_.append(s, len); }
+    void append(lcstrp  s, SIZE_T len) { assert(s!=nullptr); value_.append(s, len); }
     void append(lcstrp  s) { assert(s!=nullptr); append(s);  }
     void append(Lil_value_CPtr v) { assert(v!=nullptr); value_.append(v->value_); }
-    size_t getSize() const { return value_.length(); }
+    SIZE_T getSize() const { return value_.length(); }
 };
 
 struct Lil_value_SPtr { // #class
@@ -501,8 +501,8 @@ public:
         if (listRep_.size() > sysInfo_->maxListLengthAcheved_)
             sysInfo_->maxListLengthAcheved_ = listRep_.size(); // #topic
     }
-    ND Lil_value_Ptr getValue(int index) const { return listRep_[index]; }
-    ND size_t getCount() const { return listRep_.size(); }
+    ND Lil_value_Ptr getValue(INT index) const { return listRep_[index]; }
+    ND SIZE_T getCount() const { return listRep_.size(); }
     // Cmds are list we skip first word which is the command name.
     Lil_value_Ptr* getArgs() { return (&listRep_[0]) + 1; }
     void convertListToArrayForArgs(std::vector<Lil_value_Ptr>& argsArray) {
@@ -569,7 +569,7 @@ public:
 };
 
 struct LilInterp { // #class
-    static const int NUM_CALLBACKS = 9;
+    static const INT NUM_CALLBACKS = 9;
 
     SysInfo*        sysInfo_ = nullptr;
 private:
@@ -583,8 +583,8 @@ private:
     lstring         dollarprefix_; // own memory
 
     lstring         code_; /* need save on parse */ // Waste some space owning, but simplify conception.
-    size_t          head_    = 0; // Position in code_ (need save on parse)
-    size_t          codeLen_ = 0; // Length of code_  (need save on parse)
+    SIZE_T          head_    = 0; // Position in code_ (need save on parse)
+    SIZE_T          codeLen_ = 0; // Length of code_  (need save on parse)
     lcstrp          rootcode_ = nullptr; // The original code_
 
     bool            ignoreeol_ = false; // Do we ignore EOL during parsing.
@@ -600,9 +600,9 @@ private:
     bool   in_catcher_ = false; // Are we in a "catch" command?
 
     ErrorCode errorCode_; // Error code_.
-    size_t    errPosition_ = 0; // Position in code_ where error occured.
+    SIZE_T    errPosition_ = 0; // Position in code_ where error occured.
 
-    size_t parse_depth_ = 0; // Current parse depth.
+    SIZE_T parse_depth_ = 0; // Current parse depth.
 
     // Set root/global "callframe".
     void setRootEnv(Lil_callframe_Ptr v) { rootenv_ = v; }
@@ -612,13 +612,13 @@ private:
     // Set interp text.
     void setCode(lcstrp  ptr) { code_ = ptr; }
     // Set current offset in code_.
-    ND size_t& setHead() { return head_; }
+    ND SIZE_T& setHead() { return head_; }
     // Set "catcher".
     void setCatcher(lcstrp  ptr) { catcher_ = ptr; }
     // Set "catcher" to empty.
     void setCatcherEmpty() { catcher_.clear(); }
     // Set position in code_ where error occurred.
-    ND size_t& setErr_head() { return errPosition_; }
+    ND SIZE_T& setErr_head() { return errPosition_; }
 
     // Register standard commands.
     void register_stdcmds();
@@ -678,7 +678,7 @@ public:
     }
 
     // Get code_ length.
-    ND size_t getCodeLen() const { return codeLen_; }
+    ND SIZE_T getCodeLen() const { return codeLen_; }
 
     // Get original code_.
     ND lcstrp  getRootcode() const { return rootcode_; }
@@ -686,7 +686,7 @@ public:
     ND lcstrp & setRootcode() { return rootcode_; }
 
     // Set interp text.
-    void setCode(lcstrp  codeD, size_t codelen, size_t headPos = 0) { // codeD could be nullptr.
+    void setCode(lcstrp  codeD, SIZE_T codelen, SIZE_T headPos = 0) { // codeD could be nullptr.
         setCode( codeD );
         codeLen_ = codelen;
         setHead()    = headPos;
@@ -696,11 +696,11 @@ public:
     // Get current character.
     ND lchar getHeadChar() const { return code_[head_]; }
     // Get (current + i) character.
-    ND lchar getHeadCharPlus(int i) const { return code_[head_ + i]; }
+    ND lchar getHeadCharPlus(INT i) const { return code_[head_ + i]; }
     // Get current character and advance 1 character.
     ND lchar getHeadCharAndAdvance() { return code_[head_++]; }
     // Advance val characters.
-    void incrHead(int v) { head_ += v; }
+    void incrHead(INT v) { head_ += v; }
     // Get current offset in code_.
     ND size_t getHead() const { return head_; }
 
@@ -711,7 +711,7 @@ public:
         assert(index > 0 || index < callback_.size());
         callback_[index] = val;
     }
-    int addCallback(lil_callback_proc_t val) {
+    INT addCallback(lil_callback_proc_t val) {
         callback_.push_back(val);
         return callback_.size()-1;
     }
@@ -756,7 +756,7 @@ public:
     // Get current parse depth.
     ND size_t getParse_depth() const { return parse_depth_; }
     // Change parse depth.
-    void incrParse_depth(int n) {
+    void incrParse_depth(INT n) {
         parse_depth_ += n;
         if (parse_depth_ > sysInfo_->maxParseDepthAcheved_) { // #topic
             sysInfo_->maxParseDepthAcheved_ = parse_depth_;
@@ -776,7 +776,7 @@ public:
     ND ErrorCode& setError() { return errorCode_; }
     void setError(const ErrorCode& ec) { errorCode_ = ec; }
 #define SETERROR(X) setError((X))
-    ND int getErrorInfo(lcstrp * msg, size_t* pos) {
+    ND INT getErrorInfo(lcstrp * msg, size_t* pos) {
         assert(msg!=nullptr); assert(pos!=nullptr);
         if (!this->getError().inError()) { return 0; }
         *msg = this->err_msg_.c_str();
@@ -821,7 +821,7 @@ private:
     lilint_t      integerVal_ = 0; // Lil_value integer value_.
     double        doubleVal_  = 0.0; // Lil_value double value_
     LilTypes      type_       = EE_INT; // Lil_value type (i.entries. EE_*)
-    int           errorCode_  = 0; // Error code_ (i.entries. EERR_*)
+    INT           errorCode_  = 0; // Error code_ (i.entries. EERR_*)
     Lil_value_Ptr inCode_ = nullptr;
 
     ND size_t& setLen() { return lenCode_; }
@@ -848,7 +848,7 @@ public:
     }
     ND size_t getHead() const { return head_; }
     ND size_t& setHead() { return head_; }
-    ND lchar getHeadChar(int n = 0) const { return code_[head_ + n]; }
+    ND lchar getHeadChar(INT n = 0) const { return code_[head_ + n]; }
     void nextHead() { head_++; }
 
     ND size_t getLen() const { return lenCode_; }
@@ -862,8 +862,8 @@ public:
     ND LilTypes getType() const { return type_; }
     ND LilTypes& setType() { return type_; }
 
-    ND int getError() const { return errorCode_; }
-    ND int& setError() { return errorCode_; }
+    ND INT getError() const { return errorCode_; }
+    ND INT& setError() { return errorCode_; }
 
     ND bool isEmptyExpression() const { return !code_[0]; }
 };
@@ -877,7 +877,7 @@ Lil_var_Ptr  _lil_find_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name
 
 struct Module {
     lstring     name_;
-    int         version_[2] = {0,0};
+    INT         version_[2] = {0,0};
 };
 
 // using lil_func_proc_t = std::function<Lil_value_Ptr(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr* argv)>;

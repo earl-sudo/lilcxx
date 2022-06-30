@@ -62,7 +62,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -g -O2")
 add_executable(lil
         main/main.cpp main/unittest.cxx
         src/lil.cpp inc/lil.h src/lil_cmds.cpp inc/lil_inter.h src/lil_eval_expr.cpp
-        inc/narrow_cast.h inc/MemCache.h main/unittest.cxx src/tclExpr.cpp)
+        inc/narrow_cast.h inc/MemCache.h main/unittest.cxx)
 
 # <help> Add include path to "target"
 # target_include_directories(<target> [SYSTEM] [AFTER|BEFORE]

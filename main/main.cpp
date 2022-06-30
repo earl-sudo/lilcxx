@@ -44,13 +44,13 @@ static LILCALLBACK void do_exit([[maybe_unused]] LilInterp_Ptr lil, Lil_value_Pt
     // #TODO Error condition?
 }
 
-static lstrp  do_system(size_t argc, lchar** argv)
+static lstrp  do_system(SIZE_T argc, lchar** argv)
 {
 #if defined(WIN32) || defined(WATCOMC)
     return nullptr;
 #else
     lstring cmd;
-    for (size_t i=0; i<argc; i++) { // for each argument.
+    for (SIZE_T i=0; i<argc; i++) { // for each argument.
         cmd.append(argv[i]);
         cmd.append(1, LC(' '));
     }
@@ -59,7 +59,7 @@ static lstrp  do_system(size_t argc, lchar** argv)
     if (p) {
         lstring retval;
         lchar buff[1024]; // #magic
-        size_t bytes;
+        SIZE_T bytes;
         while ((bytes = fread(buff, 1, 1024, p))) { // Read output 1K at a time. #magic
             retval.append(buff, bytes);
         }
@@ -73,7 +73,7 @@ static lstrp  do_system(size_t argc, lchar** argv)
 #endif
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_writechar([[maybe_unused]] LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_writechar([[maybe_unused]] LilInterp_Ptr lil, SIZE_T argc, Lil_value_Ptr *argv) {
     if (!argc) { return nullptr; } // #argErr
     bool inError = false;
     LPRINTF("%c", (lchar) lil_to_integer(argv[0], inError));
@@ -81,11 +81,11 @@ static LILCALLBACK Lil_value_Ptr fnc_writechar([[maybe_unused]] LilInterp_Ptr li
     return nullptr;
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, size_t argc, Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, SIZE_T argc, Lil_value_Ptr *argv) {
     lcstrp *sargv = static_cast<lcstrp *>(malloc(sizeof(lstrp ) * (argc + 1))); // alloc char*
     Lil_value_Ptr r       = nullptr;
     lstrp rv;
-    size_t        i;
+    SIZE_T        i;
     if (argc == 0) { return nullptr; } // #argErr
     for (i      = 0; i < argc; i++) {
         sargv[i] = lil_to_string(argv[i]);
@@ -100,11 +100,11 @@ static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, 
     return r;
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_canread([[maybe_unused]] LilInterp_Ptr lil, [[maybe_unused]] size_t argc, [[maybe_unused]] Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_canread([[maybe_unused]] LilInterp_Ptr lil, [[maybe_unused]] SIZE_T argc, [[maybe_unused]] Lil_value_Ptr *argv) {
     return (feof(stdin) || ferror(stdin)) ? nullptr : lil_alloc_integer(lil,  1);
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_readline(LilInterp_Ptr lil, [[maybe_unused]] size_t argc, [[maybe_unused]] Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_readline(LilInterp_Ptr lil, [[maybe_unused]] SIZE_T argc, [[maybe_unused]] Lil_value_Ptr *argv) {
     lstring    buffer;
     int           ch;
     Lil_value_Ptr retval;
@@ -141,7 +141,7 @@ static int repl() {
     LPRINTF(L_VSTR(0x5f53,"Little Interpreted Language Interactive Shell\n"));
     while (running) { // Command loop.
         lcstrp err_msg;
-        size_t     pos;
+        SIZE_T     pos;
         buffer[0] = 0;
         LPRINTF("# "); // Prompt
         if (!fgets(buffer, 16384, stdin)) { break; } // Get input.
@@ -164,7 +164,7 @@ static int nonint(int argc, lcstrp argv[]) {
     LilInterp_Ptr lil = lil_new();
     lcstrp filename = argv[1];
     lcstrp err_msg;
-    size_t       pos;
+    SIZE_T       pos;
     Lil_list_Ptr arglist = lil_alloc_list(lil);
 
     lil_callback(lil, LIL_CALLBACK_EXIT, (lil_callback_proc_t) do_exit); // Exit handler.
@@ -176,7 +176,7 @@ static int nonint(int argc, lcstrp argv[]) {
     lil_register(lil, "readline", fnc_readline);
 
     // Generate argument list "argv" in interpreter.
-    for (size_t   i    = 2; i < argc; i++) {
+    for (SIZE_T   i    = 2; i < argc; i++) {
         lil_list_append(arglist, lil_alloc_string(lil, argv[i]));
     }
     Lil_value_Ptr args = lil_list_to_value(lil, arglist, true);
@@ -288,7 +288,7 @@ NS_BEGIN(Lil)
 static int run_a_string(lcstrp input) {
     LilInterp_Ptr lil = lil_new();
     lcstrp err_msg;
-    size_t       pos;
+    SIZE_T       pos;
 
     lil_callback(lil, LIL_CALLBACK_WRITE, (lil_callback_proc_t)lil_write_callback);
 

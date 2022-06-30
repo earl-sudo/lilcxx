@@ -76,7 +76,7 @@ NS_BEGIN(Lil)
     inline void LilInterp::del_func(Lil_func_Ptr cmdD) {
         delete_cmds(cmdD);
     }
-    inline Lil_value_Ptr LilInterp::rename_func(size_t argc, Lil_value_Ptr* argv) {
+    inline Lil_value_Ptr LilInterp::rename_func(SIZE_T argc, Lil_value_Ptr* argv) {
         Lil_value_Ptr r;
         Lil_func_Ptr  func;
         lcstrp  oldname;
@@ -117,16 +117,16 @@ NS_BEGIN(Lil)
 
 /* Enable limiting recursive calls to lil_parse - this can be used to avoid call stack
  * overflows and is also useful when running through an automated fuzzer like AFL */
-int LIL_ENABLE_RECLIMIT = 0; // Set to non-zero to limit level of recursion.
+INT LIL_ENABLE_RECLIMIT = 0; // Set to non-zero to limit level of recursion.
 
 lstrp _strclone(lstring_view s) { // #private
-    size_t len = s.length() + 1;
+    SIZE_T len = s.length() + 1;
     auto ns = new lchar[len];  // alloc char*
     memcpy(ns, s.data(), len);
     return ns;
 }
 
-ND static Lil_value_Ptr _alloc_value_len(LilInterp_Ptr lil, lcstrp str, size_t len) { // #private
+ND static Lil_value_Ptr _alloc_value_len(LilInterp_Ptr lil, lcstrp str, SIZE_T len) { // #private
     assert(lil!=nullptr); assert(str!=nullptr);
     return new Lil_value(lil, {str, len}); //alloc Lil_value_Ptr
 }
@@ -151,7 +151,7 @@ void lil_append_char(Lil_value_Ptr val, lchar ch) {
     val->append(ch);
 }
 
-void lil_append_string_len(Lil_value_Ptr val, lcstrp s, size_t len) {
+void lil_append_string_len(Lil_value_Ptr val, lcstrp s, SIZE_T len) {
     assert(val!=nullptr); assert(s!=nullptr);
     if (!s || !s[0]) { return; }
     val->append(s, len);
@@ -186,20 +186,20 @@ void lil_list_append(Lil_list_Ptr list, Lil_value_Ptr val) {
     list->append(val);
 }
 
-size_t lil_list_size(Lil_list_Ptr list) {
+SIZE_T lil_list_size(Lil_list_Ptr list) {
     assert(list!=nullptr);
     return list->getCount();
 }
 
 // Get list item by index.  Return nullptr when off end.
-Lil_value_Ptr lil_list_get(Lil_list_CPtr list, size_t index) {
+Lil_value_Ptr lil_list_get(Lil_list_CPtr list, SIZE_T index) {
     assert(list!=nullptr);
-    return index >= list->getCount() ? nullptr : list->getValue(_NT(int,index));
+    return index >= list->getCount() ? nullptr : list->getValue(_NT(INT,index));
 }
 
 ND static bool _needs_escape(lstring_view str) { // #private
     if (!str.empty() || !str[0]) { return true; }
-    for (size_t i = 0; str[i]; i++) {
+    for (SIZE_T i = 0; str[i]; i++) {
         if (LISPUNCT(str[i]) || isspace(str[i])) { return true; }
     }
     return false;
@@ -210,7 +210,7 @@ Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_e
     assert(lil!=nullptr); assert(list!=nullptr); // #topic listStrLength
     Lil_value_Ptr val = new Lil_value(lil);
 
-    int i = 0;
+    INT i = 0;
     for (auto it = list->cbegin(); it != list->cend(); ++it) {
         // *it => Lil_value(); it->getValue() => lcstrp
         auto strval = (*it)->getValue();
@@ -220,7 +220,7 @@ Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_e
         if (i) { lil_append_char(val, LC(' ')); } // Separate each value with ' '.
         if (escape) { // If needs escape.
             lil_append_char(val, LC('{')); // Embrace with "{...}".
-            for (size_t j = 0; j < valLen; j++) {
+            for (SIZE_T j = 0; j < valLen; j++) {
                 if (strval[j] == LC('{')) {
                     lil_append_string(val, L_STR(R"(}"\o"{)"));
                 } else if (strval[j] == LC('}')) {
@@ -292,7 +292,7 @@ Lil_var_Ptr lil_set_var(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr val, LIL_V
             lil->getCallback(LIL_CALLBACK_SETVAR)) {
             auto          proc   = CAST(lil_setvar_callback_proc_t) lil->getCallback(LIL_CALLBACK_SETVAR);
             Lil_value_Ptr newval = val;
-            int           r      = proc(lil, name, &newval);
+            INT           r      = proc(lil, name, &newval);
             if (r < 0) return nullptr; // #ERR_RET ERROR:callback
             if (r) {
                 val     = newval;
@@ -409,7 +409,7 @@ static void _skip_spaces(LilInterp_Ptr lil) { // #private
 // Called from _next_word()
 ND static Lil_value_Ptr _get_bracketpart(LilInterp_Ptr lil) { // #private
     assert(lil!=nullptr);
-    size_t        cnt      = 1;
+    SIZE_T        cnt      = 1;
     bool          save_eol = lil->getIgnoreEol();
     Lil_value_Ptr val;
     Lil_value_SPtr cmd(new Lil_value(lil)); // Delete on exit
@@ -449,12 +449,12 @@ ND static Lil_value_Ptr _get_dollarpart(LilInterp_Ptr lil) { // #private
 ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
     assert(lil!=nullptr);
     Lil_value_Ptr val;
-    size_t        start;
+    SIZE_T        start;
         _skip_spaces(lil);
     if (lil->getHeadChar() == LC('$')) { // Deref a value.
         val = _get_dollarpart(lil);
     } else if (lil->getHeadChar() == LC('{')) { // Start of a list.
-        size_t cnt = 1;
+        SIZE_T cnt = 1;
         lil->incrHead(1);
         val = new Lil_value(lil);
         while (lil->getHead() < lil->getCodeLen()) {
@@ -522,7 +522,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
     while (lil->getHead() < lil->getCodeLen() && !_ateol(lil) && !lil->getError().inError()) {
         Lil_value_Ptr w = new Lil_value(lil);
         do {
-            size_t        head = lil->getHead();
+            SIZE_T        head = lil->getHead();
             Lil_value_SPtr wp(_next_word(lil)); // Delete on exit.
             if (head == lil->getHead()) { /* something wrong, the parser can't proceed */
                 lil_free_value(w);
@@ -543,9 +543,9 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
 Lil_list_Ptr lil_subst_to_list(LilInterp_Ptr lil, Lil_value_Ptr code) {
     assert(lil!=nullptr); assert(code!=nullptr);
     auto save_code = lil->getCodeObj();
-    size_t     save_clen  = lil->getCodeLen();
-    size_t     save_head  = lil->getHead();
-    int        save_igeol = lil->getIgnoreEol();
+    SIZE_T     save_clen  = lil->getCodeLen();
+    SIZE_T     save_head  = lil->getHead();
+    INT        save_igeol = lil->getIgnoreEol();
     lil->setCode(code->getValue().c_str(), code->getValueLen());
     lil->setIgnoreEol() = true;
     Lil_list_Ptr words = _substitute(lil);
@@ -564,12 +564,12 @@ Lil_value_Ptr lil_subst_to_value(LilInterp_Ptr lil, Lil_value_Ptr code) {
 
 
 // Top level parser.
-Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int funclevel) {
+Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, SIZE_T codelen, INT funclevel) {
     assert(lil!=nullptr); assert(code!=nullptr);  // #topic parsedCalls, codeLen, parsedDepth, foundCmds, notFoundCmds, numProcCalls
     lil->sysInfo_->numEvalCalls_++;
     auto save_code = lil->getCodeObj();
-    size_t        save_clen  = lil->getCodeLen();
-    size_t        save_head  = lil->getHead();
+    SIZE_T        save_clen  = lil->getCodeLen();
+    SIZE_T        save_head  = lil->getHead();
     Lil_value_Ptr val        = nullptr;
     Lil_list_Ptr  words      = nullptr;
 
@@ -637,7 +637,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                 if (cmd) { // Got a command.
                     if (cmd->getProc()) { // Got a "binary" command.
                         lil->sysInfo_->numCommandsRun_++;
-                        size_t shead = lil->getHead();
+                        SIZE_T shead = lil->getHead();
                         try {
 #ifdef LIL_LIST_IS_ARRAY
                             val = cmd->getProc()(lil, words->getCount() - 1, words->getArgs());
@@ -669,11 +669,11 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
                             Lil_value_SPtr args(lil_list_to_value(lil, words, true)); // Delete on exit.
                             lil_set_var(lil, L_STR("args"), args.v, LIL_SETVAR_LOCAL_NEW);
                         } else { // Handling of fix number of arguments.
-                            size_t i;
+                            SIZE_T i;
                             for (i = 0; i <
                                         cmd->getArgnames()->getCount(); i++) { // Create named argument for each positional argument.
-                                lil_set_var(lil, lil_to_string(cmd->getArgnames()->getValue(_NT(int,i))),
-                                            i < words->getCount() - 1 ? words->getValue(_NT(int,i) + 1) : lil->getEmptyVal(),
+                                lil_set_var(lil, lil_to_string(cmd->getArgnames()->getValue(_NT(INT,i))),
+                                            i < words->getCount() - 1 ? words->getValue(_NT(INT,i) + 1) : lil->getEmptyVal(),
                                             LIL_SETVAR_LOCAL_NEW);
                             }
                         }
@@ -714,7 +714,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, size_t codelen, int func
     return val ? val : new Lil_value(lil); // Return value or nullptr.
 }
 
-Lil_value_Ptr lil_parse_value(LilInterp_Ptr lil, Lil_value_Ptr val, int funclevel) {
+Lil_value_Ptr lil_parse_value(LilInterp_Ptr lil, Lil_value_Ptr val, INT funclevel) {
     assert(lil!=nullptr); assert(val!=nullptr);
     if (!val || val->getValue().empty() || !val->getValueLen()) { return new Lil_value(lil); }
     return lil_parse(lil, val->getValue().c_str(), val->getValueLen(), funclevel);
@@ -730,12 +730,12 @@ void lil_set_error(LilInterp_Ptr lil, lcstrp msg) {
     lil->setError(msg);
 }
 
-void lil_set_error_at(LilInterp_Ptr lil, size_t pos, lcstrp msg) {
+void lil_set_error_at(LilInterp_Ptr lil, SIZE_T pos, lcstrp msg) {
     assert(lil!=nullptr); assert(msg!=nullptr);
     lil->setErrorAt(pos, msg);
 }
 
-int lil_error(LilInterp_Ptr lil, lcstrp *msg, size_t *pos) {
+INT lil_error(LilInterp_Ptr lil, lcstrp *msg, SIZE_T *pos) {
     assert(lil!=nullptr); assert(msg!=nullptr); assert(pos!=nullptr);
     return lil->getErrorInfo(msg, pos);
 }
@@ -779,8 +779,8 @@ Lil_value_Ptr lil_unused_name(LilInterp_Ptr lil, lcstrp part) {
     assert(lil!=nullptr); assert(part!=nullptr);
     std::vector<lchar>   name((LSTRLEN(part) + 64), LC(' ')); // #magic
     Lil_value_Ptr val;
-    for (size_t   i     = 0; i < CAST(size_t) -1; i++) {
-        LSPRINTF(&name[0], L_VSTR(0x191e,"!!un!%s!%09u!nu!!"), part, (unsigned int) i);
+    for (SIZE_T   i     = 0; i < CAST(SIZE_T) -1; i++) {
+        LSPRINTF(&name[0], L_VSTR(0x191e,"!!un!%s!%09u!nu!!"), part, (UINT) i);
         if (_find_cmd(lil, (&name[0]))) { continue; }
         if (_lil_find_var(lil, lil->getEnv(), (&name[0]))) { continue; }
         val = lil_alloc_string(lil, (&name[0]));
@@ -830,9 +830,9 @@ lilint_t lil_to_integer(Lil_value_Ptr val, bool& inError) {
 bool lil_to_boolean(Lil_value_Ptr val) {
     assert(val!=nullptr);
     lcstrp s      = lil_to_string(val);
-    size_t     dots = 0;
+    SIZE_T     dots = 0;
     if (!s[0]) { return false; }
-    for (size_t i = 0; s[i]; i++) {
+    for (SIZE_T i = 0; s[i]; i++) {
         if (s[i] != LC('0') && s[i] != LC('.')) { return true; }
         if (s[i] == LC('.')) {
             if (dots) { return true; }

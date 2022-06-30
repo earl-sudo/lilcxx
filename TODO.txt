@@ -34,6 +34,7 @@
 - destructors noexcept - DONE
 - Add reset to Lil_getSysInfo() - DONE
 - Add own exception type. - DONE
+- tclExpr project - DONE
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -93,6 +94,26 @@
 - Generate random number table
 - Make Lil_value more string link.
 - Use std::array where arrays needed.
+- add "safe" to commands
+- Use class enums
+- Output stats as YAML or JSON
+- Add platform information
+- try PVS
+- numDeReferences_
+- numUnknownVars_
+- numUnknownCmds_
+- numRedefinedProcs_
+- numRedefinedVars
+- numIntegerConversions_
+- numDoubleConversions_
+- numArgErrrors_
+- numFuncFails_
+- redirect stdout stderr
+- Makefile and build script
+- "test" command with {script output numErrors} an on/off switch
+- tclParseNumber project
+- Add error ids to all errors
+- justifications
 
 =================== Additions
 - handles interface
