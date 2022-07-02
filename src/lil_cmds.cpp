@@ -31,9 +31,9 @@
 NS_BEGIN(Lil)
 
 #define CAST(X) (X)
-#define ARGERR(TEST) if ( TEST ) return nullptr
-#define CMD_SUCCESS_RET(X) return(X)
-#define CMD_ERROR_RET(X) return(X)
+#define ARGERR(TEST) if ( TEST ) { Lil_getSysInfo()->numCmdArgErrors_++; return nullptr; }
+#define CMD_SUCCESS_RET(X) { Lil_getSysInfo()->numCmdSuccess_++; return(X); }
+#define CMD_ERROR_RET(X) { Lil_getSysInfo()->numCmdFailed_++; return(X); }
 
 [[maybe_unused]] const auto fnc_reflect_doc = R"cmt(
  reflect
@@ -1033,17 +1033,20 @@ struct fnc_read_type : CommandAdaptor { // #cmd
 Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_read");
+    lil->sysInfo_->numReads_++;
     ARGERR(argc < 1); // #argErr
     Lil_value_Ptr r = nullptr;
     if (lil->getCallback(LIL_CALLBACK_READ)) {
         auto proc = (lil_read_callback_proc_t) lil->getCallback(LIL_CALLBACK_READ);
         std::unique_ptr<lchar>  buffer(proc(lil, lil_to_string(argv[0])));
+        lil->sysInfo_->bytesAttemptedRead_ += LSTRLEN(buffer.get());
         r = lil_alloc_string(lil, buffer.get());
     } else {
         FILE *f = fopen(lil_to_string(argv[0]), L_STR("rb"));
         if (!f) { CMD_ERROR_RET(nullptr); }
         fseek(f, 0, SEEK_END);
         auto size = ftell(f);
+        lil->sysInfo_->bytesAttemptedRead_ += size;
         fseek(f, 0, SEEK_SET);
         std::vector<lchar>  buffer((size+1),LC('\0'));
         if (fread(&buffer[0], 1, _NT(size_t,size), f)!=_NT(size_t,size)) {
@@ -1069,14 +1072,17 @@ struct fnc_store_type : CommandAdaptor { // #cmd
 Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_store");
+    lil->sysInfo_->numWrites_++;
     ARGERR(argc < 2); // #argErr
     if (lil->getCallback(LIL_CALLBACK_STORE)) {
         auto proc = (lil_store_callback_proc_t) lil->getCallback(LIL_CALLBACK_STORE);
+        lil->sysInfo_->bytesAttemptedWritten_ += argv[1]->getSize();
         proc(lil, lil_to_string(argv[0]), lil_to_string(argv[1]));
     } else {
         FILE *f = fopen(lil_to_string(argv[0]), "wb");
         if (!f) { CMD_ERROR_RET(nullptr); }
         auto& bufferSz = argv[1]->getValue();
+        lil->sysInfo_->bytesAttemptedWritten_ += argv[1]->getSize();
         fwrite(bufferSz.data(), 1, bufferSz.length(), f);
         fclose(f);
     }

@@ -35,6 +35,11 @@
 - Add reset to Lil_getSysInfo() - DONE
 - Add own exception type. - DONE
 - tclExpr project - DONE
+- numUnknownVars_ - DONE
+- numUnknownCmds_ - DONE
+- numIntegerConversions_ - DONE
+- numDoubleConversions_ - DONE
+- configure hashtables. - DONE
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -49,18 +54,8 @@
 - ERROR: Copies may exist of LilInterp may exist so other references are possible.
 - Review algorithms for substitutions.
 - Fix "invalid read of size 1", ~Lil_value().
-- Object cache
-- configure hashtables.
-- configure vectors.
-- configure strings
-- cache int64_t and Lil_value.
-- cache double and Lil_value.
-- cache Lil_list and Lil_value.
-- Info fields
 - Add system to associate binary/alternate representations to string representations and deal with changes.
 - Publish
-- Add dict type
-- Make more like tcl ("func" => "proc" and like)
 - const char* -> std::string_view
 - safe mode
 - less code
@@ -69,12 +64,9 @@
 - string class
 - Move private code to private section.
 - get rid of most ".c_str()" - 70%
-- add in conditional binary value caching
-- add to add runtime binary types for caching.
 - [] => span<> or array<>
 - {} for constructors
 - make expr code "re-usable"
-- Add holding area for functions.
 
 - Better expr (from tcl7.6)
 - Better int/double parsing (from tcl8)
@@ -87,26 +79,35 @@
 - Use std::array where arrays needed.
 - add "safe" to commands
 - Use class enums
-- Output stats as YAML or JSON
 - try PVS
 - numDeReferences_
-- numUnknownVars_
-- numUnknownCmds_
 - numRedefinedProcs_
 - numRedefinedVars
-- numIntegerConversions_
-- numDoubleConversions_
 - numArgErrrors_
 - numFuncFails_
 - redirect stdout stderr
 - Makefile and build script
 - tclParseNumber project
 - Add error ids to all errors
-- string class that detects integer conversion or not float/integer.
 - Use tcl test suit.
 - find limits of current expr.
 
+=================== Optimizations
+- configure vectors.
+- configure strings
+- cache int64_t and Lil_value.
+- cache double and Lil_value.
+- cache Lil_list and Lil_value.
+- Object cache
+- string class that detects integer conversion or not float/integer.
+- add in conditional binary value caching
+- add to add runtime binary types for caching.
+
 =================== Additions
+- Add holding area for functions.
+- Make more like tcl ("func" => "proc" and like)
+- Output stats as YAML or JSON
+- Add dict type
 - Add module support
 - Add resource handles
 - From Jim borrow

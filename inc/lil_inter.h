@@ -277,6 +277,14 @@ struct SysInfo { // #class
     INT failedStrToInteger_ = 0;
     INT strToBool_ = 0;
     INT failedStrToBool_ = 0;
+    INT numWrites_ = 0;
+    INT bytesAttemptedWritten_ = 0;
+    //- 30
+    INT numReads_ = 0;
+    INT bytesAttemptedRead_ = 0;
+    INT numCmdArgErrors_ = 0;
+    INT numCmdSuccess_ = 0;
+    INT numCmdFailed_ = 0;
 
     INT varHTinitSize_ = 0; // 0 is unset
     INT cmdHTinitSize_ = 0; // 0 is unset
@@ -293,7 +301,7 @@ struct SysInfo { // #class
         }
     }
     void printStats() const {
-#define SYSINFO_ENTRY(X) std::cerr << #X << " = " << (X) << "\n";
+#define SYSINFO_ENTRY(X) if (X) std::cerr << #X << " = " << (X) << "\n";
         SYSINFO_ENTRY(numCommandsRegisteredTotal_);
         SYSINFO_ENTRY(numErrorsSetInterpreter_);
         SYSINFO_ENTRY(maxParseDepthAcheved_);
@@ -317,7 +325,24 @@ struct SysInfo { // #class
         SYSINFO_ENTRY(numDelCommands_);
         SYSINFO_ENTRY(numRenameCommands_);
         SYSINFO_ENTRY(numWatchCalls_);
+        //- 20
         SYSINFO_ENTRY(numParseErrors_);
+        SYSINFO_ENTRY(numExprErrors_);
+        SYSINFO_ENTRY(strToDouble_);
+        SYSINFO_ENTRY(failedStrToDouble_);
+        SYSINFO_ENTRY(strToInteger_);
+        //- 25
+        SYSINFO_ENTRY(failedStrToInteger_);
+        SYSINFO_ENTRY(strToBool_);
+        SYSINFO_ENTRY(failedStrToBool_);
+        SYSINFO_ENTRY(numWrites_);
+        SYSINFO_ENTRY(bytesAttemptedWritten_);
+        //- 30
+        SYSINFO_ENTRY(numReads_);
+        SYSINFO_ENTRY(bytesAttemptedRead_);
+        SYSINFO_ENTRY(numCmdArgErrors_);
+        SYSINFO_ENTRY(numCmdSuccess_);
+        SYSINFO_ENTRY(numCmdFailed_);
 #undef SYSINFO_ENTRY
     }
 };
