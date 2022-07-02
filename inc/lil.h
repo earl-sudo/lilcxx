@@ -85,8 +85,8 @@ enum LIL_CALLBACK_IDS {
 #define LILCALLBACK
 
 
-typedef int             INT;
-typedef unsigned int    UINT;
+typedef int64_t         INT;
+typedef uint64_t        UINT;
 typedef size_t          SIZE_T;
 typedef size_t          ARGINT;
 

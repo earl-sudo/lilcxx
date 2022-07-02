@@ -266,10 +266,21 @@ struct SysInfo { // #class
     INT numCommands_ = 0;
     INT numDelCommands_ = 0;
     INT numRenameCommands_ = 0;
+    INT numWatchCalls_ = 0;
+    //- 20
+    INT numParseErrors_ = 0;
+    INT numExprErrors_ = 0;
+    INT strToDouble_ = 0;
+    INT failedStrToDouble_ = 0;
+    INT strToInteger_ = 0;
+    //- 25
+    INT failedStrToInteger_ = 0;
+    INT strToBool_ = 0;
+    INT failedStrToBool_ = 0;
 
     INT varHTinitSize_ = 0; // 0 is unset
     INT cmdHTinitSize_ = 0; // 0 is unset
-    INT limit_Parsedepth_           = 0xFFFF;
+    INT limit_Parsedepth_  = 0xFFFF; // 0 is off
 
     SysInfo() { // #ctor
         startTime_ = std::clock();
@@ -305,6 +316,8 @@ struct SysInfo { // #class
         SYSINFO_ENTRY(numCommands_);
         SYSINFO_ENTRY(numDelCommands_);
         SYSINFO_ENTRY(numRenameCommands_);
+        SYSINFO_ENTRY(numWatchCalls_);
+        SYSINFO_ENTRY(numParseErrors_);
 #undef SYSINFO_ENTRY
     }
 };
@@ -339,6 +352,8 @@ SysInfo* Lil_getSysInfo(bool reset = false);
     #define LIL_TIMER_PROC(SYSINFO, NAME)
     #define LIL_TIMER(SYSINFO, NAME)
 #endif
+
+#define LIL_PARSE_ERROR(SYSINFO) SYSINFO -> numParseErrors_++
 
 void setSysInfo(LilInterp_Ptr lil, SysInfo*& sysInfo);
 
@@ -782,6 +797,10 @@ public:
     void setCallback(LIL_CALLBACK_IDS index, lil_callback_proc_t val) {
         assert(index > 0 || index < callback_.size());
         callback_[index] = val;
+    }
+    INT addNewCallback(lil_callback_proc_t val) {
+        callback_.push_back(val);
+        return callback_.size()-1;
     }
     INT addCallback(lil_callback_proc_t val) {
         callback_.push_back(val);

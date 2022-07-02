@@ -118,10 +118,6 @@ NS_BEGIN(Lil)
     }
 // ===============================
 
-/* Enable limiting recursive calls to lil_parse - this can be used to avoid call stack
- * overflows and is also useful when running through an automated fuzzer like AFL */
-INT LIL_ENABLE_RECLIMIT = 0; // Set to non-zero to limit level of recursion.
-
 ND static Lil_value_Ptr _alloc_value_len(LilInterp_Ptr lil, lcstrp str, INT len) { // #private
     assert(lil!=nullptr); assert(str!=nullptr);
     return new Lil_value(lil, {str, CAST(std::string::size_type)len}); //alloc Lil_value_Ptr
@@ -301,6 +297,7 @@ Lil_var_Ptr lil_set_var(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr val, LIL_V
                 Lil_callframe_Ptr save_env = lil->getEnv();
                 lil->setEnv(var->getCallframe());
                 lil_free_value(lil_parse(lil, var->getWatchCode().c_str(), 0, 1));
+                lil->sysInfo_->numWatchCalls_++;
                 lil->setEnv(save_env);
             }
             return var;
@@ -523,6 +520,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
             if (head == lil->getHead()) { /* something wrong, the parser can't proceed */
                 lil_free_value(w);
                 lil_free_list(words);
+                LIL_PARSE_ERROR(lil->sysInfo_);
                 return nullptr; // #ERR_RET ERROR:parsing
             }
             lil_append_val(w, wp.v);
@@ -577,8 +575,9 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
         _skip_spaces(lil);
         lil->incrParse_depth(1); // Start new parse level.
         //LPRINTF("DEBUG> code_ %s level %d\n", (std::string(code_, 20).c_str()), lil->getParse_depth());
-        if (LIL_ENABLE_RECLIMIT) { // Do we limit recursion? #TODO
-            if (lil->getParse_depth() > LIL_ENABLE_RECLIMIT) {
+        if (lil->sysInfo_->limit_Parsedepth_) { // Do we limit recursion? #TODO
+            if (lil->getParse_depth() > lil->sysInfo_->limit_Parsedepth_) {
+                LIL_PARSE_ERROR(lil->sysInfo_);
                 lil_set_error(lil, L_VSTR(0xee78, "Too many recursive calls")); // #INTERP_ERR
                 throw lil_parse_exit();
             }
@@ -646,7 +645,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
                         } catch (std::exception& ex) {
                             // Command threw an exception
                             lil->sysInfo_->numExceptionsInCommands_++;
-                            printf("ERROR: Command threw exception: cmd %s type: %s msg %s\n",
+                            printf(L_VSTR(0x2b43, "ERROR: Command threw exception: cmd %s type: %s msg %s\n"),
                                    words->getValue(0)->getValue().c_str(), typeid(ex).name(), ex.what());
                             // TODO: make this conditional so C++ cmds can use this to signal errors.
                             throw; // Rethrow the exception.
@@ -689,6 +688,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
         } // while (lil->getHead() < lil->getCodeLen() && !lil->getError())
     } catch (const lil_parse_exit& lpe) {
         // Nothing to do.
+        DBGPRINTF(L_VSTR(0x30b3, "Throw lil_parse_exit exception."));
     }
 
     if (lil->getError().inError() && lil->getCallback(LIL_CALLBACK_ERROR) && lil->getParse_depth() == 1) {
@@ -748,6 +748,7 @@ Lil_value_Ptr lil_eval_expr(LilInterp_Ptr lil, Lil_value_Ptr code) { // #topic n
     }
     _ee_expr(&ee);
     if (ee.getError()) {
+        lil->sysInfo_->numExprErrors_++;
         switch (ee.getError()) {
             case EERR_DIVISION_BY_ZERO:
                 lil_set_error(lil, L_VSTR(0x5829,"division by zero in expression")); // #INTERP_ERR
@@ -795,6 +796,7 @@ double lil_to_double(Lil_value_Ptr val, bool& inError) {
     assert(val!=nullptr);
     double ret = 0;
     try {
+        val->sysInfo_->strToDouble_++;
         ret = std::stod(lil_to_string(val));
         inError = false;
     } catch(std::invalid_argument& ia) {
@@ -804,6 +806,7 @@ double lil_to_double(Lil_value_Ptr val, bool& inError) {
         DBGPRINTF("lil_to_double() couldn't parse, out_of_range: |%s|\n", lil_to_string(val));
         inError = true;
     }
+    if (inError) val->sysInfo_->failedStrToDouble_++;
     return ret;
 }
 
@@ -812,12 +815,14 @@ lilint_t lil_to_integer(Lil_value_Ptr val, bool& inError) {
     assert(val!=nullptr);
     // atoll() discards start whitespaces. Return 0 on error.
     // strtoll() discards start whitespaces. Takes start 0 for octal. Takes start 0x/OX for hex
+    val->sysInfo_->strToInteger_++;
     auto ret = strtoll(lil_to_string(val), nullptr, 0);
     inError = false;
     if (errno == ERANGE && (ret == LLONG_MAX || ret == LLONG_MIN)) {
         DBGPRINTF("lil_to_intger counldn't parse; |%s|\n", lil_to_string(val));
         inError = true;
     }
+    if (inError) val->sysInfo_->failedStrToInteger_++;
     return CAST(lilint_t)ret;
 }
 
@@ -827,6 +832,7 @@ bool lil_to_boolean(Lil_value_Ptr val) {
     lcstrp s      = lil_to_string(val);
     INT    dots = 0;
     if (!s[0]) { return false; }
+    val->sysInfo_->strToBool_++;
     for (INT i = 0; s[i]; i++) {
         if (s[i] != LC('0') && s[i] != LC('.')) { return true; }
         if (s[i] == LC('.')) {
@@ -834,6 +840,7 @@ bool lil_to_boolean(Lil_value_Ptr val) {
             dots = 1;
         }
     }
+    val->sysInfo_->failedStrToBool_++;
     return false;
 }
 
