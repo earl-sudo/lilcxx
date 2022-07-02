@@ -101,7 +101,7 @@ NS_BEGIN(Lil)
    function is unknown))cmt";
 
 struct fnc_reflect_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_reflect");
     Lil_func_Ptr  func;
@@ -180,7 +180,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
     }
     if (typeObj == L_STR("dollar-prefix")) { // #subcmd
         if (argc == 1) { CMD_SUCCESS_RET(new Lil_value(lil, lil->getDollarprefix())); }
-        Lil_value_Ptr rr = new Lil_value(lil, lil->getDollarprefix());
+        auto rr = new Lil_value(lil, lil->getDollarprefix());
         lil->setDollarprefix(lil_to_string(argv[1]));
         CMD_SUCCESS_RET(rr);
     }
@@ -207,7 +207,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    register a new function.  See the section 2 for more information)cmt";
 
 struct fnc_func_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, ("fnc_func"));
     Lil_value_Ptr name;
@@ -248,7 +248,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    string, the function will be deleted)cmt";
 
 struct fnc_rename_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, ("fnc_rename"));
     Lil_value_Ptr r;
@@ -281,7 +281,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    provided "unusedname" will be used))cmt";
 
 struct func_unusedname_type : CommandAdaptor { // #cmd
-    Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+    Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
         assert(lil != nullptr);
         assert(argv != nullptr);
         LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_unusedname");
@@ -294,11 +294,11 @@ struct func_unusedname_type : CommandAdaptor { // #cmd
    return the arguments as a single space-separated string)cmt";
 
 struct fnc_quote_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_quote");
     ARGERR(argc < 1); // #argErr
-    Lil_value_Ptr r = new Lil_value(lil);
+    auto r = new Lil_value(lil);
     for (ARGINT   i = 0; i < argc; i++) {
         if (i) { lil_append_char(r, LC(' ')); }
         lil_append_val(r, argv[i]);
@@ -315,7 +315,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returned.  See section 2 for details)cmt";
 
 struct fnc_set_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_set");
     ARGINT      i      = 0;
@@ -345,7 +345,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    existing global variables)cmt";
 
 struct fnc_local_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_local");
     for (ARGINT i = 0; i < argc; i++) {
@@ -365,7 +365,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    using the LIL_CALLBACK_WRITE callback)cmt";
 
 struct fnc_write_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_write");
     Lil_value_SPtr msg(new Lil_value(lil)); // Delete on exit.
@@ -383,7 +383,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    like write but adds a newline at the end)cmt";
 
 struct fnc_print_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_print");
     fnc_write(lil, argc, argv);
@@ -398,7 +398,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    code.  The function returns the result of the LIL code)cmt";
 
 struct fnc_eval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_eval");
     if (argc == 1) { CMD_SUCCESS_RET(lil_parse_value(lil, argv[0], 0)); }
@@ -424,7 +424,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    one)cmt";
 
 struct fnc_topeval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_topeval");
     Lil_callframe_Ptr thisenv     = lil->getEnv();
@@ -451,7 +451,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    full access to the program's state)cmt";
 
 struct fnc_upeval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_upeval");
     Lil_callframe_Ptr thisenv     = lil->getEnv();
@@ -473,7 +473,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    made.  This also works with topeval)cmt";
 
 struct fnc_downeval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_downeval");
     Lil_callframe_Ptr upenv   = lil->getEnv();
@@ -506,7 +506,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
 )cmt";
 
 struct fnc_enveval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_enveval");
     std::unique_ptr<Lil_list>  invars  = nullptr; // Input vars.
@@ -518,7 +518,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
     auto cloneVar          = [&lil](Lil_value_Ptr var) {
         CMD_SUCCESS_RET(lil_clone_value(lil_get_var(lil, lil_to_string(var))));
     };
-    // From a list of variable names give indexed name, and from a vector of values set that value, then delete value in original array.
+    // From a list of variable names give indexed name, and from a vector of values sets that value, then delete value in original array.
     auto arrayValuesToVars = [&lil](Lil_value_Ptr value, Lil_value_Ptr name, LIL_VAR_TYPE type) {
         lil_set_var(lil, lil_to_string(name), value, type);
         lil_free_value(value);
@@ -596,7 +596,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    a value (which is returned by jaileval))cmt";
 
 struct fnc_jaileval_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_jaileval");
     bool base = false;
@@ -622,7 +622,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returns the number of items in a LIL list)cmt";
 
 struct fnc_count_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_count");
     lchar buff[64]; // #magic
@@ -639,7 +639,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    zero (so 0 is the first index, 1 is the second, etc))cmt";
 
 struct fnc_index_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_index");
     Lil_value_Ptr r;
@@ -665,7 +665,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    etc))cmt";
 
 struct fnc_indexof_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_indexof");
     Lil_value_Ptr r = nullptr;
@@ -689,7 +689,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    variable)cmt";
 
 struct fnc_append_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_append");
     ARGINT base   = 1;
@@ -721,7 +721,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    end of the list)cmt";
 
 struct fnc_slice_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_slice");
     ARGERR(argc < 1); // #argErr
@@ -755,7 +755,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returns the filtered list)cmt";
 
 struct fnc_filter_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_filter");
     Lil_value_Ptr r;
@@ -787,7 +787,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returns a list with the arguments as its items)cmt";
 
 struct fnc_list_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_list");
     Lil_list_SPtr list(lil_alloc_list(lil)); // Delete on exit.
@@ -810,7 +810,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    will print "foobar")cmt";
 
 struct fnc_subst_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_subst");
     ARGERR(argc < 1); // #argErr
@@ -824,7 +824,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returns all strings combined into one)cmt";
 
 struct fnc_concat_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_concat");
     ARGERR(argc < 1); // #argErr
@@ -849,7 +849,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
 
 
 struct fnc_foreach_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_foreach");
     ARGINT     listidx  = 0, codeidx = 1;
@@ -883,7 +883,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    return is always the passed valu)cmt";
 
 struct fnc_return_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_return");
     lil->getEnv()->setBreakrun() = true;
@@ -905,7 +905,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    itself)cmt";
 
 struct fnc_result_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_result");
     if (argc > 0) {
@@ -956,7 +956,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
       a && b     - logical AND)cmt";
 
 struct fnc_expr_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_expr");
     if (argc == 1) { CMD_SUCCESS_RET(lil_eval_expr(lil, argv[0])); }
@@ -996,7 +996,7 @@ static Lil_value_Ptr _real_inc(LilInterp_Ptr lil, lcstrp varname, double v) {  /
    provided, 1 will be added instead)cmt";
 
 struct fnc_inc_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_inc");
     ARGERR(argc < 1); // #argErr
@@ -1013,7 +1013,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    not provided, 1 will be subtracted instead)cmt";
 
 struct fnc_dec_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_dec");
     ARGERR(argc < 1); // #argErr
@@ -1033,7 +1033,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    however than a file can also be empty by itself))cmt";
 
 struct fnc_read_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_read");
     lil->sysInfo_->numReads_++;
@@ -1072,7 +1072,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    always return <value>)cmt";
 
 struct fnc_store_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_store");
     lil->sysInfo_->numWrites_++;
@@ -1102,7 +1102,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    whichever code is evaluated)cmt";
 
 struct fnc_if_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_if");
     Lil_value_Ptr r    = nullptr;
@@ -1133,7 +1133,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    also return an empty value))cmt";
 
 struct fnc_while_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_while");
     Lil_value_Ptr r    = nullptr;
@@ -1165,7 +1165,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    function returns the result of the last evaluation of <code>)cmt";
 
 struct fnc_for_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_for");
     Lil_value_Ptr r = nullptr;
@@ -1193,7 +1193,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    will be returned instead)cmt";
 
 struct fnc_char_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_char");
     lchar s[2];
@@ -1213,7 +1213,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returned)cmt";
 
 struct fnc_charat_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_charat");
     lchar chstr[2];
@@ -1236,7 +1236,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    be returned)cmt";
 
 struct fnc_codeat_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_codeat");
     ARGERR(argc < 2); // #argErr
@@ -1269,7 +1269,7 @@ static auto _str_to_integer(const char* val, bool& inError) {
    will be clamped to be within the string boundaries)cmt";
 
 struct fnc_substr_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_substr");
     ARGERR(argc < 2); // #argErr
@@ -1299,7 +1299,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    part is not found, the function will return -1)cmt";
 
 struct fnc_strpos_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_strpos");
     ARGINT min = 0;
@@ -1322,7 +1322,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    the function will return the sum of the length of all arguments)cmt";
 
 struct fnc_length_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_length");
     size_t      total = 0;
@@ -1361,7 +1361,7 @@ static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, INT
    newline, carriage return, horizontal tab and vertical tab) are used)cmt";
 
 struct fnc_trim_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_trim");
     ARGERR(!argc); // #argErr
@@ -1375,7 +1375,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    string (the beginning))cmt";
 
 struct fnc_ltrim_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_ltrim");
     ARGERR(!argc); // #argErr
@@ -1389,7 +1389,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    string (the ending))cmt";
 
 struct fnc_rtrim_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_rtrim");
     ARGERR(!argc); // #argErr
@@ -1405,7 +1405,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    wrap for C's strcmp() function))cmt";
 
 struct fnc_strcmp_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_strcmp");
     ARGERR(argc < 2); // #argErr
@@ -1419,7 +1419,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returns a true value if both strings are equal)cmt";
 
 struct fnc_streq_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_streq");
     ARGERR(argc < 2); // #argErr
@@ -1433,7 +1433,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returns the string <str> with all occurences of <from> replaced with
    <to>)cmt";
 
-static void FindAndReplace(std::string &data, std::string Searching, std::string replaceStr) {
+static void FindAndReplace(std::string &data, const std::string& Searching, const std::string& replaceStr) {
     // Getting the first occurrence
     size_t position = data.find(Searching);
     // Repeating till end is reached
@@ -1446,7 +1446,7 @@ static void FindAndReplace(std::string &data, std::string Searching, std::string
 }
 
 struct fnc_repstr_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_repstr");
     lcstrp sub;
@@ -1472,7 +1472,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    empty string, the <str> is returned unchanged)cmt";
 
 struct fnc_split_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_split");
     lcstrp sep = L_STR(" ");
@@ -1507,7 +1507,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    provided the function returns 0)cmt";
 
 struct fnc_try_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_try");
     ARGERR(argc < 1); // #argErr
@@ -1530,7 +1530,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    the try function (see above))cmt";
 
 struct fnc_error_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_error");
     lil_set_error(lil, argc > 0 ? lil_to_string(argv[0]) : nullptr); // #INTERP_ERR
@@ -1549,7 +1549,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    back control and handles the request)cmt";
 
 struct fnc_exit_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_exit");
     if (lil->getCallback(LIL_CALLBACK_EXIT)) {
@@ -1568,7 +1568,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    but the program can override that by using LIL_CALLBACK_SOURCE)cmt";
 
 struct fnc_source_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_source");
     lstrp buffer;
@@ -1611,7 +1611,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    variable pear)cmt";
 
 struct fnc_lmap_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_lmap");
     ARGERR(argc < 2); // #argErr
@@ -1628,7 +1628,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    returns a random number between 0.0 and 1.0)cmt";
 
 struct fnc_rand_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     (void)argc;
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_rand");
@@ -1674,7 +1674,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    source file.)cmt";
 
 struct fnc_catcher_type : CommandAdaptor { // #cmd
-Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_catcher");
     if (argc == 0) {
@@ -1695,7 +1695,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
    regardless of where the variable is modified from.)cmt";
 
 struct fnc_watch_type : CommandAdaptor { // #cmd
-    Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+    Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_watch");
     ARGERR(argc < 2); // #argErr

@@ -151,7 +151,7 @@ static void _ee_unaryOperators(Lil_exprVal* ee) { // #private
     }
 }
 
-// Handle mutliple and divide math operations.
+// Handle multiple and divide math operations.
 static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
     assert(ee!=nullptr);
         _ee_unaryOperators(ee);

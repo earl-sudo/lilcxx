@@ -86,7 +86,7 @@ static LILCALLBACK Lil_value_Ptr fnc_writechar([[maybe_unused]] LilInterp_Ptr li
 }
 
 static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, SIZE_T argc, Lil_value_Ptr *argv) {
-    lcstrp *sargv = static_cast<lcstrp *>(malloc(sizeof(lstrp ) * (argc + 1))); // alloc char*
+    auto *sargv = static_cast<lcstrp *>(malloc(sizeof(lstrp ) * (argc + 1))); // alloc char*
     Lil_value_Ptr r       = nullptr;
     lstrp rv;
     SIZE_T        i;

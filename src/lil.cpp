@@ -27,8 +27,6 @@
  * Earl Johnson https://github.com/earl-sudo/lilcxx 2022
  */
 
-#define __LIL_C_FILE__
-
 #include "lil_inter.h"
 #include "narrow_cast.h"
 
@@ -204,7 +202,7 @@ ND static bool _needs_escape(lstring_view str) { // #private
 // Convert list to string representation.
 Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_escape) {
     assert(lil!=nullptr); assert(list!=nullptr); // #topic listStrLength
-    Lil_value_Ptr val = new Lil_value(lil);
+    auto val = new Lil_value(lil);
 
     INT i = 0;
     for (auto it = list->cbegin(); it != list->cend(); ++it) {
@@ -214,7 +212,7 @@ Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_e
 
         bool escape = do_escape ? _needs_escape(strval) : false;
         if (i) { lil_append_char(val, LC(' ')); } // Separate each value with ' '.
-        if (escape) { // If needs escape.
+        if (escape) { // It needs an escape.
             lil_append_char(val, LC('{')); // Embrace with "{...}".
             for (INT j = 0; j < valLen; j++) {
                 if (strval[j] == LC('{')) {
@@ -517,7 +515,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
 
         _skip_spaces(lil);
     while (lil->getHead() < lil->getCodeLen() && !_ateol(lil) && !lil->getError().inError()) {
-        Lil_value_Ptr w = new Lil_value(lil);
+        auto w = new Lil_value(lil);
         do {
             INT        head = lil->getHead();
             Lil_value_SPtr wp(_next_word(lil)); // Delete on exit.
@@ -741,7 +739,7 @@ INT lil_error(LilInterp_Ptr lil, lcstrp *msg, INT *pos) {
 
 Lil_value_Ptr lil_eval_expr(LilInterp_Ptr lil, Lil_value_Ptr code) { // #topic numExprErrors
     assert(lil!=nullptr); assert(code!=nullptr);
-    lil->sysInfo_->numExpressions_;
+    lil->sysInfo_->numExpressions_++;
     code = lil_subst_to_value(lil, code);
     if (lil->getError().inError()) return nullptr; // #ERR_RET
     Lil_exprVal ee(lil, code);
@@ -823,7 +821,7 @@ lilint_t lil_to_integer(Lil_value_Ptr val, bool& inError) {
     auto ret = strtoll(lil_to_string(val), nullptr, 0);
     inError = false;
     if (errno == ERANGE && (ret == LLONG_MAX || ret == LLONG_MIN)) {
-        DBGPRINTF("lil_to_intger counldn't parse; |%s|\n", lil_to_string(val));
+        DBGPRINTF("lil_to_intger couldn't parse; |%s|\n", lil_to_string(val));
         inError = true;
     }
     if (inError) val->sysInfo_->failedStrToInteger_++;
