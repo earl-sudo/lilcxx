@@ -259,7 +259,14 @@ struct SysInfo { // #class
     INT numWatchCode_ = 0;
     INT numVarMisses_ = 0;
     INT numVarHits_ = 0;
+    INT varHTMaxSize_ = 0;
+    INT numProcs_ = 0;
+    //- 15
+    INT maxProcSize_ = 0;
+    INT numCommands_ = 0;
 
+    INT varHTinitSize_ = 0; // 0 is unset
+    INT cmdHTinitSize_ = 0; // 0 is unset
     INT limit_Parsedepth_           = 0xFFFF;
 
     SysInfo() { // #ctor
@@ -289,6 +296,7 @@ struct SysInfo { // #class
         SYSINFO_ENTRY(numWatchCode_);
         SYSINFO_ENTRY(numVarMisses_);
         SYSINFO_ENTRY(numVarHits_);
+        SYSINFO_ENTRY(varHTMaxSize_);
 #undef SYSINFO_ENTRY
     }
 };
@@ -445,6 +453,9 @@ public:
         assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_callframe");
+        if (sysInfo_->varHTinitSize_) {
+            varmap_.reserve(sysInfo_->varHTinitSize_);
+        }
     }
     explicit Lil_callframe(LilInterp_Ptr lil, Lil_callframe_Ptr parent) { // #ctor
         assert(lil!=nullptr); assert(parent!=nullptr);
@@ -478,7 +489,14 @@ public:
         return ret;
     }
     // Add variable to hashmap.
-    void hashmap_put(lcstrp name, Lil_var_Ptr v) { assert(name!=nullptr); assert(v!=nullptr); varmap_[name] = v; }
+    void hashmap_put(lcstrp name, Lil_var_Ptr v) {
+        assert(name!=nullptr); assert(v!=nullptr);
+        varmap_[name] = v;
+        auto sz = varmap_.size();
+        if (sz > sysInfo_->varHTMaxSize_) {
+            sysInfo_->varHTMaxSize_ = sz;
+        }
+    }
     // Remove entry from hashmap
     void hashmap_remove(lcstrp name) {
         assert(name!=nullptr);
@@ -595,6 +613,10 @@ public:
     void setCode(Lil_value_Ptr val) {
         assert(val!=nullptr);
         code_ = lil_clone_value(val);
+        sysInfo_->numProcs_++;
+        if (code_->getSize() > sysInfo_->maxProcSize_) {
+            sysInfo_->maxProcSize_ = code_->getSize();
+        }
     }
 
     // Get list of arguments to function.
@@ -604,7 +626,10 @@ public:
     // Get function pointer.
     ND lil_func_proc_t getProc() const { return proc_; }
     // Set function pointer.
-    void setProc(lil_func_proc_t p) { proc_ = p; }
+    void setProc(lil_func_proc_t p) {
+        proc_ = p;
+        sysInfo_->numCommands_++;
+    }
 };
 
 struct LilInterp { // #class
@@ -800,8 +825,8 @@ public:
         if (parse_depth_ > sysInfo_->maxParseDepthAcheved_) { // #topic
             sysInfo_->maxParseDepthAcheved_ = parse_depth_;
             if (sysInfo_->maxParseDepthAcheved_ >= sysInfo_->limit_Parsedepth_) {
-                DBGPRINTF("EXCEPTION: Exceeded max parse depth\n"); // #TODO string
-                throw LilException{"Exceeded max parse depth"}; // #TODO string
+                DBGPRINTF(L_VSTR(0x44af,"EXCEPTION: Exceeded max parse depth\n"));
+                throw LilException{L_VSTR(0x88d3,"Exceeded max parse depth")};
             }
         }
     }

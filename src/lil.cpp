@@ -52,6 +52,9 @@ NS_BEGIN(Lil)
         this->setEmptyVal(new Lil_value(this) );
         this->dollarprefix_ = L_VSTR(0x59e0,"set ");
         register_stdcmds();
+        if (sysInfo_->cmdHTinitSize_) {
+            cmdmap_reserve(sysInfo_->cmdHTinitSize_);
+        }
     }
     void LilInterp::setCather(Lil_value_Ptr cmdD) {
         auto& catcherObj = cmdD->getValue();
