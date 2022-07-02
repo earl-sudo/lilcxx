@@ -22,7 +22,10 @@
  *
  * Kostas Michalopoulos <badsector@runtimeterror.com>
  */
-
+/*
+ * While I started with LIL I highly modified it
+ * Earl Johnson https://github.com/earl-sudo/lilcxx 2022
+ */
 #include "lil_inter.h"
 #include "narrow_cast.h"
 #include <cassert>

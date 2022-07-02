@@ -1,6 +1,6 @@
 /*
  * LIL - Little Interpreted Language
- * Copyright (C) 2010 Kostas Michalopoulos
+ * Copyright (C) 2010-2021 Kostas Michalopoulos
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,11 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  *
- * Kostas Michalopoulos <badsector@runtimelegend.com>
+ * Kostas Michalopoulos <badsector@runtimeterror.com>
+ */
+/*
+ * While I started with LIL I highly modified it
+ * Earl Johnson https://github.com/earl-sudo/lilcxx 2022
  */
 
 #define _DEFAULT_SOURCE

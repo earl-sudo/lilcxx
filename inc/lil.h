@@ -20,6 +20,10 @@
  *
  * Kostas Michalopoulos <badsector@runtimeterror.com>
  */
+/*
+ * While I started with LIL I highly modified it
+ * Earl Johnson https://github.com/earl-sudo/lilcxx 2022
+ */
 
 #ifndef LIL_H_INCLUDED
 #define LIL_H_INCLUDED
