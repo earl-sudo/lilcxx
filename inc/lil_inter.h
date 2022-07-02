@@ -264,6 +264,8 @@ struct SysInfo { // #class
     //- 15
     INT maxProcSize_ = 0;
     INT numCommands_ = 0;
+    INT numDelCommands_ = 0;
+    INT numRenameCommands_ = 0;
 
     INT varHTinitSize_ = 0; // 0 is unset
     INT cmdHTinitSize_ = 0; // 0 is unset
@@ -297,6 +299,12 @@ struct SysInfo { // #class
         SYSINFO_ENTRY(numVarMisses_);
         SYSINFO_ENTRY(numVarHits_);
         SYSINFO_ENTRY(varHTMaxSize_);
+        SYSINFO_ENTRY(numProcs_);
+        //- 15
+        SYSINFO_ENTRY(maxProcSize_);
+        SYSINFO_ENTRY(numCommands_);
+        SYSINFO_ENTRY(numDelCommands_);
+        SYSINFO_ENTRY(numRenameCommands_);
 #undef SYSINFO_ENTRY
     }
 };

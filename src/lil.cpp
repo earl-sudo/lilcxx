@@ -82,8 +82,6 @@ NS_BEGIN(Lil)
     inline Lil_value_Ptr LilInterp::rename_func(SIZE_T argc, Lil_value_Ptr* argv) {
         Lil_value_Ptr r;
         Lil_func_Ptr  func;
-        lcstrp  oldname;
-        lcstrp  newname;
         if (argc < 2) return nullptr; // #argErr
         auto& oldnameObj = argv[0]->getValue();
         auto& newnameObj = argv[1]->getValue();
@@ -96,11 +94,13 @@ NS_BEGIN(Lil)
         }
         r = new Lil_value(this, func->getName());
         if (newnameObj[0]) {
-            hashmap_removeCmd(oldname);
+            hashmap_removeCmd(oldnameObj.c_str());
             hashmap_addCmd(newnameObj.c_str(), func);
             func->name_ = newnameObj;
+            sysInfo_->numRenameCommands_++;
         } else {
             del_func(func);
+            sysInfo_->numDelCommands_++;
         }
         return r;
     }
@@ -121,13 +121,6 @@ NS_BEGIN(Lil)
 /* Enable limiting recursive calls to lil_parse - this can be used to avoid call stack
  * overflows and is also useful when running through an automated fuzzer like AFL */
 INT LIL_ENABLE_RECLIMIT = 0; // Set to non-zero to limit level of recursion.
-
-lstrp _strclone(lstring_view s) { // #private
-    SIZE_T len = s.length() + 1;
-    auto ns = new lchar[len];  // alloc char*
-    memcpy(ns, s.data(), len);
-    return ns;
-}
 
 ND static Lil_value_Ptr _alloc_value_len(LilInterp_Ptr lil, lcstrp str, SIZE_T len) { // #private
     assert(lil!=nullptr); assert(str!=nullptr);
