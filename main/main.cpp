@@ -141,7 +141,7 @@ static int repl() {
     LPRINTF(L_VSTR(0x5f53,"Little Interpreted Language Interactive Shell\n"));
     while (running) { // Command loop.
         lcstrp err_msg;
-        SIZE_T     pos;
+        INT      pos;
         buffer[0] = 0;
         LPRINTF("# "); // Prompt
         if (!fgets(buffer, 16384, stdin)) { break; } // Get input.
@@ -164,7 +164,7 @@ static int nonint(int argc, lcstrp argv[]) {
     LilInterp_Ptr lil = lil_new();
     lcstrp filename = argv[1];
     lcstrp err_msg;
-    SIZE_T       pos;
+    INT       pos;
     Lil_list_Ptr arglist = lil_alloc_list(lil);
 
     lil_callback(lil, LIL_CALLBACK_EXIT, (lil_callback_proc_t) do_exit); // Exit handler.
@@ -288,7 +288,7 @@ NS_BEGIN(Lil)
 static int run_a_string(lcstrp input) {
     LilInterp_Ptr lil = lil_new();
     lcstrp err_msg;
-    SIZE_T       pos;
+    INT       pos;
 
     lil_callback(lil, LIL_CALLBACK_WRITE, (lil_callback_proc_t)lil_write_callback);
 

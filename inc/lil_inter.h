@@ -114,9 +114,9 @@ struct ObjCounter {
         }
     }
     struct ObjCount {
-        SIZE_T  numCtor_ = 0;
-        SIZE_T  numDtor_ = 0;
-        SIZE_T  maxNum_ = 0;
+        INT  numCtor_ = 0;
+        INT  numDtor_ = 0;
+        INT  maxNum_ = 0;
         friend std::ostream& operator<<(std::ostream& os, const ObjCount& dt) {
             os << " (objCount " << dt.numCtor_ << " " << dt.numDtor_ << " " << dt.maxNum_ << ") ";
             return os;
@@ -376,14 +376,14 @@ public:
     ~Lil_value() noexcept { // #dtor
         LIL_DTOR(sysInfo_, "Lil_value");
     }
-    ND SIZE_T getValueLen() const { return value_.length(); }
+    ND INT getValueLen() const { return value_.length(); }
     ND const lstring& getValue() const { return value_; }
-    ND lchar  getChar(SIZE_T i) const { return value_.at(i); }
+    ND lchar  getChar(INT i) const { return value_.at(i); }
     void append(lchar ch) { value_.append(1, ch); change(); }
-    void append(lcstrp  s, SIZE_T len) { assert(s!=nullptr); value_.append(s, len); change(); }
+    void append(lcstrp  s, INT len) { assert(s!=nullptr); value_.append(s, len); change(); }
     void append(lcstrp  s) { assert(s!=nullptr); append(s); change(); }
     void append(Lil_value_CPtr v) { assert(v!=nullptr); value_.append(v->value_);change(); }
-    SIZE_T getSize() const { return value_.length(); }
+    INT getSize() const { return value_.length(); }
 };
 
 struct Lil_value_SPtr { // #class
@@ -567,7 +567,7 @@ public:
             sysInfo_->maxListLengthAcheved_ = listRep_.size(); // #topic
     }
     ND Lil_value_Ptr getValue(INT index) const { return listRep_[index]; }
-    ND SIZE_T getCount() const { return listRep_.size(); }
+    ND INT getCount() const { return (INT)listRep_.size(); }
     // Cmds are list we skip first word which is the command name.
     Lil_value_Ptr* getArgs() { return (&listRep_[0]) + 1; }
     void convertListToArrayForArgs(std::vector<Lil_value_Ptr>& argsArray) {
@@ -655,8 +655,8 @@ private:
     lstring         dollarprefix_; // own memory
 
     lstring         code_; /* need save on parse */ // Waste some space owning, but simplify conception.
-    SIZE_T          head_    = 0; // Position in code_ (need save on parse)
-    SIZE_T          codeLen_ = 0; // Length of code_  (need save on parse)
+    INT             head_    = 0; // Position in code_ (need save on parse)
+    INT             codeLen_ = 0; // Length of code_  (need save on parse)
     lcstrp          rootcode_ = nullptr; // The original code_
 
     bool            ignoreeol_ = false; // Do we ignore EOL during parsing.
@@ -668,13 +668,13 @@ private:
     Lil_value_Ptr       empty_                   = nullptr; // A "empty" Lil_value. (own memory)
     std::vector<lil_callback_proc_t> callback_{NUM_CALLBACKS}; // index LIL_CALLBACK_*
 
-    lstring  catcher_; // Pointer to "catch" command (own memory)
-    bool   in_catcher_ = false; // Are we in a "catch" command?
+    lstring   catcher_; // Pointer to "catch" command (own memory)
+    bool      in_catcher_ = false; // Are we in a "catch" command?
 
     ErrorCode errorCode_; // Error code_.
-    SIZE_T    errPosition_ = 0; // Position in code_ where error occured.
+    INT       errPosition_ = 0; // Position in code_ where error occured.
 
-    SIZE_T parse_depth_ = 0; // Current parse depth.
+    INT       parse_depth_ = 0; // Current parse depth.
 
     // Set root/global "callframe".
     void setRootEnv(Lil_callframe_Ptr v) { rootenv_ = v; }
@@ -684,13 +684,13 @@ private:
     // Set interp text.
     void setCode(lcstrp  ptr) { code_ = ptr; }
     // Set current offset in code_.
-    ND SIZE_T& setHead() { return head_; }
+    ND INT& setHead() { return head_; }
     // Set "catcher".
     void setCatcher(lcstrp  ptr) { catcher_ = ptr; }
     // Set "catcher" to empty.
     void setCatcherEmpty() { catcher_.clear(); }
     // Set position in code_ where error occurred.
-    ND SIZE_T& setErr_head() { return errPosition_; }
+    ND INT& setErr_head() { return errPosition_; }
 
     // Register standard commands.
     void register_stdcmds();
@@ -750,7 +750,7 @@ public:
     }
 
     // Get code_ length.
-    ND SIZE_T getCodeLen() const { return codeLen_; }
+    ND INT getCodeLen() const { return codeLen_; }
 
     // Get original code_.
     ND lcstrp  getRootcode() const { return rootcode_; }
@@ -758,7 +758,7 @@ public:
     ND lcstrp & setRootcode() { return rootcode_; }
 
     // Set interp text.
-    void setCode(lcstrp  codeD, SIZE_T codelen, SIZE_T headPos = 0) { // codeD could be nullptr.
+    void setCode(lcstrp  codeD, INT codelen, INT headPos = 0) { // codeD could be nullptr.
         setCode( codeD );
         codeLen_ = codelen;
         setHead()    = headPos;
@@ -774,7 +774,7 @@ public:
     // Advance val characters.
     void incrHead(INT v) { head_ += v; }
     // Get current offset in code_.
-    ND size_t getHead() const { return head_; }
+    ND INT getHead() const { return head_; }
 
     // Get callback function pointer.
     ND lil_callback_proc_t getCallback(LIL_CALLBACK_IDS index) { return callback_[index]; }
@@ -793,7 +793,7 @@ public:
     ND bool& setIgnoreEol() { return ignoreeol_; }
 
     // Get number of commands.
-    ND size_t getNumCmds() const { return sysCmdMap_.size(); }
+    ND INT getNumCmds() const { return sysCmdMap_.size(); }
 
     // Get catcher if inside "catch" or nullptr if not.
     ND const lstring & getCatcher() const { return catcher_; }
@@ -826,7 +826,7 @@ public:
     ND Lil_callframe_Ptr getRootEnv() const { return rootenv_; }
 
     // Get current parse depth.
-    ND size_t getParse_depth() const { return parse_depth_; }
+    ND INT getParse_depth() const { return parse_depth_; }
     // Change parse depth.
     void incrParse_depth(INT n) {
         parse_depth_ += n;
@@ -840,7 +840,7 @@ public:
     }
 
     // Get position in code_ were error occurred.
-    ND size_t getErr_head() const { return errPosition_; }
+    ND INT getErr_head() const { return errPosition_; }
 
     // Get current error code_.
     ND ErrorCode getError() const { return errorCode_; }
@@ -848,7 +848,7 @@ public:
     ND ErrorCode& setError() { return errorCode_; }
     void setError(const ErrorCode& ec) { errorCode_ = ec; }
 #define SETERROR(X) setError((X))
-    ND INT getErrorInfo(lcstrp * msg, size_t* pos) {
+    ND INT getErrorInfo(lcstrp * msg, INT *pos) {
         assert(msg!=nullptr); assert(pos!=nullptr);
         if (!this->getError().inError()) { return 0; }
         *msg = this->err_msg_.c_str();
@@ -863,14 +863,14 @@ public:
         this->setErr_head() = 0;
         this->err_msg_ = (msg ? msg : L_STR(""));
     }
-    void setErrorAt(size_t pos, lcstrp  msg) {
+    void setErrorAt(INT pos, lcstrp  msg) {
         if (this->getError().inError()) { return; }
         if (sysInfo_->logInterpInfo_) sysInfo_->numErrorsSetInterpreter_++; // #topic
         this->SETERROR(LIL_ERROR(ERROR_DEFAULT));
         this->setErr_head() = pos;
         this->err_msg_ = (msg ? msg : L_STR(""));
     }
-    void setError(ErrorCode codeD, size_t head) {
+    void setError(ErrorCode codeD, INT head) {
         if (sysInfo_->logInterpInfo_) sysInfo_->numErrorsSetInterpreter_++; // #topic
         this->SETERROR(codeD);
         this->setErr_head() = head;
@@ -880,7 +880,7 @@ public:
     ND Lil_func_Ptr find_cmd(lcstrp  name);
     ND Lil_func_Ptr add_func(lcstrp  name);
     void del_func(Lil_func_Ptr cmdD);
-    ND Lil_value_Ptr rename_func(size_t argc, Lil_value_Ptr* argv);
+    ND Lil_value_Ptr rename_func(INT argc, Lil_value_Ptr* argv);
     ND bool registerFunc(lcstrp  name, lil_func_proc_t proc);
 };
 
@@ -888,15 +888,15 @@ struct Lil_exprVal { // #class
     SysInfo*        sysInfo_ = nullptr;
 private:
     lcstrp        code_       = nullptr; // Don't own, from lil obj.
-    size_t        head_       = 0; // Position in code_.
-    size_t        lenCode_    = 0; // Length of code_.
+    INT           head_       = 0; // Position in code_.
+    INT           lenCode_    = 0; // Length of code_.
     lilint_t      integerVal_ = 0; // Lil_value integer value_.
     double        doubleVal_  = 0.0; // Lil_value double value_
     LilTypes      type_       = EE_INT; // Lil_value type (i.entries. EE_*)
     INT           errorCode_  = 0; // Error code_ (i.entries. EERR_*)
     Lil_value_Ptr inCode_ = nullptr;
 
-    ND size_t& setLen() { return lenCode_; }
+    ND INT& setLen() { return lenCode_; }
 public:
     explicit Lil_exprVal(LilInterp_Ptr lil, Lil_value_Ptr code) { // #ctor
         assert(lil!=nullptr); assert(code!=nullptr);
@@ -918,12 +918,12 @@ public:
         LIL_DTOR((sysInfo_), "Lil_exprVal");
         lil_free_value(inCode_);
     }
-    ND size_t getHead() const { return head_; }
-    ND size_t& setHead() { return head_; }
+    ND INT getHead() const { return head_; }
+    ND INT& setHead() { return head_; }
     ND lchar getHeadChar(INT n = 0) const { return code_[head_ + n]; }
     void nextHead() { head_++; }
 
-    ND size_t getLen() const { return lenCode_; }
+    ND INT getLen() const { return lenCode_; }
 
     ND lilint_t getInteger() const { return integerVal_; }
     ND lilint_t& setInteger() { return integerVal_; }
@@ -952,10 +952,8 @@ struct Module {
     INT         version_[2] = {0,0};
 };
 
-// using lil_func_proc_t = std::function<Lil_value_Ptr(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr* argv)>;
-
 struct CommandAdaptor {
-    virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, size_t argc, Lil_value_Ptr* argv) { }
+    virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr* argv) { }
 };
 
 #undef ND
