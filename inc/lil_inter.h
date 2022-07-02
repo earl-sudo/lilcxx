@@ -148,6 +148,9 @@ struct FuncTimer {
     bool doTiming_     = false;
     bool doTimeOnExit_ = false;
 
+    FuncTimer() = default;
+    FuncTimer(const FuncTimer& rhs) = default;
+    FuncTimer& operator=(const FuncTimer& rhs) = default;
     ~FuncTimer() noexcept {
         auto print_key_value = [](const auto& key, const auto& value) {
             std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
@@ -162,7 +165,7 @@ struct FuncTimer {
     struct TimerInfo {
         std::clock_t    totalTime_ = 0;
         std::clock_t    maxTime_ = 0;
-        SIZE_T          numCalls_ = 0;
+        INT             numCalls_ = 0;
         friend std::ostream& operator<<(std::ostream& os, const TimerInfo& dt) {
             os << " (timerInfo " << dt.totalTime_ << " " << dt.maxTime_ << " " << dt.numCalls_ << ") ";
             return os;
@@ -199,14 +202,18 @@ struct FuncTimer {
 
 struct Coverage {
     // Coverage specific ==================================================
-    bool        doCoverage_ = false;
-    bool        outputCoverageOnExit_ = false;
+    bool            doCoverage_ = false;
+    bool            outputCoverageOnExit_ = false;
+    std::ostream*   outStrm = &std::cerr;
 
     std::unordered_map<lstring, INT>  coverageMap_;
 
+    Coverage() = default;
+    Coverage(const Coverage& rhs) = default;
+    Coverage& operator=(const Coverage& rhs) = default;
     ~Coverage() {
-        auto print_key_value = [](const auto& key, const auto& value) {
-            std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
+        auto print_key_value = [&](const auto& key, const auto& value) {
+            (*outStrm) << "Key:[" << key << "] Value:[" << value << "]\n";
         };
 
         if (doCoverage_ && outputCoverageOnExit_) {
@@ -227,7 +234,7 @@ struct Coverage {
 };
 
 struct SysInfo { // #class
-    ObjCounter   objCounter_;
+    ObjCounter  objCounter_;
     FuncTimer   funcTimer_;
     Coverage    converage_;
 
@@ -242,32 +249,47 @@ struct SysInfo { // #class
     INT maxParseDepthAcheved_ = 0;
     INT maxListLengthAcheved_ = 0;
     INT numCommandsRun_ = 0;
+    //- 5
     INT numExceptionsInCommands_ = 0;
     INT numProcsRuns_ = 0;
     INT numUnfoundCommands_ = 0;
     INT numExpressions_ = 0;
     INT numEvalCalls_ = 0;
+    //- 10
+    INT numWatchCode_ = 0;
+    INT numVarMisses_ = 0;
+    INT numVarHits_ = 0;
 
     INT limit_Parsedepth_           = 0xFFFF;
 
     SysInfo() { // #ctor
         startTime_ = std::clock();
     }
+    SysInfo(const SysInfo& rhs) = default;
+    SysInfo& operator=(const SysInfo& rhs) = default;
     ~SysInfo() noexcept { // #dtor
         if (logInterpInfo_ && outputInterpInfoOnExit_) {
-            #define SYSINFO_ENTRY(X) std::cerr << #X << " = " << (X) << "\n";
-            SYSINFO_ENTRY(numCommandsRegisteredTotal_);
-            SYSINFO_ENTRY(numErrorsSetInterpreter_);
-            SYSINFO_ENTRY(maxParseDepthAcheved_);
-            SYSINFO_ENTRY(numCommandsRun_);
-            SYSINFO_ENTRY(numExceptionsInCommands_);
-            //-
-            SYSINFO_ENTRY(numProcsRuns_);
-            SYSINFO_ENTRY(numUnfoundCommands_);
-            SYSINFO_ENTRY(numExpressions_);
-            SYSINFO_ENTRY(numEvalCalls_);
-            #undef SYSINFO_ENTRY
+            printStats();
         }
+    }
+    void printStats() const {
+#define SYSINFO_ENTRY(X) std::cerr << #X << " = " << (X) << "\n";
+        SYSINFO_ENTRY(numCommandsRegisteredTotal_);
+        SYSINFO_ENTRY(numErrorsSetInterpreter_);
+        SYSINFO_ENTRY(maxParseDepthAcheved_);
+        SYSINFO_ENTRY(maxListLengthAcheved_);
+        SYSINFO_ENTRY(numCommandsRun_);
+        //- 5
+        SYSINFO_ENTRY(numExceptionsInCommands_);
+        SYSINFO_ENTRY(numProcsRuns_);
+        SYSINFO_ENTRY(numUnfoundCommands_);
+        SYSINFO_ENTRY(numExpressions_);
+        SYSINFO_ENTRY(numEvalCalls_);
+        //- 10
+        SYSINFO_ENTRY(numWatchCode_);
+        SYSINFO_ENTRY(numVarMisses_);
+        SYSINFO_ENTRY(numVarHits_);
+#undef SYSINFO_ENTRY
     }
 };
 
@@ -307,6 +329,13 @@ void setSysInfo(LilInterp_Ptr lil, SysInfo*& sysInfo);
 struct Lil_value { // #class
     SysInfo*    sysInfo_ = nullptr;
 private:
+#ifdef LIL_VALUE_STATS
+    INT         numChanges_ = 0;
+    INT         maxValueSize_ = 0;
+    void change() { numChanges++; if (value_.length() > maxValueSize_) maxValueSize_ = value_.length(); }
+#else
+    void change() { }
+#endif
     lstring     value_; // Body of value_. (Owns memory)
 public:
 
@@ -333,12 +362,11 @@ public:
     }
     ND SIZE_T getValueLen() const { return value_.length(); }
     ND const lstring& getValue() const { return value_; }
-    ND lstring& getRValue() { return value_; }
     ND lchar  getChar(SIZE_T i) const { return value_.at(i); }
-    void append(lchar ch) { value_.append(1, ch); }
-    void append(lcstrp  s, SIZE_T len) { assert(s!=nullptr); value_.append(s, len); }
-    void append(lcstrp  s) { assert(s!=nullptr); append(s);  }
-    void append(Lil_value_CPtr v) { assert(v!=nullptr); value_.append(v->value_); }
+    void append(lchar ch) { value_.append(1, ch); change(); }
+    void append(lcstrp  s, SIZE_T len) { assert(s!=nullptr); value_.append(s, len); change(); }
+    void append(lcstrp  s) { assert(s!=nullptr); append(s); change(); }
+    void append(Lil_value_CPtr v) { assert(v!=nullptr); value_.append(v->value_);change(); }
     SIZE_T getSize() const { return value_.length(); }
 };
 
@@ -385,6 +413,7 @@ public:
             return;
         }
         watchCode_ = value;
+        sysInfo_->numWatchCode_++;
     }
     ND bool hasWatchcode() const { return watchCode_.length() > 0; }
     // Get variable value_.
@@ -439,7 +468,15 @@ public:
     // Get a variable.
     Lil_var_Ptr getVar(lcstrp name) {
         assert(name!=nullptr);
-        auto it = varmap_.find(name); return (it == varmap_.end()) ? (nullptr) : (it->second); }
+        auto it = varmap_.find(name);
+        auto ret = (it == varmap_.end()) ? (nullptr) : (it->second);
+        if (ret == nullptr) {
+            sysInfo_->numVarMisses_++;
+        } else {
+            sysInfo_->numVarHits_++;
+        }
+        return ret;
+    }
     // Add variable to hashmap.
     void hashmap_put(lcstrp name, Lil_var_Ptr v) { assert(name!=nullptr); assert(v!=nullptr); varmap_[name] = v; }
     // Remove entry from hashmap
@@ -475,7 +512,9 @@ public:
     ND bool& setBreakrun() { return breakrun_; }
 
     ND Lil_value_Ptr getCatcher_for() const { return catcher_for_; }
-    Lil_value_Ptr& setCatcher_for() { return catcher_for_; }
+    void setCatcher_for(Lil_value_Ptr var) {
+        catcher_for_ = var;
+    }
 };
 
 struct Lil_list { // #class

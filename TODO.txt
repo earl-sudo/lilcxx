@@ -74,16 +74,7 @@
 - [] => span<> or array<>
 - {} for constructors
 - make expr code "re-usable"
-- Add module support
 - Add holding area for functions.
-- Add resource handles
-- From Jim borrow
-    - ref/getref/setref
-    - info stacktrce
-    - static varfs
-    - command line edition
-    - expression shorthand
-    - defer
 
 - Better expr (from tcl7.6)
 - Better int/double parsing (from tcl8)
@@ -97,7 +88,6 @@
 - add "safe" to commands
 - Use class enums
 - Output stats as YAML or JSON
-- Add platform information
 - try PVS
 - numDeReferences_
 - numUnknownVars_
@@ -110,12 +100,37 @@
 - numFuncFails_
 - redirect stdout stderr
 - Makefile and build script
-- "test" command with {script output numErrors} an on/off switch
 - tclParseNumber project
 - Add error ids to all errors
-- justifications
+- string class that detects integer conversion or not float/integer.
+- Use tcl test suit.
+- find limits of current expr.
 
 =================== Additions
+- Add module support
+- Add resource handles
+- From Jim borrow
+    - ref/getref/setref
+    - info stacktrce
+    - static varfs
+    - command line edition
+    - expression shorthand
+    - defer
+- Add platform information
+- "test" command with {script output numErrors} an on/off switch
+- Option to make lil more tcl complent.
+- if/switch/for/foreach/func/while return
+- @count<n> for loops
+- named beak/continue with local flag @break<name>called
+- named if/switch/for/foreach/func/while with local flag
+- generators like python/C++
+- must cmd args -- error becomes exception
+- unless cmd args condition
+- dbgbreak
+- assert
+- option to log all errors and catches
+- option to log all calls
+
 - handles interface
 
 std::string wrapper
