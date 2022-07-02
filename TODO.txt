@@ -40,6 +40,8 @@
 - numIntegerConversions_ - DONE
 - numDoubleConversions_ - DONE
 - configure hashtables. - DONE
+- numArgErrrors_ - DONE
+- numFuncFails_ - DONE
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -54,7 +56,6 @@
 - ERROR: Copies may exist of LilInterp may exist so other references are possible.
 - Review algorithms for substitutions.
 - Fix "invalid read of size 1", ~Lil_value().
-- Add system to associate binary/alternate representations to string representations and deal with changes.
 - Publish
 - const char* -> std::string_view
 - safe mode
@@ -83,8 +84,6 @@
 - numDeReferences_
 - numRedefinedProcs_
 - numRedefinedVars
-- numArgErrrors_
-- numFuncFails_
 - redirect stdout stderr
 - Makefile and build script
 - tclParseNumber project
@@ -93,6 +92,7 @@
 - find limits of current expr.
 
 =================== Optimizations
+- Add system to associate binary/alternate representations to string representations and deal with changes.
 - configure vectors.
 - configure strings
 - cache int64_t and Lil_value.

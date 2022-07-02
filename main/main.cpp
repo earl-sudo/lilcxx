@@ -321,6 +321,11 @@ static int run_a_string(lcstrp input) {
 NS_END(Lil)
 
 int main(int argc, const char* argv[]) {
+    std::cout << "DEF_COMPILER:" << DEF_COMPILER << std::endl;
+    std::cout << "DEF_COMPILER_VERSION:" << DEF_COMPILER_VERSION << std::endl;
+    std::cout << "CPP_VERSION:" << CPP_VERSION << std::endl;
+    std::cout << "DEF_OS:" << DEF_OS << std::endl;
+
     using namespace Lil;
     bool do_unit_test = false;
     if (strcmp(argv[1],"unittest")==0) do_unit_test = true;

@@ -24,6 +24,8 @@
 #ifndef LIL_H_INCLUDED
 #define LIL_H_INCLUDED
 
+#include "comp_info.h"
+
 #include <cstdint>
 #include <cinttypes>
 #include <string>
