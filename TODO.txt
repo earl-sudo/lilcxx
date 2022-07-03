@@ -42,6 +42,7 @@
 - configure hashtables. - DONE
 - numArgErrrors_ - DONE
 - numFuncFails_ - DONE
+- Generate random number table - DONE
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -75,7 +76,6 @@
 - Command arg check
 - Cmd error management
 - C API
-- Generate random number table
 - Make Lil_value more string link.
 - Use std::array where arrays needed.
 - add "safe" to commands

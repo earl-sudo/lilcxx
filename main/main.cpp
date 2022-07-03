@@ -332,7 +332,7 @@ int main(int argc, const char* argv[]) {
 
     using namespace Lil;
     bool do_unit_test = false;
-    if (strcmp(argv[1],"unittest")==0) do_unit_test = true;
+    if (argv[1] && strcmp(argv[1],"unittest")==0) do_unit_test = true;
     if (do_unit_test) {
         int numErrors = 0;
         for (int i = 0; i < sizeof(ut)/sizeof(unittest); i++) {
