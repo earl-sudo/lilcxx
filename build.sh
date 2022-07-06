@@ -1,9 +1,10 @@
-
+# This shows how easy it is to build lilcxx minus all the BULLSHIT of CMake and other build systems.
+# Modern software engineering seems based on making simple things to look like rocket science.
 
 GCC=g++-10
 
 CFLAGS="${CFLAGS} -I./inc -I./main"
-CFLAGS="${CFLAGS} -std=c++20 -Wall -g -O2"
+CFLAGS="${CFLAGS} -std=c++20 -Wall -g -O3 -march=native -flto"
 
 CFLAGS="${CFLAGS} -pedantic -Wall -Wextra -Wcast-align -Wcast-qual"
 CFLAGS="${CFLAGS}  -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op"

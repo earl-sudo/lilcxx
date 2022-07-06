@@ -90,12 +90,12 @@ public:
         v = rhs.v;
         return *this;
     }
-    INT val() const { return v; }
-    bool inError() const { return v != 0; }
+    ND INT val() const { return v; }
+    ND bool inError() const { return v != 0; }
 };
 
 struct LilException : std::runtime_error {
-    LilException(const char* sv) : std::runtime_error{sv} { }
+    explicit LilException(const char* sv) : std::runtime_error{sv} { }
 };
 
 // We might want to add file/line what ever so use a macro during creation.
@@ -399,7 +399,7 @@ private:
     lstring     value_; // Body of value_. (Owns memory)
 public:
 
-    Lil_value(LilInterp_Ptr lil) {
+    explicit Lil_value(LilInterp_Ptr lil) {
         assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_value");
@@ -427,7 +427,7 @@ public:
     void append(lcstrp  s, INT len) { assert(s!=nullptr); value_.append(s, len); change(); }
     void append(lcstrp  s) { assert(s!=nullptr); append(s); change(); }
     void append(Lil_value_CPtr v) { assert(v!=nullptr); value_.append(v->value_);change(); }
-    INT getSize() const { return value_.length(); }
+    ND INT getSize() const { return value_.length(); }
 };
 
 struct Lil_value_SPtr { // #class
@@ -593,7 +593,7 @@ private:
 #define LIL_LIST_IS_ARRAY 1
     std::vector<Lil_value_Ptr> listRep_;
 public:
-    Lil_list(LilInterp_Ptr lil) { // #ctor
+    explicit Lil_list(LilInterp_Ptr lil) { // #ctor
         assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_list");
@@ -958,7 +958,7 @@ public:
         this->setType() = EE_INT;
         this->setError() = 0;
     }
-    Lil_exprVal(LilInterp_Ptr lil) { //  #ctor
+    explicit Lil_exprVal(LilInterp_Ptr lil) { //  #ctor
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_exprVal");
     }

@@ -43,6 +43,11 @@
 - numArgErrrors_ - DONE
 - numFuncFails_ - DONE
 - Generate random number table - DONE
+- Makefile and build script - DONE (minus makefile)
+- thread safe - OBE
+- Move private code to private section. - OBE
+
+- Make and test more standard for others
 
 - Use inspectors.
 - Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
@@ -62,18 +67,12 @@
 - safe mode
 - less code
 - better errors
-- thread safe
 - string class
-- Move private code to private section.
 - get rid of most ".c_str()" - 70%
 - [] => span<> or array<>
 - {} for constructors
 - make expr code "re-usable"
 
-- Better expr (from tcl7.6)
-- Better int/double parsing (from tcl8)
-- Command help
-- Command arg check
 - Cmd error management
 - C API
 - Make Lil_value more string link.
@@ -85,11 +84,11 @@
 - numRedefinedProcs_
 - numRedefinedVars
 - redirect stdout stderr
-- Makefile and build script
 - tclParseNumber project
 - Add error ids to all errors
 - Use tcl test suit.
 - find limits of current expr.
+- Functor version of callbacks. How?
 
 =================== Optimizations
 - Add system to associate binary/alternate representations to string representations and deal with changes.
@@ -104,6 +103,10 @@
 - add to add runtime binary types for caching.
 
 =================== Additions
+- Better expr (from tcl7.6)
+- Better int/double parsing (from tcl8)
+- Command help
+- Command arg check
 - Add holding area for functions.
 - Make more like tcl ("func" => "proc" and like)
 - Output stats as YAML or JSON
@@ -131,6 +134,7 @@
 - assert
 - option to log all errors and catches
 - option to log all calls
+- tanted rwx
 
 - handles interface
 
