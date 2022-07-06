@@ -1001,6 +1001,11 @@ struct Module {
 };
 
 struct CommandAdaptor {
+    Module*  module_ = nullptr;
+    lstring help_;
+    lstring cmdHelp_;
+    bool isSafe_ = true;
+    lstring tags_;
     virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr* argv) { }
 };
 
