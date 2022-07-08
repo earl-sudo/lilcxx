@@ -44,10 +44,11 @@ NS_BEGIN(Lil)
 
     void            _ee_expr(Lil_exprVal* ee);
 
-    LilInterp::LilInterp() { // #ctor
+    LilInterp::LilInterp(LilInterp* parent) { // #ctor
 //        sysInfo_.logInterpInfo_ = true;        sysInfo_.outputInterpInfoOnExit_ = true;
 //        sysInfo_.outputCoverageOnExit_ = true; sysInfo_.doCoverage_ = true;
 //        sysInfo_.doTiming_ = true;             sysInfo_.doTimeOnExit_ = true;
+        if (parent==nullptr) Lil_getSysInfo(true);
         sysInfo_ = Lil_getSysInfo();
         LIL_CTOR(sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );
@@ -355,7 +356,7 @@ void lil_pop_env(LilInterp_Ptr lil) {
 }
 
 LilInterp_Ptr lil_new() {
-    return new LilInterp();  //alloc LilInterp
+    return new LilInterp(nullptr);  //alloc LilInterp
 }
 
 ND static bool _islilspecial(lchar ch) { // #private

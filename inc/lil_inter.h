@@ -738,8 +738,10 @@ private:
 
     // Register standard commands.
     void register_stdcmds();
+
+    LilInterp*  parentInterp_ = nullptr;
 public:
-    LilInterp();
+    explicit LilInterp(LilInterp* parent);
     ~LilInterp() noexcept { // #dtor
         LIL_DTOR((sysInfo_), "LilInterp");
         lil_free_value(this->getEmptyVal());
@@ -1007,6 +1009,8 @@ struct CommandAdaptor {
     bool isSafe_ = true;
     lstring tags_;
     virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr* argv) { }
+    virtual void askForHelp() { }
+    virtual void askForCmdLine() { }
 };
 
 #undef ND

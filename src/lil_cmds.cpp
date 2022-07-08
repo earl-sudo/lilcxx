@@ -28,8 +28,16 @@
  */
 #include "lil_inter.h"
 #include "narrow_cast.h"
+#include "funcPointers.h"
 #include <cassert>
 #include <climits>
+
+// Allow for mocking functions
+fopen_funcType  fopen_func  =(fopen_funcType)fopen;
+fclose_funcType fclose_func = (fclose_funcType)fclose;
+fread_funcType  fread_func  = (fread_funcType)fread;
+fwrite_funcType fwrite_func = (fwrite_funcType)fwrite;
+fseek_funcType  fseek_func  = (fseek_funcType)fseek;
 
 NS_BEGIN(Lil)
 
@@ -627,7 +635,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         ARGERR(argc == 1); // #argErr
     }
     // Create a child interpreter to run cmd in.
-    std::unique_ptr<LilInterp> sublil(lil_new());
+    std::unique_ptr<LilInterp> sublil(new LilInterp(lil));
     if (base != true) {
         // Add in initial/system commands into new interpreter.
         sublil->jail_cmds(lil);
@@ -1080,19 +1088,19 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         lil->sysInfo_->bytesAttemptedRead_ += LSTRLEN(buffer.get());
         r = lil_alloc_string(lil, buffer.get());
     } else {
-        FILE *f = fopen(lil_to_string(argv[0]), L_STR("rb"));
+        FILE *f = fopen_func(lil_to_string(argv[0]), L_STR("rb"));
         if (!f) { CMD_ERROR_RET(nullptr); }
-        fseek(f, 0, SEEK_END);
+        fseek_func(f, 0, SEEK_END);
         auto size = ftell(f);
         lil->sysInfo_->bytesAttemptedRead_ += size;
-        fseek(f, 0, SEEK_SET);
+        fseek_func(f, 0, SEEK_SET);
         std::vector<lchar>  buffer((size+1),LC('\0'));
-        if (fread(&buffer[0], 1, _NT(size_t,size), f)!=_NT(size_t,size)) {
-            fclose(f);
+        if (fread_func(&buffer[0], 1, _NT(size_t,size), f)!=_NT(size_t,size)) {
+            fclose_func(f);
             CMD_ERROR_RET(nullptr);
         }
         buffer[size] = 0;
-        fclose(f);
+        fclose_func(f);
         r = lil_alloc_string(lil, &buffer[0]);
     }
     CMD_SUCCESS_RET(r);
@@ -1118,12 +1126,12 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         lil->sysInfo_->bytesAttemptedWritten_ += argv[1]->getSize();
         proc(lil, lil_to_string(argv[0]), lil_to_string(argv[1]));
     } else {
-        FILE *f = fopen(lil_to_string(argv[0]), "wb");
+        FILE *f = fopen_func(lil_to_string(argv[0]), "wb");
         if (!f) { CMD_ERROR_RET(nullptr); }
         auto& bufferSz = argv[1]->getValue();
         lil->sysInfo_->bytesAttemptedWritten_ += argv[1]->getSize();
-        fwrite(bufferSz.data(), 1, bufferSz.length(), f);
-        fclose(f);
+        fwrite_func(bufferSz.data(), 1, bufferSz.length(), f);
+        fclose_func(f);
     }
     CMD_SUCCESS_RET(lil_clone_value(argv[1]));
 }
@@ -1636,18 +1644,18 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         auto proc = CAST(lil_read_callback_proc_t) lil->getCallback(LIL_CALLBACK_READ);
         buffer = proc(lil, lil_to_string(argv[0]));
     } else {
-        FILE *f = fopen(lil_to_string(argv[0]), "rb");
+        FILE *f = fopen_func(lil_to_string(argv[0]), "rb");
         if (!f) { CMD_ERROR_RET(nullptr); }
-        fseek(f, 0, SEEK_END);
+        fseek_func(f, 0, SEEK_END);
         auto size = ftell(f);
-        fseek(f, 0, SEEK_SET);
+        fseek_func(f, 0, SEEK_SET);
         buffer = new lchar[(size + 1)]; // alloc char*
-        if (fread(buffer, 1, _NT(size_t,size), f)!=_NT(size_t,size)) {
-            fclose(f);
+        if (fread_func(buffer, 1, _NT(size_t,size), f)!=_NT(size_t,size)) {
+            fclose_func(f);
             CMD_ERROR_RET(nullptr);
         }
         buffer[size] = 0;
-        fclose(f);
+        fclose_func(f);
     }
     r = lil_parse(lil, buffer, 0, 0);
     delete (buffer); //delete char*
