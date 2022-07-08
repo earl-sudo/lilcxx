@@ -1,157 +1,248 @@
-- Top level exception handler -  DONE
-- namespace - DONE
-- valgrind - DONE
-- coverage - DONE
-- fix names - DONE
-- output stats - DONE
-- Pipe SysInfo into each new Type. - DONE
-- Convert series of integers into enums - DONE
-- Get rid of Lil_callframe.var_ and Lil_callframe.vars_.  Use iterators over varmap_ - DONE
-- Get rid of for loops over LilInterp.cmdArray_ - DONE
-- Get rid of LilInterp.numCmds_ - DONE
-- Get rid of loops over LilInterp.cmdArray_ and then cmdArray_ itself. - DONE
-- Convert function pointers into std::function<> - DONE
-- Replace LilInterp.callback_ array with dynamic std::vector of std::function<> - DONE
-- Prepare for UTF16 - DONE
-- Prepare for replaceable strings. - DONE
-- Convert Lil_value to a std::string. - DONE
-- Up warnings on compiler - DONE
-- better unit-testing - DONE
-- More organize code - DONE
-- Make library - DONE
-- Add exception handling to where we call command function pointers. - DONE
-- What to do about failure to parse integers and floats. - DONE
-- Put SysInfo in "thread_local" - 1 main interp per thread.  Access via function. - DONE
-- Connect sub LilInterp to main one for stats. - DONE
-- Deal with character types. - DONE
-- Fix miss matched Lil::_real_trim() delete() and Lil::_strclone() new[]. - DONE
-- Fix miss matched Lil::_strclone() new[] and Lil::LilInterp::setCather() delete. - DONE
-- Add command callback wrappers. - DONE
-- Review #magic - DONE
-- ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_. - used shared pointer - DONE
-- Push to github - DONE
-- fix asserts - DONE
-- destructors noexcept - DONE
-- Add reset to Lil_getSysInfo() - DONE
-- Add own exception type. - DONE
-- tclExpr project - DONE
-- numUnknownVars_ - DONE
-- numUnknownCmds_ - DONE
-- numIntegerConversions_ - DONE
-- numDoubleConversions_ - DONE
-- configure hashtables. - DONE
-- numArgErrrors_ - DONE
-- numFuncFails_ - DONE
-- Generate random number table - DONE
-- Makefile and build script - DONE (minus makefile)
-- thread safe - OBE
-- Move private code to private section. - OBE
+{
+  "done": [
+      {"n": "add \"safe\" to commands - DONE"},
+      {"n": "Top level exception handler -  DONE"},
+      {"n": "namespace - DONE"},
+      {"n": "valgrind - DONE"},
+      {"n": "coverage - DONE"},
+      {"n": "fix names - DONE"},
+      {"n": "output stats - DONE"},
+      {"n": "Pipe SysInfo into each new Type. - DONE"},
+      {"n": "Convert series of integers into enums - DONE"},
+      {"n": "Get rid of Lil_callframe.var_ and Lil_callframe.vars_.  Use 
+iterators over varmap_ - "},
+      {"n": "DONE"},
+      {"n": "Get rid of for loops over LilInterp.cmdArray_ - DONE"},
+      {"n": "Get rid of LilInterp.numCmds_ - DONE"},
+      {"n": "Get rid of loops over LilInterp.cmdArray_ and then cmdArray_ 
+itself. - DONE"},
+      {"n": "Convert function pointers into std::function<> - 
+DONE"},
+      {"n": "Replace LilInterp.callback_ array with dynamic std::vector of 
+std::function<> - "},
+      {"n": "DONE"},
+      {"n": "Prepare for UTF16 - DONE"},
+      {"n": "Prepare for replaceable strings. - DONE"},
+      {"n": "Convert Lil_value to a std::string. - DONE"},
+      {"n": "Up warnings on compiler - DONE"},
+      {"n": "better unit-testing - DONE"},
+      {"n": "More organize code - DONE"},
+      {"n": "Make library - DONE"},
+      {"n": "Add exception handling to where we call command function 
+pointers. - DONE"},
+      {"n": "What to do about failure to parse integers and floats. - 
+DONE"},
+      {"n": "Put SysInfo in \"thread_local\" - 1 main interp per 
+thread.  Access via "},
+      {"n": "function. - DONE"},
+      {"n": "Connect sub LilInterp to main one for stats. - DONE"},
+      {"n": "Deal with character types. - DONE"},
+      {"n": "Fix miss matched Lil::_real_trim() delete() and 
+Lil::_strclone() new[]. - DONE"},
+      {"n": "Fix miss matched Lil::_strclone() new[] and 
+Lil::LilInterp::setCather() delete. - DONE"},
+      {"n": "Add command callback wrappers. - DONE"},
+      {"n": "Review #magic - DONE"},
+      {"n": "ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and 
+sysCmdMap_. - used shared "},
+      {"n": "pointer - DONE"},
+      {"n": "Push to github - DONE"},
+      {"n": "fix asserts - DONE"},
+      {"n": "destructors noexcept - DONE"},
+      {"n": "Add reset to Lil_getSysInfo() - DONE"},
+      {"n": "Add own exception type. - DONE"},
+      {"n": "tclExpr project - DONE"},
+      {"n": "numUnknownVars_ - DONE"},
+      {"n": "numUnknownCmds_ - DONE"},
+      {"n": "numIntegerConversions_ - DONE"},
+      {"n": "numDoubleConversions_ - DONE"},
+      {"n": "configure hashtables. - DONE"},
+      {"n": "numArgErrrors_ - DONE"},
+      {"n": "numFuncFails_ - DONE"},
+      {"n": "Generate random number table - DONE"},
+      {"n": "Makefile and build script - DONE (minus makefile)"},
+      {"n": "thread safe - OBE"},
+      {"n": "Move private code to private section. - OBE"},
+      {"n": "Publish - DONE"},
+      {"n": "sub interp knows parent - DONE"},
+      {"n": "1st interp resets stats - DONE"},
+      {"n": "mock fopen/fclose/popen/pclose/fread/fwrite - DONE"}
+  ],
+  "errors": [
+    {"n": "Fix \"invalid read of size 1\", ~Lil_value()."}
+  ],
+  "misc": [
+    {"n": "logfile", "rank": 1 },
+    {"n": "ifdef big strings", "rank": 1 },
+    {"n": "safe mode", "rank":  1},
+    {"n": "test command & testfunc", "rank": 1},
+    {"n": "test windows and other linux builds", "rank": 
+1},
+    {"n": "command keywords", "rank": 1},
+    {"n": "Make argument error, action error, parser error, null return 
+all distinct in commands.", "rank":  1},
+    {"n": "Put git version info into binary.", "rank":  
+10},
 
-- Make and test more standard for others
+    {"n": "List of features org/language/imp-design/src/build-pkg", 
+"rank": 20},
+    {"n": "numDeReferences_", "rank": 20},
+    {"n": "numRedefinedProcs_", "rank": 20},
+    {"n": "numRedefinedVars", "rank": 20},
+    {"n": "Connect commands to unittest"},
+    {"n": "Add several build options, sanitizers 
+address/leak/undef/thread/memory coverage,time-trace conan/vcpkg.json"},
+    {"n": "Operation of Make and unittest more standard for others"},
+    {"n": "Use inspectors on code."},
+    {"n": "Get rid of Lil_list.listRep_ use of for loops.  Remove 
+getCount() - 80%"},
+    {"n": "Lil_list copy ctor, assignment"},
+    {"n": "Convert Lil_list to std::list<> and change calling 
+convention to use a "},
+    {"n": "std::list<> from C-array."},
+    {"n": "justifications"},
+    {"n": "ERROR: Copies may exist of LilInterp may exist so other 
+references are possible."},
+    {"n": "Review algorithms for substitutions."},
+    {"n": "better errors"},
+    {"n": "string class"},
+    {"n": "get rid of most \".c_str()\" - 70%"},
+    {"n": "make expr code \"re-usable\""},
+    {"n": "Cmd error management"},
+    {"n": "Make Lil_value more string link."},
+    {"n": "redirect stdout stderr"},
+    {"n": "Add error ids to all errors"},
+    {"n": "Use tcl test suit."},
+    {"n": "find limits of current expr."},
+    {"n": "Functor version of callbacks. How?"},
+    {"n": "\"func\" and \"commands\" 
+attributes"},
+    {"n": "    - 
+hidden/namespace/sourceName/numArgFails/numCmdFails/numExceptions/numDefs."},
+    {"n": "    - defaultValues/statics"},
+    {"n": "coverage analysis"},
+    {"n": "test/stress commands"},
+    {"n": "put cmd on cmdline"},
+    {"n": "line editing"},
+    {"n": "history"},
+    {"n": "act like terminal \"interruptable\""},
 
-- Use inspectors.
-- Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%
-- Lil_list copy ctor, assignment
-- Convert Lil_list to std::list<> and change calling convention to use a std::list<> from C-array.
-- Make argument error, action error, parser error, null return all distinct in commands.
-- Add documentation.
-- Put git version info into binary.
+    {"n": "[] => span<> or array<>", "rank": 
+ 100},
+    {"n": "Update Cmake with ideas from https://github.com/lefticus/project
+_options", "rank": 100},
+    {"n": "C API", "rank": 100 },
+    {"n": "Add more inline documentation.", "rank": 100},
+    {"n": "const char* -> std::string_view", "rank":  
+100},
+    {"n": "try PVS", "rank": 100},
+    {"n": "{} for constructors", "rank": 100},
+    {"n": "Use class enums", "rank": 100},
+    {"n": "integrate linux cmds al-la system(\"ls\") becomes ls 
+command", "rank": 100},
+    {"n": "Use std::array where arrays needed.", "rank": 
+100},
+    {"n": "Convert to UTF-16 characters", "rank": 100},
+    {"n": "Make SysInfo work mostly off callbacks.", 
+"rank": 100},
+    {"n": "tclParseNumber project", "rank": 100}
+  ],
+  "optimizations": [
+    {"n": "Object cache", "rank": 1},
 
-- Make SysInfo work mostly off callbacks.
-- justifications
-- ERROR: Copies may exist of LilInterp may exist so other references are possible.
-- Review algorithms for substitutions.
-- Fix "invalid read of size 1", ~Lil_value().
-- Publish
-- const char* -> std::string_view
-- safe mode
-- less code
-- better errors
-- string class
-- get rid of most ".c_str()" - 70%
-- [] => span<> or array<>
-- {} for constructors
-- make expr code "re-usable"
+    {"n": "Add system to associate binary/alternate representations to 
+string representations and deal with changes."},
+    {"n": "configure vectors."},
+    {"n": "configure strings name/values/misc"},
+    {"n": "cache conditionally int64_t and Lil_value."},
+    {"n": "cache conditionally double and Lil_value."},
+    {"n": "cache Lil_list and Lil_value."},
+    {"n": "string class that detects integer conversion or not 
+float/integer."}
+  ],
+  "modules": [
+    {"n": "Option to make lil more tcl complent.", "rank": 
+10},
+    {"n": "C lib functions file/local/math"},
+    {"n": "C++ lib functions regexp/random/time/local"},
+    {"n": "Posix lib functions"},
+    {"n": "boost lib functions ini/json/yaml/xml/zip/tar/cvs"},
+    {"n": "dictionary"}
+  ],
+  "functions": [
+    {"n": "Command help", "rank": 1},
+    {"n": "Command arg check", "rank": 1},
+    {"n": "Add module support", "rank": 1},
+    {"n": "Add resource handles", "rank": 1},
+    {"n": "From Jim borrow - ref/getref/setref", "rank": 
+1},
+    {"n": "dbgbreak"},
+    {"n": "assert"},
+    {"n": "onexitFunc"},
+    {"n": "\"test\" command with {script output numErrors} an 
+on/off switch"},
+    {"n": "binary [binary 64 be wordalign] [binary $x add {i4 5} pad3] 
+[binary $x get i4 pad3"},
+    {"n": "unless cmd args condition"},
+    {"n": "must cmd args -- error becomes exception"}
+  ],
+  "additions": [
+    {"n": "option to log all errors and catches"},
+    {"n": "option to log all calls"},
 
-- Cmd error management
-- C API
-- Make Lil_value more string link.
-- Use std::array where arrays needed.
-- add "safe" to commands
-- Use class enums
-- try PVS
-- numDeReferences_
-- numRedefinedProcs_
-- numRedefinedVars
-- redirect stdout stderr
-- tclParseNumber project
-- Add error ids to all errors
-- Use tcl test suit.
-- find limits of current expr.
-- Functor version of callbacks. How?
-
-=================== Optimizations
-- Add system to associate binary/alternate representations to string representations and deal with changes.
-- configure vectors.
-- configure strings
-- cache int64_t and Lil_value.
-- cache double and Lil_value.
-- cache Lil_list and Lil_value.
-- Object cache
-- string class that detects integer conversion or not float/integer.
-- add in conditional binary value caching
-- add to add runtime binary types for caching.
-
-=================== Additions
-- Better expr (from tcl7.6)
-- Better int/double parsing (from tcl8)
-- Command help
-- Command arg check
-- Add holding area for functions.
-- Make more like tcl ("func" => "proc" and like)
-- Output stats as YAML or JSON
-- Add dict type
-- Add module support
-- Add resource handles
-- From Jim borrow
-    - ref/getref/setref
-    - info stacktrce
-    - static varfs
-    - command line edition
-    - expression shorthand
-    - defer
-- Add platform information
-- "test" command with {script output numErrors} an on/off switch
-- Option to make lil more tcl complent.
-- if/switch/for/foreach/func/while return
-- @count<n> for loops
-- named beak/continue with local flag @break<name>called
-- named if/switch/for/foreach/func/while with local flag
-- generators like python/C++
-- must cmd args -- error becomes exception
-- unless cmd args condition
-- dbgbreak
-- assert
-- option to log all errors and catches
-- option to log all calls
-- tanted rwx
-
-- handles interface
-
-std::string wrapper
-std::unordered_map wrapper
-fake Tcl API borrow Tcl commands
-    binary, env, eof, exec(***), expr, fcopy, file, fileevent, filename, flush, format, gets, glob, http,
-    open, puts, read, regexp, regsub, scan, seek, socket, string, tcl_platform, tcltest, tell, time, timerate,
-    clock, vmwait, zlib, sqlite
-from boost
-    xml, json, yaml, csv, tokenizer, python, asio, process, beast, log, circular buffer, dll, integer
-from C++
-    string, random, filesystem, chrono
-Add limiting API
-    maxNumLength, maxValueLen, maxNumArgs, maxNumProcs, maxNumCommands, maxNumValue, maxLevelStack, maxScriptSize,
-    maxProcSize, maxNumLocals, maxNumLoops, maxExprSize, maxIntegerValue, minIntegerValue, maxDoubleValue, minDoubleValue
-show
-    cmdsAsGenerated, varsAsGenerated, varsAsWritten, procErrorReturn, missedVars, missedCommands, badConversions
-    procChanges
-Define base-command-set
+    {"n": "log of external changes of commands"},
+    {"n": "awk like file ops"},
+    {"n": "auto close file/socket on eof"},
+    {"n": "Add holding area for functions.", "rank":  1},
+    {"n": "tanted rwx"},
+    {"n": "detect environment run in OS, dir, user, permissions"},
+    {"n": "Add platform information"},
+    {"n": "Better expr (from tcl7.6)"},
+    {"n": "Better int/double parsing (from tcl8)"},
+    {"n": "Make more like tcl (\"func\" => \"proc\" 
+and like)"},
+    {"n": "Output stats as YAML or JSON"},
+    {"n": "From Jim borrow"},
+    {"n": "    - info stacktrce"},
+    {"n": "    - static vars"},
+    {"n": "    - command line edition"},
+    {"n": "    - expression shorthand"},
+    {"n": "    - defer"},
+    {"n": "if/switch/for/foreach/func/while return"},
+    {"n": "@count<n> for loops"},
+    {"n": "named beak/continue with local flag 
+@break<name>called"},
+    {"n": "named if/switch/for/foreach/func/while with local flag"},
+    {"n": "generators like python/C++"},
+    {"n": "std::string wrapper"},
+    {"n": "std::unordered_map wrapper"},
+    {"n": "fake Tcl API borrow Tcl commands"},
+    {"n": "    binary, env, eof, exec(***), expr, fcopy, file, fileevent, 
+filename, flush, format, "},
+    {"n": "gets, glob, http,"},
+    {"n": "    open, puts, read, regexp, regsub, scan, seek, socket, 
+string, tcl_platform, tcltest, "},
+    {"n": "tell, time, timerate,"},
+    {"n": "    clock, vmwait, zlib, sqlite"},
+    {"n": "from boost"},
+    {"n": "    xml, json, yaml, csv, tokenizer, python, asio, process, 
+beast, log, circular buffer, "},
+    {"n": "dll, integer"},
+    {"n": "from C++"},
+    {"n": "    string, random, filesystem, chrono"},
+    {"n": "Add limiting API"},
+    {"n": "    maxNumLength, maxValueLen, maxNumArgs, maxNumProcs, 
+maxNumCommands, maxNumValue, "},
+    {"n": "maxLevelStack, maxScriptSize,"},
+    {"n": "    maxProcSize, maxNumLocals, maxNumLoops, maxExprSize, 
+maxIntegerValue, "},
+    {"n": "minIntegerValue, maxDoubleValue, minDoubleValue"},
+    {"n": "show"},
+    {"n": "    cmdsAsGenerated, varsAsGenerated, varsAsWritten, 
+procErrorReturn, missedVars, "},
+    {"n": "missedCommands, badConversions"},
+    {"n": "    procChanges"},
+    {"n": "Define base-command-set"},
+    {"n": "Event loop"}
+  ]
+}
