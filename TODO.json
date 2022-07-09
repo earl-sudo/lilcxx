@@ -15,7 +15,6 @@
       {"n": "Get rid of loops over LilInterp.cmdArray_ and then cmdArray_ - DONE"},
       {"n": "Convert function pointers into std::function<> - DONE"},
       {"n": "Replace LilInterp.callback_ array with dynamic std::vector of std::function<> - "},
-      {"n": "DONE"},
       {"n": "Prepare for UTF16 - DONE"},
       {"n": "Prepare for replaceable strings. - DONE"},
       {"n": "Convert Lil_value to a std::string. - DONE"},

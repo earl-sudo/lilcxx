@@ -151,7 +151,7 @@ LIL: A Little Interpreted Language
  
      b - inserts the backspace character
      t - inserts the horizontal tab character
-     name - inserts the newline character
+     n - inserts the newline character
      v - inserts the vertical tab character
      f - inserts the formfeed character
      r - inserts the carriage return character
