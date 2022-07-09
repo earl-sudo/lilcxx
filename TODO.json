@@ -10,7 +10,6 @@
       {"n": "Pipe SysInfo into each new Type. - DONE"},
       {"n": "Convert series of integers into enums - DONE"},
       {"n": "Get rid of Lil_callframe.var_ and Lil_callframe.vars_.  Use iterators over varmap_ - "},
-      {"n": "DONE"},
       {"n": "Get rid of for loops over LilInterp.cmdArray_ - DONE"},
       {"n": "Get rid of LilInterp.numCmds_ - DONE"},
       {"n": "Get rid of loops over LilInterp.cmdArray_ and then cmdArray_ - DONE"},
@@ -56,15 +55,16 @@
       {"n": "Publish - DONE"},
       {"n": "sub interp knows parent - DONE"},
       {"n": "1st interp resets stats - DONE"},
-      {"n": "mock fopen/fclose/popen/pclose/fread/fwrite - DONE"}
+      {"n": "mock fopen/fclose/popen/pclose/fread/fwrite - DONE"},
+      {"n": "ifdef big strings - DONE", "rank": 1 },
+      {"n": "logfile - DONE", "rank": 1 }
   ],
   "errors": [
     {"n": "Fix \"invalid read of size 1\", ~Lil_value()."}
   ],
   "misc": [
-    {"n": "logfile", "rank": 1 },
-    {"n": "ifdef big strings", "rank": 1 },
-    {"n": "safe mode", "rank":  1},
+    {"n": "safe mode", "rank":  1, "note":  "started"},
+
     {"n": "test command & testfunc", "rank": 1},
     {"n": "test windows and other linux builds", "rank": 1},
     {"n": "command keywords", "rank": 1},

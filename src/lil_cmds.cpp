@@ -46,6 +46,9 @@ NS_BEGIN(Lil)
 #define CMD_SUCCESS_RET(X) { Lil_getSysInfo()->numCmdSuccess_++; return(X); }
 #define CMD_ERROR_RET(X) { Lil_getSysInfo()->numCmdFailed_++; return(X); }
 
+#if defined(LILCXX_NO_HELP_TEXT)
+[[maybe_unused]] const auto fnc_reflect_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_reflect_doc = R"cmt(
  reflect
    reflect information about the LIL runtime and the program
@@ -107,6 +110,7 @@ NS_BEGIN(Lil)
    returns the name of the currently executed function or an empty string
    if the code is executed at root level (or the name of the current
    function is unknown))cmt";
+#endif
 
 static Module lilstd = { "lilstd", 0, 0 };
 
@@ -216,9 +220,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_reflect;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_func_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_func_doc = R"cmt(
  func [name] [argument list | "args"] <code>
    register a new function.  See the section 2 for more information)cmt";
+#endif
 
 struct fnc_func_type : Lilstd { // #cmd
     fnc_func_type() { help_ = fnc_func_doc; }
@@ -254,6 +262,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_func;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_rename_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_rename_doc = R"cmt(
  rename <oldname> <newname>
    rename an existing function.  Note that the "set" function is used to
@@ -261,6 +272,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    renamed, variables will only be accessible using the new name.  The
    function returns the <oldname>.  If <newname> is set to an empty
    string, the function will be deleted)cmt";
+#endif
 
 struct fnc_rename_type : Lilstd { // #cmd
     fnc_rename_type() { help_ = fnc_rename_doc; }
@@ -290,11 +302,15 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_rename;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_unusedname_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_unusedname_doc = R"cmt(
  unusedname [part]
    return an unused function name.  This is a random name which has the
    form !!un![part]!<some number>!nu!!.  The [part] is optional (if not
    provided "unusedname" will be used))cmt";
+#endif
 
 struct func_unusedname_type : Lilstd { // #cmd
     func_unusedname_type() { help_ = fnc_unusedname_doc; }
@@ -325,12 +341,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_quote;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_set_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_set_doc = R"cmt(
  set ["global"] [name [value] ...]
    set the variable "name" to the "value".  If there is an odd number of
    arguments, the function returns the value of the variable which has
    the same name as the last argument.  Otherwise an empty value is
    returned.  See section 2 for details)cmt";
+#endif
 
 struct fnc_set_type : Lilstd { // #cmd
     fnc_set_type() { help_ = fnc_set_doc; }
@@ -355,6 +375,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_set;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_local_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_local_doc = R"cmt(
  local [...]
    make each variable defined in the arguments a local one.  If the
@@ -362,6 +385,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    Otherwise a new local variable will be introduced.  This is useful
    for reusable functions that want to make sure they will not modify
    existing global variables)cmt";
+#endif
 
 struct fnc_local_type : Lilstd { // #cmd
     fnc_local_type() { help_ = fnc_local_doc; }
@@ -378,11 +402,15 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_local;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_write_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_write_doc = R"cmt(
  write [...]
    write the arguments separated by spaces to the program output.  By
    default this is the standard output but a program can override this
    using the LIL_CALLBACK_WRITE callback)cmt";
+#endif
 
 struct fnc_write_type : Lilstd { // #cmd
     fnc_write_type() { help_ = fnc_write_doc; isSafe_ = false; }
@@ -399,9 +427,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_write;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_print_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_print_doc = R"cmt(
  print [...]
    like write but adds a newline at the end)cmt";
+#endif
 
 struct fnc_print_type : Lilstd { // #cmd
     fnc_print_type() { help_ = fnc_print_doc; }
@@ -414,10 +446,14 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_print;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_eval_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_eval_doc = R"cmt(
  eval [...]
    combines the arguments to a single string and evaluates it as LIL
    code.  The function returns the result of the LIL code)cmt";
+#endif
 
 struct fnc_eval_type : Lilstd { // #cmd
     fnc_eval_type() { help_ = fnc_eval_doc; }
@@ -439,12 +475,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_eval;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_topeval_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_topeval_doc = R"cmt(
  topeval [...]
    combines the arguments to a single string and evaluates it as LIL
    code in the topmost (global) environment.  This can be used to execute
    code outside of any function's environment that affects the global
    one)cmt";
+#endif
 
 struct fnc_topeval_type : Lilstd { // #cmd
     fnc_topeval_type() { help_ = fnc_topeval_doc; }
@@ -462,6 +502,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_topeval;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_upeval_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_upeval_doc = R"cmt(
  upeval [...]
    combines the arguments to a single string and evaluates it as LIL
@@ -473,6 +516,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    used to provide most of the functionality that other languages
    provide via the use of macros but at the program's runtime and with
    full access to the program's state)cmt";
+#endif
 
 struct fnc_upeval_type : Lilstd { // #cmd
     fnc_upeval_type() { help_ = fnc_upeval_doc; }
@@ -491,11 +535,15 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_upeval;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_downeval_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_downeval_doc = R"cmt(
  downeval [...]
    downeval complements upeval. It works like eval, but the code is
    evaluated in the environment where the most recent call to upeval was
    made.  This also works with topeval)cmt";
+#endif
 
 struct fnc_downeval_type : Lilstd { // #cmd
     fnc_downeval_type() { help_ = fnc_downeval_doc; }
@@ -514,6 +562,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_downeval;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_enveval_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_enveval_doc = R"cmt(
  enveval [invars] [outvars] <code>
    the <code> will be executed in its own environment.  The environment
@@ -530,6 +581,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    return a value.  Calling return will not cause the calling function
    to exit
 )cmt";
+#endif
 
 struct fnc_enveval_type : Lilstd { // #cmd
     fnc_enveval_type() { help_ = fnc_enveval_doc; }
@@ -615,12 +667,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_enveval;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_jaileval_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_jaileval_doc = R"cmt(
  jaileval ["clean"] <code>
    the <code> will be executed in its own LIL runtime.  Unless "clean"
    is specified, the new LIL runtime will get a copy of the currently
    registered native functions.  The <code> can use "return" to return
    a value (which is returned by jaileval))cmt";
+#endif
 
 struct fnc_jaileval_type : Lilstd { // #cmd
     fnc_jaileval_type() { help_ = fnc_jaileval_doc; }
@@ -645,9 +701,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_jaileval;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_count_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_count_doc = R"cmt(
  count <list>
    returns the number of items in a LIL list)cmt";
+#endif
 
 struct fnc_count_type : Lilstd { // #cmd
     fnc_count_type() { help_ = fnc_count_doc; }
@@ -662,10 +722,14 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_count;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_index_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_index_doc = R"cmt(
  index <list> <index>
    returns the <index>-th item in a LIL list.  The indices begin from
    zero (so 0 is the first index, 1 is the second, etc))cmt";
+#endif
 
 struct fnc_index_type : Lilstd { // #cmd
     fnc_index_type() { help_ = fnc_index_doc; }
@@ -687,12 +751,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_index;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_indexof_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_indexof_doc = R"cmt(
  indexof <list> <value>
    returns the index of the first occurence of <value> in a LIL list.  If
    the <value> does not exist indexof will return an empty string.  The
    indices begin from zero (so 0 is the first index, 1 is the second,
    etc))cmt";
+#endif
 
 struct fnc_indexof_type : Lilstd { // #cmd
     fnc_indexof_type() { help_ = fnc_indexof_doc; }
@@ -712,12 +780,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_indexof;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_append_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] auto fnc_append_doc = R"cmt(
  append ["global"] <list> <value>
    appends the <value> value to the variable containing the <list>
    list (or creates it if the variable is not defined).  If the "global"
    special word is used, the list variable is assumed to be a global
    variable)cmt";
+#endif
 
 struct fnc_append_type : Lilstd { // #cmd
     fnc_append_type() { help_ = fnc_append_doc; }
@@ -744,6 +816,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_append;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_slice_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_slice_doc = R"cmt(
  slice <list> <from> [to]
    returns a slice of the given list from the index <from> to the index
@@ -751,6 +826,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    clamped to be within the 0..<list length> range.  If [to] is not
    given, the slice contains all items from the <from> index up to the
    end of the list)cmt";
+#endif
 
 struct fnc_slice_type : Lilstd { // #cmd
     fnc_slice_type() { help_ = fnc_slice_doc; }
@@ -777,6 +853,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_slice;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_filter_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_filter_doc = R"cmt(
  filter [varname] <list> <expression>
    filters the given list by evaluating the given expression for each
@@ -786,6 +865,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    evaluation, the item's value is stored in the [varname] variable
    (or in the "x" variable if no [varname] was given).  The function
    returns the filtered list)cmt";
+#endif
 
 struct fnc_filter_type : Lilstd { // #cmd
     fnc_filter_type() { help_ = fnc_filter_doc; }
@@ -816,9 +896,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_filter;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_list_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_list_doc = R"cmt(
  list [...]
    returns a list with the arguments as its items)cmt";
+#endif
 
 struct fnc_list_type : Lilstd { // #cmd
     fnc_list_type() { help_ = fnc_list_doc; }
@@ -834,6 +918,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_list;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_subst_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_subst_doc = R"cmt(
  subst [...]
    perform string substitution to the arguments.  For example the code
@@ -843,6 +930,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
      print [substr $str]
 
    will print "foobar")cmt";
+#endif
 
 struct fnc_subst_type : Lilstd { // #cmd
     fnc_subst_type() { help_ = fnc_subst_doc; }
@@ -877,12 +965,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_concat;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_foreach_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_foreach_doc = R"cmt(
  foreach [name] <list> <code>
    for each item in the <list> list, stores it to a variable named "i"
    and evalues the code in <code>.  If [name] is provided, this will be
    used instead of "i".  The results of all evaluations are stored in a
    list which is returned by the function)cmt";
+#endif
 
 struct fnc_foreach_type : Lilstd { // #cmd
     fnc_foreach_type() { help_ = fnc_foreach_doc; }
@@ -912,12 +1004,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_foreach;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_return_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_return_doc = R"cmt(
  return [value]
    stops the execution of a function's code and uses <value> as the
    result of that function (note that normally the result of a function
    is the result of the last command of that function).  The result of
    return is always the passed valu)cmt";
+#endif
 
 struct fnc_return_type : Lilstd { // #cmd
     fnc_return_type() { help_ = fnc_return_doc; }
@@ -932,6 +1028,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_return;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_result_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_result_doc = R"cmt(
  result [value]
    sets or returns the current result value of a function but unlike
@@ -941,6 +1040,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    value even if other calls were made previously.  The result of this
    function when an argument is given, is simply the given argument
    itself)cmt";
+#endif
 
 struct fnc_result_type : Lilstd { // #cmd
     fnc_result_type() { help_ = fnc_result_doc; }
@@ -956,6 +1056,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_result;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_expr_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_expr_doc = R"cmt(
  expr [...]
    combines all arguments into a single string and evaluates the
@@ -993,6 +1096,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 
       a || b     - logical OR
       a && b     - logical AND)cmt";
+#endif
 
 struct fnc_expr_type : Lilstd { // #cmd
     fnc_expr_type() { help_ = fnc_expr_doc; }
@@ -1030,10 +1134,14 @@ static Lil_value_Ptr _real_inc(LilInterp_Ptr lil, lcstrp varname, double v) {  /
     CMD_SUCCESS_RET(pv);
 }
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_inc_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_inc_doc = R"cmt(
  inc <name> [value]
    numerically add [value] to the variable "name".  If [value] is not
    provided, 1 will be added instead)cmt";
+#endif
 
 struct fnc_inc_type : Lilstd { // #cmd
     fnc_inc_type() { help_ = fnc_inc_doc; }
@@ -1048,10 +1156,14 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_inc;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_dec_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_dec_doc = R"cmt(
  dec <name> [value]
    numerically subtract [value] to the variable "name".  If [value] is
    not provided, 1 will be subtracted instead)cmt";
+#endif
 
 struct fnc_dec_type : Lilstd { // #cmd
     fnc_dec_type() { help_ = fnc_dec_doc; }
@@ -1066,6 +1178,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_dec;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_read_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_read_doc = R"cmt(
  read <name>
    reads and returns the contents of the file <name>.  By default LIL
@@ -1073,6 +1188,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    the program can override this using LIL_CALLBACK_READ.  If the
    function failed to read the file it returns an empty value (note,
    however than a file can also be empty by itself))cmt";
+#endif
 
 struct fnc_read_type : Lilstd { // #cmd
     fnc_read_type() { help_ = fnc_read_doc; isSafe_ = false; }
@@ -1107,12 +1223,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_read;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_store_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_store_doc = R"cmt(
  store <name> <value>
    stores the <value> value in the file <name>.  By default LIL will
    create the file in the host program's current directory, but the
    program can override ths using LIL_CALLBACK_STORE.  The function will
    always return <value>)cmt";
+#endif
 
 struct fnc_store_type : Lilstd { // #cmd
     fnc_store_type() { help_ = fnc_store_doc; isSafe_ = false; }
@@ -1137,6 +1257,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_store;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_if_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_if_doc = R"cmt(
  if ["not"] <value> <code> [else-code]
    if value <value> evaluates to true (non-zero, non-empty string), LIL
@@ -1144,6 +1267,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    code in [else-code] will be evaluated.  If the "not" special word is
    used, the check will be reversed.  The function returns the result of
    whichever code is evaluated)cmt";
+#endif
 
 struct fnc_if_type : Lilstd { // #cmd
     fnc_if_type() { help_ = fnc_if_doc; }
@@ -1169,6 +1293,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_if;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_while_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_while_doc = R"cmt(
  while ["not"] <expr> <code>
    as long as <expr> evaluates to a true (or false if "not" is used)
@@ -1176,6 +1303,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    result of the evaluation of <code> or an empty value if no
    evaluation happened (note, however that the last evaluation can
    also return an empty value))cmt";
+#endif
 
 struct fnc_while_type : Lilstd { // #cmd
     fnc_while_type() { help_ = fnc_while_doc; }
@@ -1203,12 +1331,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_while;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_for_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_for_doc = R"cmt(
  for <init> <expr> <step> <code>
    the loop will begin by evaluating the code in <init> normally.  Then
    as long as the expression <expr> evaluates to a true value, the
    code in <code> will be evaluated followed by the code in <step>.  The
    function returns the result of the last evaluation of <code>)cmt";
+#endif
 
 struct fnc_for_type : Lilstd { // #cmd
     fnc_for_type() { help_ = fnc_for_doc; }
@@ -1232,12 +1364,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_for;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_char_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] auto fnc_char_doc = R"cmt(
  char <code>
    returns the character with the given code as a string.  Note that the
    character 0 cannot be used in the current implementation of LIL since
    it depends on 0-terminated strings.  If 0 is passed, an empty string
    will be returned instead)cmt";
+#endif
 
 struct fnc_char_type : Lilstd { // #cmd
     fnc_char_type() { help_ = fnc_char_doc; }
@@ -1254,11 +1390,15 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_char;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_charat_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_charat_doc = R"cmt(
  charat <str> <index>
    returns the character at the given index of the given string.  The index
    begins with 0.  If an invalid index is given, an empty value will be
    returned)cmt";
+#endif
 
 struct fnc_charat_type : Lilstd { // #cmd
     fnc_charat_type() { help_ = fnc_charat_doc; }
@@ -1278,11 +1418,15 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_charat;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_codeat_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_codeat_doc = R"cmt(
  codeat <str> <index>
    returns the character code at the given index of the given string.  The
    index begins with 0.  If an invalid index is given, an empty value will
    be returned)cmt";
+#endif
 
 struct fnc_codeat_type : Lilstd { // #cmd
     fnc_codeat_type() { help_ = fnc_codeat_doc; }
@@ -1311,12 +1455,16 @@ static auto _str_to_integer(const char* val, bool& inError) {
     CMD_SUCCESS_RET(ret);
 }
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_substr_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_substr_doc = R"cmt(
  substr <str> <start> [length]
    returns the part of the given string beginning from <start> and for
    [length] characters.  If [length] is not given, the function will
    return the string from <start> to the end of the string.  The indices
    will be clamped to be within the string boundaries)cmt";
+#endif
 
 struct fnc_substr_type : Lilstd { // #cmd
     fnc_substr_type() { help_ = fnc_substr_doc; }
@@ -1342,12 +1490,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_substr;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_strpos_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_strpos_doc = R"cmt(
  strpos <str> <part> [start]
    returns the index of the string <part> in the string <str>.  If
    [start] is provided, the search will begin from the character at
    [start], otherwise it will begin from the first character.  If the
    part is not found, the function will return -1)cmt";
+#endif
 
 struct fnc_strpos_type : Lilstd { // #cmd
     fnc_strpos_type() { help_ = fnc_strpos_doc; }
@@ -1369,9 +1521,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_strpos;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_length_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_length_doc = R"cmt(
  length [...]
    the function will return the sum of the length of all arguments)cmt";
+#endif
 
 struct fnc_length_type : Lilstd { // #cmd
     fnc_length_type() { help_  = fnc_length_doc; }
@@ -1406,12 +1562,16 @@ static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, INT
     return(r);
 }
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_trim_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_trim_doc = R"cmt(
  trim <str> [characters]
    removes any of the [characters] from the beginning and ending of a
    string until there are no more such characters.  If the [characters]
    argument is not given, the whitespace characters (space, linefeed,
    newline, carriage return, horizontal tab and vertical tab) are used)cmt";
+#endif
 
 struct fnc_trim_type : Lilstd { // #cmd
     fnc_trim_type() { help_ = fnc_trim_doc; }
@@ -1423,10 +1583,14 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_trim;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_ltrim_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_ltrim_doc = R"cmt(
  ltrim <str> [characters]
    like "trim" but removes only the characters from the left side of the
    string (the beginning))cmt";
+#endif
 
 struct fnc_ltrim_type : Lilstd { // #cmd
     fnc_ltrim_type() { help_ = fnc_ltrim_doc; }
@@ -1438,10 +1602,14 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_ltrim;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_rtrim_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_rtrim_doc = R"cmt(
  rtrim <str> [characters]
    like "trim" but removes only the characters from the right side of the
    string (the ending))cmt";
+#endif
 
 struct fnc_rtrim_type : Lilstd { // #cmd
     fnc_rtrim_type() { help_ = fnc_rtrim_doc; }
@@ -1453,12 +1621,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_rtrim;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_strcmp_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_strcmp_doc = R"cmt(
  strcmp <a> <b>
    compares the string <a> and <b> - if <a> is lesser than <b> a
    negative value will be returned, if <a> is greater a positive an
    if both values are equal zero will be returned (this is just a
    wrap for C's strcmp() function))cmt";
+#endif
 
 struct fnc_strcmp_type : Lilstd { // #cmd
     fnc_strcmp_type() { help_ = fnc_strcmp_doc; }
@@ -1471,9 +1643,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_strcmp;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_streq_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_streq_doc = R"cmt(
  streq <a> <b>
    returns a true value if both strings are equal)cmt";
+#endif
 
 struct fnc_streq_type : Lilstd { // #cmd
     fnc_streq_type() { help_ = fnc_streq_doc; }
@@ -1486,10 +1662,14 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_streq;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_repstr_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_repstr_doc = R"cmt(
  repstr <str> <from> <to>
    returns the string <str> with all occurences of <from> replaced with
    <to>)cmt";
+#endif
 
 static void FindAndReplace(std::string &data, const std::string& Searching, const std::string& replaceStr) {
     // Getting the first occurrence
@@ -1520,6 +1700,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_repstr;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_split_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_split_doc = R"cmt(
  split <str> [sep]
    split the given string in substrings using [sep] as a separator and
@@ -1528,6 +1711,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    all of them are considered as separators (ie. if ", " is given, the
    string will be splitted in both spaces and commas).  If [sep] is an
    empty string, the <str> is returned unchanged)cmt";
+#endif
 
 struct fnc_split_type : Lilstd { // #cmd
     fnc_split_type() { help_ = fnc_split_doc; }
@@ -1557,6 +1741,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_split;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_try_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_try_doc = R"cmt(
  try <code> [handler]
    evaluates the code in <code> normally and returns its result.  If an
@@ -1564,6 +1751,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    stops and the code in [handler] is evaluated, in which case the
    function returns the result of [handler].  If [handler] is not
    provided the function returns 0)cmt";
+#endif
 
 struct fnc_try_type : Lilstd { // #cmd
     fnc_try_type() { help_ = fnc_try_doc; }
@@ -1583,11 +1771,15 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_try;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_error_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_error_doc = R"cmt(
  error [msg]
    raises an error.  If [msg] is given the error message is set to <msg>
    otherwise no error message is set.  The error can be captured using
    the try function (see above))cmt";
+#endif
 
 struct fnc_error_type : Lilstd { // #cmd
     fnc_error_type() { help_ = fnc_error_doc; }
@@ -1599,6 +1791,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_error;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_exit_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_exit_doc = R"cmt(
  exit [code]
    requests from the host program to exit.  By default LIL will do
@@ -1608,6 +1803,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    LIL_CALLBACK_EXIT callback).  Note that script execution will
    continue normally after exit is called until the host program takes
    back control and handles the request)cmt";
+#endif
 
 struct fnc_exit_type : Lilstd { // #cmd
     fnc_exit_type() { help_ = fnc_exit_doc; }
@@ -1622,12 +1818,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_exit;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_source_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_source_doc = R"cmt(
  source <name>
    read and evaluate LIL source code from the file <name>.  The result
    of the function is the result of the code evaluation.  By default LIL
    will look for a text file in the host program's current directory
    but the program can override that by using LIL_CALLBACK_SOURCE)cmt";
+#endif
 
 struct fnc_source_type : Lilstd { // #cmd
     fnc_source_type() { help_ = fnc_source_doc; isSafe_ = false; }
@@ -1663,6 +1863,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_source;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_lmap_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_lmap_doc = R"cmt(
  lmap <list> <name1> [name2 [name3 ...]]
    map the values in the list to variables specified by the rest of the
@@ -1672,6 +1875,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 
    will assign 5 to variable apple, 3 to variable orange and 6 to
    variable pear)cmt";
+#endif
 
 struct fnc_lmap_type : Lilstd { // #cmd
     fnc_lmap_type() { help_ = fnc_lmap_doc; }
@@ -1687,9 +1891,13 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_lmap;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_rand_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_rand_doc = R"cmt(
  rand
    returns a random number between 0.0 and 1.0)cmt";
+#endif
 
 struct fnc_rand_type : Lilstd { // #cmd
     fnc_rand_type() { help_ = fnc_rand_doc; }
@@ -1701,6 +1909,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_rand;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_catcher_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] auto fnc_catcher_doc = R"cmt(
  catcher [code]
    sets, removes or returns the current catcher code.  The code can be
@@ -1737,6 +1948,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    When using catcher for DSLs it is recommended to save the previous
    catcher.  For an example of catcher with comments see the catcher.lil
    source file.)cmt";
+#endif
 
 struct fnc_catcher_type : Lilstd { // #cmd
     fnc_catcher_type() { help_ = fnc_catcher_doc; }
@@ -1752,6 +1964,9 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 }
 } fnc_catcher;
 
+#if defined(LILCXX_NO_HELP_TEXT)
+    [[maybe_unused]] const auto fnc_watch_doc = R"cmt()cmt";
+#else
 [[maybe_unused]] const auto fnc_watch_doc = R"cmt(
  watch <name1> [<name2> [<name3> ...]] [code]
    sets or removes the watch code for the given variable(s) (an empty
@@ -1759,6 +1974,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    a variable, the code will be executed whenever the variable is set.
    The code is always executed in the same environment as the variable,
    regardless of where the variable is modified from.)cmt";
+#endif
 
 struct fnc_watch_type : Lilstd { // #cmd
     fnc_watch_type() { help_ = fnc_watch_doc; }

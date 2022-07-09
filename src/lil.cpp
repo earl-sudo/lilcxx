@@ -32,6 +32,7 @@
 
 #include <cstdlib>
 #include <climits>
+#include <type_traits>
 #include <cassert>
 
 NS_BEGIN(Lil)
@@ -48,7 +49,6 @@ NS_BEGIN(Lil)
 //        sysInfo_.logInterpInfo_ = true;        sysInfo_.outputInterpInfoOnExit_ = true;
 //        sysInfo_.outputCoverageOnExit_ = true; sysInfo_.doCoverage_ = true;
 //        sysInfo_.doTiming_ = true;             sysInfo_.doTimeOnExit_ = true;
-        if (parent==nullptr) Lil_getSysInfo(true);
         sysInfo_ = Lil_getSysInfo();
         LIL_CTOR(sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );
@@ -111,6 +111,11 @@ NS_BEGIN(Lil)
     inline bool LilInterp::registerFunc(lcstrp  name, lil_func_proc_t proc) {
         Lil_func_Ptr cmdD = add_func(name);
         if (!cmdD) { return false; }
+#if 0
+        if (proc.target_type() == CommandAdaptor) {
+            if (!proc->isSafe_) return false;
+        }
+#endif
         if (sysInfo_->logInterpInfo_) sysInfo_->numCommandsRegisteredTotal_++;
         cmdD->setProc(proc);
         return true;
@@ -885,6 +890,7 @@ void lil_write(LilInterp_Ptr lil, lcstrp msg) {
 SysInfo* Lil_getSysInfo(bool reset) {
     thread_local SysInfo sysInfo; // NOTE: thread_local works like a static declaration.
     if (reset) {
+        sysInfo.printStats();
         sysInfo = SysInfo();
     }
     return &sysInfo;

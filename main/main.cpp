@@ -30,16 +30,38 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include "lil.h"
-
+#include <iostream>
+#include <fstream>
 #include <string>
 
+#include "lil.h"
+#include "lil_inter.h"
 #include "unittest.cxx"
 
 NS_BEGIN(Lil)
 
 static bool running = true;
 static int exit_code = 0;
+
+std::fstream logFile("lilcxx.log", std::fstream::out | std::fstream::app);
+
+void configure_interpreter() {
+
+
+    auto config = Lil_getSysInfo();
+    logFile << "Another lilcxx run ==================================\n";
+    config->outStrm_ = &logFile;
+    config->logInterpInfo_ = true;
+
+    config->objCounter_.outStrm_ = &logFile;
+    config->objCounter_.logObjectCount_ = true;
+
+    config->converage_.outStrm_ = &logFile;
+    config->converage_.doCoverage_ = true;
+
+    config->funcTimer_.outStrm_ = &logFile;
+    config->funcTimer_.doTiming_ = true;
+}
 
 static LILCALLBACK void do_exit([[maybe_unused]] LilInterp_Ptr lil, Lil_value_Ptr val) {
     running   = false;
@@ -165,6 +187,7 @@ static int repl() {
 
 // Run a script.
 static int nonint(int argc, lcstrp argv[]) {
+    configure_interpreter();
     LilInterp_Ptr lil = lil_new();
     lcstrp filename = argv[1];
     lcstrp err_msg;
@@ -290,6 +313,7 @@ NS_BEGIN(Lil)
 
 // Run a string.
 static int run_a_string(lcstrp input) {
+    configure_interpreter();
     LilInterp_Ptr lil = lil_new();
     lcstrp err_msg;
     INT       pos;

@@ -45,6 +45,7 @@
 
 #include "lil.h"
 #include "MemCache.h"
+#include "string_format.h"
 
 #ifndef NS_BEGIN
 #define NS_BEGIN(X) namespace X {
@@ -104,14 +105,16 @@ struct LilException : std::runtime_error {
 struct ObjCounter {
     // Number of objects created. =========================================
     bool logObjectCount_      = false; // Do we actually log counts?
-    bool doObjectCountOnExit_ = false;
+    std::ostream*       outStrm_ = nullptr;
 
-    ~ObjCounter() noexcept {
-        auto print_key_value = [](const auto& key, const auto& value) {
-            std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
+
+    ~ObjCounter() = default;
+    void printStats() const {
+        auto print_key_value = [this](const auto& key, const auto& value) {
+            *outStrm_ << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
         };
 
-        if (logObjectCount_ && doObjectCountOnExit_) {
+        if (logObjectCount_ && outStrm_!=nullptr) {
             for( const auto& n : objectCounts_ ) {
                 print_key_value(n.first, n.second);
             }
@@ -150,17 +153,18 @@ struct ObjCounter {
 struct FuncTimer {
     // Timing of things ===================================================
     bool doTiming_     = false;
-    bool doTimeOnExit_ = false;
+    std::ostream*       outStrm_ = nullptr;
 
     FuncTimer() = default;
     FuncTimer(const FuncTimer& rhs) = default;
     FuncTimer& operator=(const FuncTimer& rhs) = default;
-    ~FuncTimer() noexcept {
-        auto print_key_value = [](const auto& key, const auto& value) {
-            std::cerr << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
+    ~FuncTimer() = default;
+    void printStats() const {
+        auto print_key_value = [this](const auto& key, const auto& value) {
+            *outStrm_ << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
         };
 
-        if (doTiming_ && doTimeOnExit_) {
+        if (doTiming_ && outStrm_!=nullptr) {
             for( const auto& n : timerInfo_ ) {
                 print_key_value(n.first, n.second);
             }
@@ -206,21 +210,21 @@ struct FuncTimer {
 
 struct Coverage {
     // Coverage specific ==================================================
-    bool            doCoverage_ = false;
-    bool            outputCoverageOnExit_ = false;
-    std::ostream*   outStrm = &std::cerr;
+    bool                doCoverage_ = false;
+    std::ostream*       outStrm_ = nullptr;
 
     std::unordered_map<lstring, INT>  coverageMap_;
 
     Coverage() = default;
     Coverage(const Coverage& rhs) = default;
     Coverage& operator=(const Coverage& rhs) = default;
-    ~Coverage() {
+    ~Coverage() = default;
+    void printStats() const {
         auto print_key_value = [&](const auto& key, const auto& value) {
-            (*outStrm) << "Key:[" << key << "] Value:[" << value << "]\n";
+            (*outStrm_) << "Key:[" << key << "] Value:[" << value << "]\n";
         };
 
-        if (doCoverage_ && outputCoverageOnExit_) {
+        if (doCoverage_ && outStrm_ != nullptr) {
             for( const auto& n : coverageMap_ ) {
                 print_key_value(n.first, n.second);
             }
@@ -241,10 +245,10 @@ struct SysInfo { // #class
     ObjCounter  objCounter_;
     FuncTimer   funcTimer_;
     Coverage    converage_;
+    std::ostream*       outStrm_ = nullptr;
 
     // Interpreter specific ================================================
     bool        logInterpInfo_ = false;
-    bool        outputInterpInfoOnExit_ = false;
 
     clock_t     startTime_ = 0;
 
@@ -296,16 +300,18 @@ struct SysInfo { // #class
 
     SysInfo() { // #ctor
         startTime_ = std::clock();
+        objCounter_.outStrm_ = outStrm_;
+        funcTimer_.outStrm_ = outStrm_;
+        converage_.outStrm_ = outStrm_;
     }
     SysInfo(const SysInfo& rhs) = default;
     SysInfo& operator=(const SysInfo& rhs) = default;
-    ~SysInfo() noexcept { // #dtor
-        if (logInterpInfo_ && outputInterpInfoOnExit_) {
-            printStats();
-        }
-    }
+    ~SysInfo() = default;
     void printStats() const {
-#define SYSINFO_ENTRY(X) if (X) std::cerr << #X << " = " << (X) << "\n";
+        converage_.printStats();
+        objCounter_.printStats();
+        funcTimer_.printStats();
+#define SYSINFO_ENTRY(X) if (outStrm_ != nullptr && X) *outStrm_ << #X << " = " << (X) << "\n";
         SYSINFO_ENTRY(numCommandsRegisteredTotal_);
         SYSINFO_ENTRY(numErrorsSetInterpreter_);
         SYSINFO_ENTRY(maxParseDepthAcheved_);
@@ -347,6 +353,8 @@ struct SysInfo { // #class
         SYSINFO_ENTRY(numCmdArgErrors_);
         SYSINFO_ENTRY(numCmdSuccess_);
         SYSINFO_ENTRY(numCmdFailed_);
+        //- 35
+        SYSINFO_ENTRY(startTime_);
 #undef SYSINFO_ENTRY
     }
 };
@@ -750,6 +758,9 @@ public:
             lil_free_env(this->getEnv());
             this->setEnv(next);
         }
+        // When top interpreter dies reset configuration options for next time.
+        // Remember this is per-thread.
+        if (parentInterp_==nullptr) Lil_getSysInfo(true);
     }
 
     // Size commands hashtable.  #optimization
@@ -932,6 +943,13 @@ public:
     void del_func(Lil_func_Ptr cmdD);
     ND Lil_value_Ptr rename_func(INT argc, Lil_value_Ptr* argv);
     ND bool registerFunc(lcstrp  name, lil_func_proc_t proc);
+
+    // Used to filter command that can be added.
+    using cmdFilterType = std::function<bool(lcstrp  name, lil_func_proc_t proc)>;
+    cmdFilterType  cmdFilter_;
+    bool           isSafe_ = false; // If true don't allow unsafe commands.
+
+    std::ostream*  logFile_ = nullptr; // Log file, must be setup by main program.
 };
 
 struct Lil_exprVal { // #class
