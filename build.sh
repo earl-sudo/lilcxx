@@ -27,5 +27,5 @@ ${GCC} -c src/lil_eval_expr.cpp ${CFLAGS}
 ${GCC} -c src/lil.cpp ${CFLAGS}
 ar rcs liblilcxx.a lil_cmds.o lil_eval_expr.o lil.o
 
-${GCC} main/main.cpp liblilcxx.a -o lilcxx ${CFLAGS}
+${GCC} main/main.cpp liblilcxx.a -o lilcxxsh ${CFLAGS}
 

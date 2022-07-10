@@ -1015,12 +1015,15 @@ void         _del_func(LilInterp_Ptr lil, Lil_func_Ptr cmd);
 Lil_var_Ptr  _lil_find_local_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
 Lil_var_Ptr  _lil_find_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name);
 
+struct CommandAdaptor;
+
 struct Module {
     lstring     name_;
     INT         version_[2] = {0,0};
-    std::vector<std::tuple<lstring,lil_func_proc_t>> commands_;
-    void add(lstring_view name, lil_func_proc_t func) {
-        commands_.push_back(std::tuple<lstring,lil_func_proc_t>{name, func});
+    using element = std::tuple<lstring,lil_func_proc_t,CommandAdaptor*>;
+    std::vector<element> commands_;
+    void add(lstring_view name, lil_func_proc_t func, CommandAdaptor* obj) {
+        commands_.push_back(element{name, func, obj});
     }
 };
 

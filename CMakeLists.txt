@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.16)
 #        [HOMEPAGE_URL <url-string>]
 #        [LANGUAGES <language-name>...])
 
-project(lil)
+project(lilcxx)
 
 # <help> Setting language properties for "project"
 
@@ -59,10 +59,18 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -g -O2")
 # add_executable(<name> IMPORTED [GLOBAL])
 # add_executable(<name> ALIAS <target>)
 
-add_executable(lil
-        main/main.cpp main/unittest.cxx
-        src/lil.cpp inc/lil.h src/lil_cmds.cpp inc/lil_inter.h src/lil_eval_expr.cpp
-        inc/narrow_cast.h inc/MemCache.h main/unittest.cxx inc/comp_info.h inc/funcPointers.h)
+add_executable(lilcxxsh
+        main/main.cpp
+        src/lil_cmds.cpp
+        main/unittest.cxx
+        src/lil_eval_expr.cpp
+        main/unittest.cxx
+        src/lil.cpp inc/lil.h
+        inc/lil_inter.h
+        inc/narrow_cast.h
+        inc/MemCache.h
+        inc/comp_info.h
+        inc/funcPointers.h)
 
 # <help> Add include path to "target"
 # target_include_directories(<target> [SYSTEM] [AFTER|BEFORE]
@@ -70,7 +78,7 @@ add_executable(lil
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 # EXAMPLE: target_include_directories(myawesomelib PUBLIC include)
 # target_include_directories(lil SYSTEM PUBLIC gsl)
-target_include_directories(lil SYSTEM PUBLIC inc)
+target_include_directories(lilcxxsh SYSTEM PUBLIC inc)
 
 # <help> Add library to "target"
 # target_include_directories(<target> [SYSTEM] [AFTER|BEFORE]
@@ -78,11 +86,19 @@ target_include_directories(lil SYSTEM PUBLIC inc)
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 # EXAMPLE: target_link_libraries(myawesomecli PRIVATE myawesomelib)
 # EXAMPLE: link_directories(/Users/User/Projects/libraries/libs)
-add_library(lilcpp
-        src/lil.cpp inc/lil.h src/lil_cmds.cpp inc/lil_inter.h src/lil_eval_expr.cpp
-        inc/narrow_cast.h inc/MemCache.h main/unittest.cxx)
+add_library(lilcxx
+        src/lil_cmds.cpp
+        main/unittest.cxx
+        src/lil_eval_expr.cpp
+        main/unittest.cxx
+        src/lil.cpp inc/lil.h
+        inc/lil_inter.h
+        inc/narrow_cast.h
+        inc/MemCache.h
+        inc/comp_info.h
+        inc/funcPointers.h)
 
-target_include_directories(lilcpp SYSTEM PUBLIC inc)
+target_include_directories(lilcxx SYSTEM PUBLIC inc)
 
 # <help> apply option to all target files
 # target_compile_options(<target> [BEFORE]
@@ -90,9 +106,39 @@ target_include_directories(lilcpp SYSTEM PUBLIC inc)
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 # EXAMPLE: target_compile_options(propertyTree PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>)
 # EXAMPLE: target_compile_options(Foo PRIVATE -fno-exceptions)
-target_compile_options(lil PRIVATE -Wnonnull)
+target_compile_options(lilcxxsh PRIVATE -Wnonnull)
 # -Werror -Wold-style-cast  -Wpadding -Wpadded -Waggregate-return
-target_compile_options(lil PRIVATE -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
+target_compile_options(lilcxxsh PRIVATE -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
+        -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op
+        -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept  -Woverloaded-virtual
+        -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel
+        -Wstrict-overflow=5 -Wswitch-default -Wundef  -Wno-unused
+
+        -pedantic-errors -Wextra  -Wcast-align
+        -Wcast-qual -Wconversion
+        -Wdisabled-optimization
+        -Wfloat-equal -Wformat=2
+        -Wformat-nonliteral -Wformat-security
+        -Wformat-y2k
+        -Wimport  -Winit-self  -Winline -Winvalid-pch
+        -Wlong-long
+        -Wmissing-field-initializers -Wmissing-format-attribute
+        -Wmissing-include-dirs -Wmissing-noreturn
+        -Wpacked  -Wpointer-arith
+        -Wredundant-decls
+        -Wshadow -Wstack-protector
+        -Wstrict-aliasing=2 -Wswitch-default
+        -Wswitch-enum
+        -Wunreachable-code -Wunused
+        -Wunused-parameter
+        -Wvariadic-macros -Wno-float-equal
+        -Wwrite-strings -Wsign-conversion
+
+        -Wno-unknown-pragmas -Wno-sign-compare -Wno-inline)
+
+target_compile_options(lilcxx PRIVATE -Wnonnull)
+# -Werror -Wold-style-cast  -Wpadding -Wpadded -Waggregate-return
+target_compile_options(lilcxx PRIVATE -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
         -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op
         -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept  -Woverloaded-virtual
         -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel
