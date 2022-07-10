@@ -32,10 +32,19 @@
 
 #include <cstdlib>
 #include <climits>
-#include <type_traits>
 #include <cassert>
+#include "git_info.h"
 
 NS_BEGIN(Lil)
+
+
+[[maybe_unused]] const char* g_gitid   = GIT_HASH;
+[[maybe_unused]] const char* g_gitdate = DGIT_DATE;
+
+extern "C" {
+const char *getLilCxxGitId() { return g_gitid; }
+const char *getLilCxxGitData() { return g_gitdate; }
+}
 
 #define ND [[nodiscard]]
 #define CAST(X) (X)

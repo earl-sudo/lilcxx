@@ -186,4 +186,8 @@ LILAPI void                lil_write(LilInterp_Ptr lil, lcstrp msg);
 
 NS_END(Lil)
 
+extern "C" {
+    const char *getLilCxxGitId();
+    const char *getLilCxxGitData();
+}
 #endif

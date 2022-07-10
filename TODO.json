@@ -59,7 +59,8 @@
       {"n": "logfile - DONE", "rank": 1 },
       {"n": "Rename library liblilcxx.a - DONE"},
       {"n": "Rename executable lilcxxsh - DONE"},
-      {"n": "command keywords - DONE", "rank": 1}
+      {"n": "command keywords - DONE", "rank": 1},
+      {"n": "Put git version info into binary. - DONE", "rank":  10}
   ],
   "errors": [
     {"n": "Fix \"invalid read of size 1\", ~Lil_value()."}
@@ -71,7 +72,6 @@
     {"n": "test command & testfunc", "rank": 1},
     {"n": "test windows and other linux builds", "rank": 1},
     {"n": "Make argument error, action error, parser error, null return all distinct in commands.", "rank":  1},
-    {"n": "Put git version info into binary.", "rank":  10},
 
     {"n": "List of features org/language/imp-design/src/build-pkg", "rank": 20},
     {"n": "numDeReferences_", "rank": 20},

@@ -15,7 +15,7 @@ typedef size_t  (*fwrite_funcType) (const void *__ptr, size_t __size, size_t __n
 typedef int     (*fseek_funcType) (FILE *__stream, long int __off, int __whence);
 // feof()/ferror()/popen()/pclose()/unlink()/chmod/link()/rename()/rmdir()/mkdir() #TODO
 // getenv()/secure_getenv()
-};
+}
 
 extern fopen_funcType  fopen_func;
 extern fclose_funcType fclose_func;

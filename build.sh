@@ -3,6 +3,8 @@
 
 GCC=g++-10
 
+sh ./gen_gitInfo.sh
+
 CFLAGS="${CFLAGS} -I./inc -I./main"
 CFLAGS="${CFLAGS} -std=c++20 -Wall -g -O3 -march=native -flto"
 
@@ -22,10 +24,11 @@ CFLAGS="${CFLAGS}  -Wno-unknown-pragmas -Wno-sign-compare -Wno-inline"
 
 echo ${GCC}
 echo ${CFLAGS}
-${GCC} -c src/lil_cmds.cpp ${CFLAGS}
-${GCC} -c src/lil_eval_expr.cpp ${CFLAGS}
-${GCC} -c src/lil.cpp ${CFLAGS}
-ar rcs liblilcxx.a lil_cmds.o lil_eval_expr.o lil.o
+rm build_sh.log lil_cmds.o lil_eval_expr.o lil.o liblilcxx lilcxxsh
+${GCC} -c src/lil_cmds.cpp ${CFLAGS} 2>&1  | tee  -a build_sh.log
+${GCC} -c src/lil_eval_expr.cpp ${CFLAGS}  2>&1  | tee  -a build_sh.log
+${GCC} -c src/lil.cpp ${CFLAGS}   2>&1  | tee  -a build_sh.log
+ar rcs liblilcxx.a lil_cmds.o lil_eval_expr.o lil.o  2>&1  | tee  -a build_sh.log
 
-${GCC} main/main.cpp liblilcxx.a -o lilcxxsh ${CFLAGS}
+${GCC} main/main.cpp liblilcxx.a -o lilcxxsh ${CFLAGS} 2>&1  | tee  -a build_sh.log
 
