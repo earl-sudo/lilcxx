@@ -1,4 +1,18 @@
 {
+  "goals": [
+    {"n": "Entertain myself"},
+    {"n": "Build a useful tool"},
+    {"n": "Try out some idea about code development"},
+    {"n": "Make something portable"},
+    {"n": "Make something extendable"},
+    {"n": "Make something easy to test (i.e. easy extendable)"},
+    {"n": "Make something at least for me easy to understand"},
+    {"n": "Try to make debugging code written easy"},
+    {"n": "Speed is not a big issue, but some effort"},
+    {"n": "Want at least the core of it to be small in lines of code and binary compile"},
+    {"n": "Add utilities to make programming in it as easy as possible"},
+    {"n": "Give a simple option to devs needing a simple scripting language"}
+  ],
   "organization": [
     {"n": "gihub https://github.com/earl-sudo/lilcxx"},
     {"n": "license open source"}
@@ -7,11 +21,11 @@
     {"n": "Mostly same syntax as Tcl with notable exceptions"},
     {"unlike-tcl": [
       "escapes \\o for { and \\c for }",
-      "func command to define subroutines",
-      "func has no default values",
+      "\"func\" command to define subroutines",
+      "\"func\" has no default values",
       "variable from global are auto imported into subroutines",
       "to create global from inside a subroutine \"set global name value\"",
-      "force local variables with local command \"local level; set level 32\"",
+      "force local variables with \"local\" command \"local level; set level 32\"",
       "multi-line comments are between \"##\"",
       "Instead of \"info\" it uses \"reflect\"",
       "Instead of \"puts\" it uses \"print\"",
@@ -81,14 +95,14 @@
     {"n": "while", "tags": "language loop"}
   ],
   "codefeatures-external": [
-    {"n": "lilcxx main which can be used to run scripts of unittest."},
+    {"n": "lilcxx main which can be used to run scripts or run unittest."},
     {"n": "Written to C++20 language"},
     {"n": "No external libraries needed"},
     {"n": "Designed to be portable"},
     {"n": "CMake build"},
     {"n": "build.sh build"},
     {"n": "builds a liblilcxx.a"},
-    {"n": "builds a lil executable lilcxxsh"},
+    {"n": "builds a lilcxx executable lilcxxsh"},
     {"n": "srcToC.tcl convert text files to C++ static strings"},
     {"n": "valgrind_all.sh to run valgrind over lilcxx main"},
     {"n": "kcov_all.sh to use kcov to show code coverage"},
@@ -97,7 +111,8 @@
     {"n": "MemCache.h cache memory alllocation of objects for speed"},
     {"n": "Has a simple API in lil.h"},
     {"n": "Has a detailed API in lil_inter.h"},
-    {"n": "Lowest level functions have mockable interfaces see funcPointers.h"}
+    {"n": "Lowest level functions have mockable interfaces see funcPointers.h"},
+    {"n": "Has way of embedding git id and git date into binary"}
   ],
   "codefeatures-objects": [
       {"n": "ErrorCode"},

@@ -10,6 +10,7 @@
       {"n": "Pipe SysInfo into each new Type. - DONE"},
       {"n": "Convert series of integers into enums - DONE"},
       {"n": "Get rid of Lil_callframe.var_ and Lil_callframe.vars_.  Use iterators over varmap_ - "},
+
       {"n": "Get rid of for loops over LilInterp.cmdArray_ - DONE"},
       {"n": "Get rid of LilInterp.numCmds_ - DONE"},
       {"n": "Get rid of loops over LilInterp.cmdArray_ and then cmdArray_ - DONE"},
@@ -20,6 +21,7 @@
       {"n": "Convert Lil_value to a std::string. - DONE"},
       {"n": "Up warnings on compiler - DONE"},
       {"n": "better unit-testing - DONE"},
+
       {"n": "More organize code - DONE"},
       {"n": "Make library - DONE"},
       {"n": "Add exception handling to where we call command function pointers. - DONE"},
@@ -30,6 +32,7 @@
       {"n": "Deal with character types. - DONE"},
       {"n": "Fix miss matched Lil::_real_trim() delete() and Lil::_strclone() new[]. - DONE"},
       {"n": "Fix miss matched Lil::_strclone() new[] and Lil::LilInterp::setCather() delete. - DONE"},
+
       {"n": "Add command callback wrappers. - DONE"},
       {"n": "Review #magic - DONE"},
       {"n": "ERROR: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_. - used shared "},
@@ -40,6 +43,7 @@
       {"n": "Add reset to Lil_getSysInfo() - DONE"},
       {"n": "Add own exception type. - DONE"},
       {"n": "tclExpr project - DONE"},
+
       {"n": "numUnknownVars_ - DONE"},
       {"n": "numUnknownCmds_ - DONE"},
       {"n": "numIntegerConversions_ - DONE"},
@@ -50,6 +54,7 @@
       {"n": "Generate random number table - DONE"},
       {"n": "Makefile and build script - DONE (minus makefile)"},
       {"n": "thread safe - OBE"},
+
       {"n": "Move private code to private section. - OBE"},
       {"n": "Publish - DONE"},
       {"n": "sub interp knows parent - DONE"},
@@ -60,6 +65,7 @@
       {"n": "Rename library liblilcxx.a - DONE"},
       {"n": "Rename executable lilcxxsh - DONE"},
       {"n": "command keywords - DONE", "rank": 1},
+
       {"n": "Put git version info into binary. - DONE", "rank":  10}
   ],
   "errors": [
@@ -67,16 +73,16 @@
   ],
   "misc": [
     {"n": "safe mode", "rank":  1, "note":  "started"},
-
     {"n": "Add compile/os/date/commands tested info to log", "rank": 1},
     {"n": "test command & testfunc", "rank": 1},
     {"n": "test windows and other linux builds", "rank": 1},
     {"n": "Make argument error, action error, parser error, null return all distinct in commands.", "rank":  1},
-
+    {"n": "Attach git info generation to CMake"},
     {"n": "List of features org/language/imp-design/src/build-pkg", "rank": 20},
     {"n": "numDeReferences_", "rank": 20},
     {"n": "numRedefinedProcs_", "rank": 20},
     {"n": "numRedefinedVars", "rank": 20},
+
     {"n": "Connect commands to unittest"},
     {"n": "Add several build options, sanitizers address/leak/undef/thread/memory coverage,time-trace conan/vcpkg.json"},
     {"n": "Operation of Make and unittest more standard for others"},
@@ -87,6 +93,7 @@
     {"n": "std::list<> from C-array."},
     {"n": "justifications"},
     {"n": "ERROR: Copies may exist of LilInterp may exist so other references are possible."},
+
     {"n": "Review algorithms for substitutions."},
     {"n": "better errors"},
     {"n": "string class"},
@@ -97,6 +104,7 @@
     {"n": "redirect stdout stderr"},
     {"n": "Add error ids to all errors"},
     {"n": "Use tcl test suit."},
+
     {"n": "find limits of current expr."},
     {"n": "Functor version of callbacks. How?"},
     {"n": "\"func\" and \"commands\" attributes"},
@@ -107,8 +115,8 @@
     {"n": "put cmd on cmdline"},
     {"n": "line editing"},
     {"n": "history"},
-    {"n": "act like terminal \"interruptable\""},
 
+    {"n": "act like terminal \"interruptable\""},
     {"n": "[] => span<> or array<>", "rank":  100},
     {"n": "Update Cmake with ideas from https://github.com/lefticus/project_options", "rank": 100},
     {"n": "C API", "rank": 100 },
@@ -118,6 +126,7 @@
     {"n": "{} for constructors", "rank": 100},
     {"n": "Use class enums", "rank": 100},
     {"n": "integrate linux cmds al-la system(\"ls\") becomes ls command", "rank": 100},
+
     {"n": "Use std::array where arrays needed.", "rank": 100},
     {"n": "Convert to UTF-16 characters", "rank": 100},
     {"n": "Make SysInfo work mostly off callbacks.", "rank": 100},
@@ -125,7 +134,6 @@
   ],
   "optimizations": [
     {"n": "Object cache", "rank": 1},
-
     {"n": "Add system to associate binary/alternate representations to string representations and deal with changes."},
     {"n": "configure vectors."},
     {"n": "configure strings name/values/misc"},
@@ -153,13 +161,13 @@
     {"n": "onexitFunc"},
     {"n": "\"test\" command with {script output numErrors} an on/off switch"},
     {"n": "binary [binary 64 be wordalign] [binary $x add {i4 5} pad3] [binary $x get i4 pad3"},
+
     {"n": "unless cmd args condition"},
     {"n": "must cmd args -- error becomes exception"}
   ],
   "additions": [
     {"n": "option to log all errors and catches"},
     {"n": "option to log all calls"},
-
     {"n": "log of external changes of commands"},
     {"n": "awk like file ops"},
     {"n": "auto close file/socket on eof"},
@@ -168,6 +176,7 @@
     {"n": "detect environment run in OS, dir, user, permissions"},
     {"n": "Add platform information"},
     {"n": "Better expr (from tcl7.6)"},
+
     {"n": "Better int/double parsing (from tcl8)"},
     {"n": "Make more like tcl (\"func\" => \"proc\" and like)"},
     {"n": "Output stats as YAML or JSON"},
@@ -178,6 +187,7 @@
     {"n": "    - expression shorthand"},
     {"n": "    - defer"},
     {"n": "if/switch/for/foreach/func/while return"},
+
     {"n": "@count<n> for loops"},
     {"n": "named beak/continue with local flag @break<name>called"},
     {"n": "named if/switch/for/foreach/func/while with local flag"},
@@ -188,6 +198,7 @@
     {"n": "    binary, env, eof, exec(***), expr, fcopy, file, fileevent, filename, flush, format, "},
     {"n": "gets, glob, http,"},
     {"n": "    open, puts, read, regexp, regsub, scan, seek, socket, string, tcl_platform, tcltest, "},
+
     {"n": "tell, time, timerate,"},
     {"n": "    clock, vmwait, zlib, sqlite"},
     {"n": "from boost"},
@@ -198,6 +209,7 @@
     {"n": "Add limiting API"},
     {"n": "    maxNumLength, maxValueLen, maxNumArgs, maxNumProcs, maxNumCommands, maxNumValue, "},
     {"n": "maxLevelStack, maxScriptSize,"},
+
     {"n": "    maxProcSize, maxNumLocals, maxNumLoops, maxExprSize, maxIntegerValue, "},
     {"n": "minIntegerValue, maxDoubleValue, minDoubleValue"},
     {"n": "show"},
@@ -206,5 +218,45 @@
     {"n": "    procChanges"},
     {"n": "Define base-command-set"},
     {"n": "Event loop"}
+  ],
+  "unsorted": [
+    {"n": "Fix English issues"},
+    {"n": "compress static text"},
+    {"n": "Visal C++ build"},
+    {"n": "clang build"},
+    {"n": "document goals"},
+    {"n": "simulate tcl API"},
+    {"n": "simulate python API"},
+    {"n": "Get rid of all warnings"},
+    {"n": "Add a string to dictionary names to allow multiple types"},
+    {"n": "Document removed commands"},
+
+    {"n": "List under tested commands"},
+    {"n": "Track lib/exe size"},
+    {"n": "LTO and non-LTO builds"},
+    {"n": "File access logging"},
+    {"n": "Single file version for \"Compiler Explorer\""},
+    {"n": "Unittest log - banner and summary"},
+    {"n": "gdb-breakpoints"},
+    {"n": "lilcxx breakpoints"},
+    {"n": "module API"},
+    {"n": "add simulated tcl like \"proc\""},
+
+    {"n": "add conanfile.py"},
+    {"n": "add namespace: ns_push/pop/list/curr"},
+    {"n": "error commands error_count/argErr_count/throw_count "},
+    {"n": "stacktrace -show_args -lineLimit n -stackLimit m"},
+    {"n": "named if/for/while/switch/case/break/foreach/continue"},
+    {"n": "counter for for/while/foreach"},
+    {"n": "file handle delete on eof()"},
+    {"n": "awkFile like command"},
+    {"n": "C++ filesystem to commands"},
+    {"n": "onlyOnce command"},
+
+    {"n": "everyPeriod command"},
+    {"n": "static variables"},
+    {"n": "gcov"},
+    {"n": "gprof"},
+    {"n": "Optional tcl variable access rules"}
   ]
 }
