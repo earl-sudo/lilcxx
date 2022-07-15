@@ -20,6 +20,10 @@
  *
  * Earl Johnson https://github.com/earl-sudo/lilcxx 2022
  */
+#ifndef UNITTEST_CXX
+#define UNITTEST_CXX
+
+#include "LilcxxTest.h"
 
 static const char* and_lil = R"Xraw(#
 # Short-circuit logical "and" macro-like function using upeval and downeval.
@@ -55,6 +59,10 @@ print "a is $a"
 
 static const char* and_lil_result1 = R"Xraw(Got '3'
 )Xraw"; // and_lil_result1
+
+LilTest   and_lil_test = {
+        .name_ = "and_lil", .script_ = and_lil, .expectedValue_ = and_lil_result1
+};
 
 // Changed file: call.lil to static string call_lil
 
@@ -1886,3 +1894,5 @@ const unittest  ut[] = {
         DEF_UNITEST(upeval_lil, upeval_lil_result1),
         DEF_UNITEST(watch_lil, watch_lil_result1),
 };
+
+#endif // UNITTEST_CXX

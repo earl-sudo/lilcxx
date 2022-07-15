@@ -355,6 +355,7 @@ int main(int argc, const char* argv[]) {
     std::cout << "DEF_OS:" << DEF_OS << std::endl;
     std::cout << "LilCxx-git-id:" << getLilCxxGitId() << std::endl;
     std::cout << "LilCxx-git-date:" << getLilCxxGitData() << std::endl;
+    std::cout << "LilCxx-git-branch:" << getLilCxxGitData() << std::endl;
 
     using namespace Lil;
     bool do_unit_test = false;

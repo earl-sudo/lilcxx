@@ -59,12 +59,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -g -O2")
 # add_executable(<name> IMPORTED [GLOBAL])
 # add_executable(<name> ALIAS <target>)
 
+#         main/unittest.cxx
 add_executable(lilcxxsh
         main/main.cpp
         src/lil_cmds.cpp
-        main/unittest.cxx
         src/lil_eval_expr.cpp
-        main/unittest.cxx
+        src/lilcxxTest.cpp
+        inc/lilcxxTest.h
         src/lil.cpp inc/lil.h
         inc/lil_inter.h
         inc/narrow_cast.h
@@ -86,17 +87,19 @@ target_include_directories(lilcxxsh SYSTEM PUBLIC inc)
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 # EXAMPLE: target_link_libraries(myawesomecli PRIVATE myawesomelib)
 # EXAMPLE: link_directories(/Users/User/Projects/libraries/libs)
+
+#         main/unittest.cxx
 add_library(lilcxx
         src/lil_cmds.cpp
-        main/unittest.cxx
         src/lil_eval_expr.cpp
-        main/unittest.cxx
+        src/lilcxxTest.cpp
+        inc/lilcxxTest.h
         src/lil.cpp inc/lil.h
         inc/lil_inter.h
         inc/narrow_cast.h
         inc/MemCache.h
         inc/comp_info.h
-        inc/funcPointers.h)
+        inc/funcPointers.h inc/LilcxxTest.h src/LilcxxTest.cpp)
 
 target_include_directories(lilcxx SYSTEM PUBLIC inc)
 

@@ -11,18 +11,38 @@
     {"n": "Speed is not a big issue, but some effort"},
     {"n": "Want at least the core of it to be small in lines of code and binary compile"},
     {"n": "Add utilities to make programming in it as easy as possible"},
-    {"n": "Give a simple option to devs needing a simple scripting language"}
+    {"n": "Give a simple option to devs who need a simple scripting language"}
+  ],
+  "justifications": [
+    {"n": "Very long code lines"},
+    {"n": "Using C++20"},
+    {"n": "Not standard doxygen comments"},
+    {"n": "Not using C++20 casting syntax"}
   ],
   "organization": [
     {"n": "gihub https://github.com/earl-sudo/lilcxx"},
     {"n": "license open source"}
   ],
-  "language": [
+  "language": [ee
     {"n": "Mostly same syntax as Tcl with notable exceptions"},
-    {"unlike-tcl": [
+    {"changes-from-lil": [
+      "no command \"embed_write\""
+      ]}
+    {"unlike-tcl-big-items": [
       "escapes \\o for { and \\c for }",
       "\"func\" command to define subroutines",
       "\"func\" has no default values",
+      "no \"switch\" command",
+      "no event loop",
+      "no regexp/regsub",
+      "no arrays",
+      "no dictionarys",
+      "no modules",
+      "no namespaces",
+      "no nested interpreters",
+      "no \"global\" command",
+      "no \"upvar\", \"uplevel\" commands",
+      "no unknown command",
       "variable from global are auto imported into subroutines",
       "to create global from inside a subroutine \"set global name value\"",
       "force local variables with \"local\" command \"local level; set level 32\"",

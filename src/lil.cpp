@@ -39,11 +39,13 @@ NS_BEGIN(Lil)
 
 
 [[maybe_unused]] const char* g_gitid   = GIT_HASH;
-[[maybe_unused]] const char* g_gitdate = DGIT_DATE;
+[[maybe_unused]] const char* g_gitdate = GIT_DATE;
+[[maybe_unused]] const char* g_gitbranch = GIT_BRANCH;
 
 extern "C" {
 const char *getLilCxxGitId() { return g_gitid; }
 const char *getLilCxxGitData() { return g_gitdate; }
+const char *getLilCxxGitBranch() { return GIT_BRANCH; }
 }
 
 #define ND [[nodiscard]]

@@ -189,5 +189,6 @@ NS_END(Lil)
 extern "C" {
     const char *getLilCxxGitId();
     const char *getLilCxxGitData();
+    const char *getLilCxxGitBranch();
 }
 #endif
