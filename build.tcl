@@ -52,7 +52,6 @@ if {$buildType eq "normal"} {
 }
 
 if {$lto} { lappend CFlAGS -flto }
-if {$warning} { lappend -Wall }
 if {$debug} { lappend CFLAGS -g }
 if {$optimize} { lappend CFLAGS -O${optimize} }
 if {$unittest} { } else { lappend CLFAGS -DLIL_NO_UNITTEST } ; # TODO
@@ -62,6 +61,25 @@ if {$gprof} { lappend CFLAGS -pg }
 if {$addressSanitizer} { lappend CFLAGS -fsanitize=address }
 if {$leakSanitizer} { lappend CFLAGS -fsanitize=leak  }
 if {$undefinedSanitizer} { lappend CFLAGS -fsanitize=undefined  }
+if {$warning} {
+    # removed because too noisy.
+    # -Wsign-conversion -Wmissing-field-initializers
+    # -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wconversion
+    # -Wmissing-declarations
+    lappend CFLAGS {*}{-pedantic -Wall -Wextra -Wcast-align -Wcast-qual}
+    lappend CFLAGS {*}{ -Wctor-dtor-privacy -Wdisabled-optimization  -Winit-self -Wlogical-op}
+    lappend CFLAGS {*}{ -Wmissing-include-dirs -Wnoexcept  -Woverloaded-virtual}
+    lappend CFLAGS {*}{ -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel}
+    lappend CFLAGS {*}{ -Wstrict-overflow=5 -Wswitch-default -Wundef  -Wno-unused}
+    lappend CFLAGS {*}{ -pedantic-errors -Wextra  -Wcast-align -Wdisabled-optimization}
+    lappend CFLAGS {*}{ -Wcast-qual  -Wfloat-equal }
+    lappend CFLAGS {*}{  -Wimport  -Winit-self  -Winline -Winvalid-pch -Wlong-long}
+    lappend CFLAGS {*}{  -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn}
+    lappend CFLAGS {*}{ -Wpacked  -Wpointer-arith -Wredundant-decls -Wshadow -Wstack-protector}
+    lappend CFLAGS {*}{ -Wstrict-aliasing=2 -Wswitch-default -Wswitch-enum -Wunreachable-code -Wunused}
+    lappend CFLAGS {*}{ -Wunused-parameter -Wvariadic-macros -Wno-float-equal -Wwrite-strings }
+    lappend CFLAGS {*}{ -Wno-unknown-pragmas -Wno-sign-compare -Wno-inline -Wno-reorder -Wno-missing-field-initializers}
+}
 
 proc dputs {args} {
     global logToFile logFileName
