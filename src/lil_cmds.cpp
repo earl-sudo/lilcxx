@@ -112,7 +112,7 @@ NS_BEGIN(Lil)
    function is unknown))cmt";
 #endif
 
-static Module lilstd = { "lilstd", 0, 0 };
+static Module lilstd = { .name_ = "lilstd", .version_ = { 0, 0} };
 
 struct Lilstd : public CommandAdaptor {
     Lilstd() { module_ = &lilstd; }
@@ -281,7 +281,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 
 struct fnc_rename_type : Lilstd { // #cmd
     fnc_rename_type() {
-        fnc_rename_doc; tags_ = "variable";
+        help_ = fnc_rename_doc; tags_ = "variable";
         lilstd.add("rename", *this,  this); }
 Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
@@ -1253,7 +1253,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 
 struct fnc_read_type : Lilstd { // #cmd
     fnc_read_type() {
-        fnc_read_doc; isSafe_ = false; tags_ = "io file";
+        help_ = fnc_read_doc; isSafe_ = false; tags_ = "io file";
         lilstd.add("read", *this,  this); }
 Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
@@ -1783,7 +1783,6 @@ struct fnc_repstr_type : Lilstd { // #cmd
 Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) override {
     assert(lil!=nullptr); assert(argv!=nullptr);
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_repstr");
-    lcstrp sub;
     ARGERR(argc < 1); // #argErr
     if (argc < 3) { CMD_SUCCESS_RET(lil_clone_value(argv[0])); }
     auto srcObj = argv[0]->getValue();

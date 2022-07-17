@@ -36,7 +36,9 @@
 
 #include "lil.h"
 #include "lil_inter.h"
+#ifndef LIL_NO_UNITTEST
 #include "unittest.cxx"
+#endif
 
 NS_BEGIN(Lil)
 
@@ -273,6 +275,7 @@ struct UnitTestOutput {
         }
     }
     void splitExpected(const char* expect) {
+        (void)expect;
         std::stringstream strm(strm_);
         std::string to;
         while(std::getline(strm,to,'\n')) {
@@ -305,6 +308,7 @@ struct UnitTestOutput {
 UnitTestOutput g_unitTestOutput;
 
 LILCALLBACK void lil_write_callback(Lil::LilInterp_Ptr lil, Lil::lcstrp msg) {
+    (void)lil;
     g_unitTestOutput.append(msg);
 }
 
@@ -358,6 +362,7 @@ int main(int argc, const char* argv[]) {
     std::cout << "LilCxx-git-branch:" << getLilCxxGitData() << std::endl;
 
     using namespace Lil;
+#ifndef LIL_NO_UNITTEST
     bool do_unit_test = false;
     if (argv[1] && strcmp(argv[1],"unittest")==0) do_unit_test = true;
     if (do_unit_test) {
@@ -372,6 +377,7 @@ int main(int argc, const char* argv[]) {
         std::cout << "numErrors: " << numErrors << "\n";
         return numErrors;
     }
+#endif
     try {
         if (argc < 2) { return repl(); } // Plan integrative mode.
         else { return nonint(argc, argv); } // Run a script

@@ -60,6 +60,7 @@ const char *getLilCxxGitBranch() { return GIT_BRANCH; }
 //        sysInfo_.logInterpInfo_ = true;        sysInfo_.outputInterpInfoOnExit_ = true;
 //        sysInfo_.outputCoverageOnExit_ = true; sysInfo_.doCoverage_ = true;
 //        sysInfo_.doTiming_ = true;             sysInfo_.doTimeOnExit_ = true;
+        parentInterp_ = parent;
         sysInfo_ = Lil_getSysInfo();
         LIL_CTOR(sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );

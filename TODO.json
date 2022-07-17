@@ -155,12 +155,11 @@
   "unsorted": [
     {"n": "Fix English issues"},
     {"n": "compress static text"},
-    {"n": "Visal C++ build"},
+    {"n": "Visual C++ build"},
     {"n": "clang build"},
     {"n": "document goals"},
     {"n": "simulate tcl API"},
     {"n": "simulate python API"},
-    {"n": "Get rid of all warnings"},
     {"n": "Add a string to dictionary names to allow multiple types"},
     {"n": "Document removed commands"},
 
@@ -200,10 +199,16 @@
     {"n": "command \"todo gen name\" \"todo done name\""},
     {"n": "escalate command syslog/remote-syslog/email/???"},
     {"n": "command \"assert numErrors 0\" \"assert numArgErrors 0\""},
+    {"n": "assert returnsChecked"},
+    {"n": "commands have \"embedded\" parameters"},
+    {"n": "no-file unittest option",
 
     {"n": "Turn on/off no errors strategy"}
   ],
   "done": [
+    {"n": "Get rid of all warnings - DONE"},
+    {"n": "Can turn off unittest - DONE"},
+    {"n": "build.tcl works and builds various ways we want to build - DONE"},
     {"n": "add \"safe\" to commands - DONE"},
     {"n": "Top level exception handler -  DONE"},
     {"n": "namespace - DONE"},

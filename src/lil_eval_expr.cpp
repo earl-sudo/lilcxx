@@ -309,6 +309,8 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
                     default: setInvalidTypeError(ee); break; // #ERR_RET
                 }
                 break;
+            default:
+                assert(false);
         }
 
         _ee_skip_spaces(ee);

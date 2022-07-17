@@ -1033,7 +1033,10 @@ struct CommandAdaptor {
     lstring cmdHelp_;
     bool isSafe_ = true;
     lstring tags_;
-    virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr* argv) { }
+    virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr* argv) {
+        (void)lil; (void)argc; (void)argv;
+        return nullptr;
+    }
     virtual void askForHelp() { }
     virtual void askForCmdLine() { }
 };

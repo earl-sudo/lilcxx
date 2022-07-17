@@ -36,7 +36,7 @@ if {$buildType eq "normal"} {
 } elseif {$buildType eq "smallTest"} { 
     set help false ; set libExt ST${libExt}
 } elseif {$buildType eq "small"} { ; # TODO fixme: turn off test.
-    set help false ; set libExt S${libExt}
+    set help false ; set unittest false ; set debug false; set libExt S${libExt}
 } elseif {$buildType eq "gcov"} { set gcov true
     set gcov true  
 } elseif {$buildType eq "gprof"} { 
@@ -55,10 +55,10 @@ if {$lto} { lappend CFlAGS -flto }
 if {$warning} { lappend -Wall }
 if {$debug} { lappend CFLAGS -g }
 if {$optimize} { lappend CFLAGS -O${optimize} }
-if {$unittest} { } else { } ; # TODO 
+if {$unittest} { } else { lappend CLFAGS -DLIL_NO_UNITTEST } ; # TODO
 if {$help} { } else { lappend CFLAGS -DLILCXX_NO_HELP_TEXT }
-if {$gcov} { lappend CFLAGS --converage }
-if {$gprof} { lappend CFLAGS --pg }
+if {$gcov} { lappend CFLAGS --coverage }
+if {$gprof} { lappend CFLAGS -pg }
 if {$addressSanitizer} { lappend CFLAGS -fsanitize=address }
 if {$leakSanitizer} { lappend CFLAGS -fsanitize=leak  }
 if {$undefinedSanitizer} { lappend CFLAGS -fsanitize=undefined  }
@@ -115,7 +115,7 @@ proc genlib {lib args} {
 proc genexe {exename mainObj args} {
     # ${GCC} main/main.cpp liblilcxx.a -o lilcxxsh ${CFLAGS} 2>&1  | tee  -a build_sh.log
     global compiler CFLAGS LDFLAGS exeExt
-    set outFile [outDir]${exename}${exeExt}
+    set outFile [outDir]/${exename}${exeExt}
     set cmd "exec ${compiler} -o ${outFile} ${mainObj} ${CFLAGS} ${LDFLAGS} $args"
     file mkdir [file dirname $outFile]
     dputs "==== link $exename"
@@ -150,4 +150,4 @@ proc genGitInfo {gitInfoFile} {
 genGitInfo $gitInfoFile
 compile_files src/lil_cmds.cpp src/lil_eval_expr.cpp src/lil.cpp main/main.cpp
 genlib lilcxx {*}[genObjNameList src/lil_cmds.cpp src/lil_eval_expr.cpp src/lil.cpp]
-genexe [outDir]/lilcxxsh${exeExt} main/main.cpp [outDir]/${libPrefix}lilcxx${libExt}
+genexe lilcxxsh main/main.cpp [outDir]/${libPrefix}lilcxx${libExt}
