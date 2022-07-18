@@ -45,3 +45,20 @@ The players are simple enough.
     all the Lil_func definitions.  It also contains all the code to be interpreted, the Lil_callframe list, the
     top level "catcher" and error code.
 
+Compiles July 17, 2022:
+
+x86-64 gcc
+	12.1
+	11.3
+	11.2
+	11.1
+	10.3
+	10.2
+	10.1
+	9.5 fail
+x86-64 clang
+	14.0.0
+	13.0.1
+	12.0.1
+	11.0.1
+	10.0.1

@@ -101,6 +101,14 @@ add_library(lilcxx
         inc/comp_info.h
         inc/funcPointers.h inc/LilcxxTest.h src/LilcxxTest.cpp)
 
+add_custom_command ( OUTPUT inc/git_info.h
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gen_gitInfo.sh
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/)
+
+# ALL - Indicate that this target should be added to the default build target so that it
+# will be run every time (the command cannot be called ALL).
+add_custom_target(BuildDocs ALL DEPENDS inc/git_info.h)
+
 target_include_directories(lilcxx SYSTEM PUBLIC inc)
 
 # <help> apply option to all target files
