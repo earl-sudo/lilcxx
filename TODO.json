@@ -181,7 +181,17 @@
     {"n": "commands have \"embedded\" parameters", "version2": 1},
     {"n": "no-file unittest option"},
 
-    {"n": "Turn on/off no errors strategy"}
+    {"n": "Turn on/off no errors strategy", "version2": 1},
+    {"n": "{*} operator, \"version2\": 1"},
+    {"n": "strace like", "version2": 1},
+    {"n": "stackless proc", "version2": 1},
+    {"n": "scoped proc", "version2": 1},
+
+    {"n": "preprocessor", "version2": 1, "notes": [
+      " /*cmt*/ ", " __LINE__ ", " __FILE__ ", " __FILE_SHORT__ ",
+      " #define WORD VAL ", "#pragma require fileIO",
+      "#pragma once", "#pragma preprocessor 1", "constexpr"
+    ]}
   ],
   "done": [
     {"n": "Get rid of all warnings - DONE"},
@@ -252,7 +262,6 @@
     {"n": "Rename library liblilcxx.a - DONE"},
     {"n": "Rename executable lilcxxsh - DONE"},
     {"n": "command keywords - DONE", "rank": 1},
-
     {"n": "List of features org/language/imp-design/src/build-pkg - DONE", "rank": 20},
     {"n": "Put git version info into binary. - DONE", "rank":  10}
   ]

@@ -1,0 +1,1 @@
+git log -n 1 | awk 'END { print "\n#endif\n"; } BEGIN { print "#ifndef GITINFO_H\n#define GITINFO_H\n\n#define GIT_BRANCH \"main\""; } /commit/ { printf("#define GIT_HASH \"%s\"\n", $2); } /Date:/ { printf("#define GIT_DATE \"%s\"\n", $0); }' > inc/git_info.h

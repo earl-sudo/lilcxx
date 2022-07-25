@@ -298,7 +298,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         CMD_ERROR_RET(nullptr);
     }
     r = new Lil_value(lil, func->getName());
-    if (newnameObj[0]) {
+    if (newnameObj.length()) {
         lil->hashmap_removeCmd(oldnameObj.c_str());
         lil->hashmap_addCmd(newnameObj.c_str(), func);
         func->name_ = newnameObj;
@@ -1552,7 +1552,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_substr");
     ARGERR(argc < 2); // #argErr
     auto& strObj = argv[0]->getValue();
-    ARGERR(!strObj[0]); // #argErr
+    ARGERR(strObj.length()); // #argErr
     auto slen  = strObj.length();
     bool inError = false;
     auto   start = CAST(ARGINT) _str_to_integer(lil_to_string(argv[1]), inError);
@@ -1964,7 +1964,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         fclose_func(f);
     }
     r = lil_parse(lil, buffer, 0, 0);
-    delete (buffer); //delete char*
+    delete [] (buffer); //delete char*
     CMD_SUCCESS_RET(r);
 }
 } fnc_source;

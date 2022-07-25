@@ -22,6 +22,8 @@
  * Earl Johnson https://github.com/earl-sudo/lilcxx 2022
  */
 
+#include "comp_info.h"
+
 #include <cassert>
 #include <exception>
 #include <iostream>
@@ -72,8 +74,13 @@ constexpr CASTTO_TYPE narrow_cast_checked(CASTFROM_TYPE u, const char* filename 
     static_assert(!details::can_fully_represent<CASTTO_TYPE, CASTFROM_TYPE>,
                   "we shouldn't be using narrow_cast for casts that aren't actually narrowing");
     if (details::static_cast_changes_value<CASTTO_TYPE>(u)) {
+#if defined(HAVE_PRETTY_FUNCTION_MACRO)
         std::cerr << "EXCEPTION: narrowing_error (" << filename << ":" << id
                   << ") (TYPE=" << __PRETTY_FUNCTION__ << ")\n";
+#else
+        std::cerr << "EXCEPTION: narrowing_error (" << filename << ":" << id
+                  << ") (TYPE=" << __FUNCTION__ << ")\n";
+#endif
         throw narrowing_error(filename, id);
     }
 

@@ -25,7 +25,15 @@
 #define QUDI(x) #x
 #define QUdi(x) QUDI(x)
 
+#define HAVE_PRETTY_FUNCTION_MACRO 1
+
 #if defined(_MSC_VER)
+// For MSVC
+#  define _CRT_SECURE_NO_WARNINGS  1
+#  define _SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING 1
+#  define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS  1
+#  undef HAVE_PRETTY_FUNCTION_MACRO
+
    // Visual Studio compiler
 #  define DEF_COMPILER "_MSC_VER"
 #  define DEF_COMPILER_VERSION QUdi(_MSC_VER )

@@ -1,3 +1,5 @@
+# convert all the source files into one combined file.
+
 set fileList {
     src/lil.cpp
     src/lil_eval_expr.cpp

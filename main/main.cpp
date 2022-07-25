@@ -27,6 +27,8 @@
 
 #define _DEFAULT_SOURCE
 
+#include "comp_info.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -37,7 +39,12 @@
 #include "lil.h"
 #include "lil_inter.h"
 #ifndef LIL_NO_UNITTEST
-#include "unittest.cxx"
+#  include "unittest.cxx"
+#endif
+
+#define HAS_POPEN 1
+#if defined(_MSC_VER) || defined(WATCOMC)
+#undef HAS_POPEN
 #endif
 
 NS_BEGIN(Lil)
@@ -74,7 +81,7 @@ static LILCALLBACK void do_exit([[maybe_unused]] LilInterp_Ptr lil, Lil_value_Pt
 
 static lstrp  do_system(SIZE_T argc, lchar** argv)
 {
-#if defined(WIN32) || defined(WATCOMC)
+#if !defined(HAS_POPEN)
     return nullptr;
 #else
     lstring cmd;
@@ -225,24 +232,6 @@ static int nonint(int argc, lcstrp argv[]) {
     lil_free(lil);
     return exit_code;
 }
-
-//#define DO_UNIT_TEST 1
-
-#ifdef DO_UNIT_TEST
-const int NUM_UNIT_TEST = 31;
-lcstrp  unit_test_files[NUM_UNIT_TEST] = {
- "call.lil",  "downeval.lil",
-"enveval.lil",  "extract.lil", "fileio.lil", "filter.lil",
-"funcs.lil", "hello.lil", "lists.lil", "local.lil",
-"mlcmt.lil", "mlhello.lil", "oop.lil",
-"recfuncdef.lil",  "return.lil",
-
-
-};
-// "and.lil", "catcher.lil", "expr.lil","mandelbrot.lil", "oop_animals.lil","robot.lil",
-// "jaileval.lil", "dollar.lil","watch.lil","upeval.lil","topeval.lil","trim.lil","sm.lil", "strings.lil",
-//"result.lil", "renamefunc.lil","mlhello.lil",
-#endif
 
 NS_END(Lil)
 

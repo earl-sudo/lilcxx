@@ -307,3 +307,51 @@
 
 // {"n": "assert returnsChecked", "version2": 1},
 // assertReturnsChecked
+
+//assertString var
+//assertInt var
+//assertFloat var
+//assertNumber var
+
+//breakTo name
+//continueTo name
+
+// able to record current state (like python generators)
+// recordAndReturn <cmd> <newCmd>
+
+// reserve space in variables
+//reserve <num> <var>
+//set name value <reserve-size>
+
+// advance binary command
+//binary.decode x86_64 $in {{int y} {int x}}
+//binary.encode x86_64 {{int y y} {int x x}}
+
+//states <name> def startState { {state1 state2} ...}
+//states <name> current
+//states transitiion <stateName>
+
+//expr.last
+//if.last
+
+//if.dynamic <name> {{cond1 code1} ....}
+//if.dynamic <name> add {cond1 code1}
+//switch.dynamic
+//while.dynamic <name> {body}
+//while.dynamic <name> pre {body}
+//while.dynamic <name> post {body}
+//for.dynamic <name> {body}
+
+//proc.dynamic <name> <args> <body>
+//proc.dynamic <name> pre <body>
+//proc.dynamic <name> post <body>
+
+//proc.copy <name> <name>
+
+//extern <name> {int 4} address
+
+//breakTo <name>
+//continueTo <name>
+
+// reserve <var> <byteSize>
+// set <var> <value> <byteSize>

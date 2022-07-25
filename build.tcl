@@ -1,3 +1,14 @@
+# Builds libcxx
+# > tclsh build.tcl <buildtype>
+# where buildtype is <empty>
+#                    normal
+#                    small
+#                    smallTest
+#                    gcov
+#                    gprof
+#                    addressSanitizer
+#                    leakSanitizer
+#                    undefinedSanitizer
 
 set logToFile       true
 set logFileName     build_tcl.log ; file delete $logFileName
@@ -35,9 +46,9 @@ if {[llength $argv] > 0} { set buildType [lindex $argv 0] }
 if {$buildType eq "normal"} { 
 } elseif {$buildType eq "smallTest"} { 
     set help false ; set libExt ST${libExt}
-} elseif {$buildType eq "small"} { ; # TODO fixme: turn off test.
+} elseif {$buildType eq "small"} {
     set help false ; set unittest false ; set debug false; set libExt S${libExt}
-} elseif {$buildType eq "gcov"} { set gcov true
+} elseif {$buildType eq "gcov"} {
     set gcov true  
 } elseif {$buildType eq "gprof"} { 
     set gprof true
@@ -54,7 +65,7 @@ if {$buildType eq "normal"} {
 if {$lto} { lappend CFlAGS -flto }
 if {$debug} { lappend CFLAGS -g }
 if {$optimize} { lappend CFLAGS -O${optimize} }
-if {$unittest} { } else { lappend CLFAGS -DLIL_NO_UNITTEST } ; # TODO
+if {$unittest} { } else { lappend CLFAGS -DLIL_NO_UNITTEST }
 if {$help} { } else { lappend CFLAGS -DLILCXX_NO_HELP_TEXT }
 if {$gcov} { lappend CFLAGS --coverage }
 if {$gprof} { lappend CFLAGS -pg }

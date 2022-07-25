@@ -1,0 +1,73 @@
+// File commands
+     read <name>
+     store <name> <value>
+     source <name>
+// Interesting commands
+     unusedname [part]
+     downeval [...]
+     enveval [invars] [outvars] <code>
+     jaileval ["clean"] <code>
+     filter [varname] <list> <expression>
+     slice <list> <from> [to]
+     result [value]
+     set ["global"] [name [value] ...]
+     local [...]
+     lmap <list> <name1> [name2 [name3 ...]]
+
+     reflect
+     reflect version
+     reflect args <func>
+     reflect body <func>
+     reflect func-count
+     reflect funcs
+     reflect vars
+     reflect globals
+     reflect has-func <name>
+     reflect has-var <name>
+     reflect has-global <name>
+     reflect error
+     reflect dollar-prefix [prefix]
+     reflect this
+     reflect name
+     func [name] [argument list | "args"] <code>
+     rename <oldname> <newname>
+     quote [...]
+     write [...]
+     print [...]
+     eval [...]
+     topeval [...]
+     upeval [...]
+     count <list>
+     index <list> <index>
+     indexof <list> <value>
+     list [...]
+     append ["global"] <list> <value>
+     subst [...]
+     concat [...]
+     foreach [name] <list> <code>
+     return [value]
+     expr [...]
+     inc <name> [value]
+     dec <name> [value]
+     if ["not"] <value> <code> [else-code]
+     while ["not"] <expr> <code>
+     for <init> <expr> <step> <code>
+     char <code>
+     charat <str> <index>
+     codeat <str> <index>
+     substr <str> <start> [length]
+     strpos <str> <part> [start]
+     length [...]
+     trim <str> [characters]
+     ltrim <str> [characters]
+     rtrim <str> [characters]
+     strcmp <a> <b>
+     streq <a> <b>
+     repstr <str> <from> <to>
+     split <str> [sep]
+     try <code> [handler]
+     error [msg]
+     exit [code]
+     rand
+     catcher [code]
+     watch <name1> [<name2> [<name3> ...]] [code]

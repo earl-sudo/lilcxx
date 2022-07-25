@@ -27,6 +27,10 @@
  * Earl Johnson https://github.com/earl-sudo/lilcxx 2022
  */
 
+
+
+#include "comp_info.h"
+
 #include <exception>
 #include <vector>
 #include <list>
@@ -865,7 +869,7 @@ public:
     // Are we in "catcher".
     ND  bool getIn_catcher() const { return in_catcher_; }
     // Change number of "catchers".
-    void incr_in_catcher(bool val) { in_catcher_ += val; }
+    void incr_in_catcher(int val) { in_catcher_ += val; }
 
     ND const lstring & getDollarprefix() const { return dollarprefix_; }
     void setDollarprefix(lcstrp  v) { dollarprefix_ = v; }

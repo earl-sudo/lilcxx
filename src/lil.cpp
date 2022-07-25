@@ -73,7 +73,7 @@ const char *getLilCxxGitBranch() { return GIT_BRANCH; }
     }
     void LilInterp::setCather(Lil_value_Ptr cmdD) {
         auto& catcherObj = cmdD->getValue();
-        if (catcherObj[0]) {
+        if (catcherObj.length()) {
             this->setCatcher(catcherObj.c_str());
         } else {
             this->setCatcherEmpty();
@@ -108,7 +108,7 @@ const char *getLilCxxGitBranch() { return GIT_BRANCH; }
             return nullptr;
         }
         r = new Lil_value(this, func->getName());
-        if (newnameObj[0]) {
+        if (newnameObj.length()) {
             hashmap_removeCmd(oldnameObj.c_str());
             hashmap_addCmd(newnameObj.c_str(), func);
             func->name_ = newnameObj;
@@ -210,9 +210,9 @@ Lil_value_Ptr lil_list_get(Lil_list_CPtr list, INT index) {
 }
 
 ND static bool _needs_escape(lstring_view str) { // #private
-    if (!str.empty() || !str[0]) { return true; }
-    for (INT i = 0; str[i]; i++) {
-        if (LISPUNCT(str[i]) || isspace(str[i])) { return true; }
+    if (str.empty() || str.length()==0) { return true; }
+    for (auto ch : str) {
+        if (LISPUNCT(ch) || isspace(ch)) { return true; }
     }
     return false;
 }
@@ -521,7 +521,7 @@ ND static Lil_value_Ptr _next_word(LilInterp_Ptr lil) { // #private
         while (lil->getHead() < lil->getCodeLen() && !LISSPACE(lil->getHeadChar()) && !_islilspecial(lil->getHeadChar())) {
             lil->incrHead(1);
         }
-        val = new Lil_value(lil, lil->getCodeObj().substr(start));
+        val = new Lil_value(lil, lil->getCodeObj().substr(start, lil->getHead()-start));
     }
     return val ? val : new Lil_value(lil);
 }
@@ -531,7 +531,7 @@ ND static Lil_list_Ptr _substitute(LilInterp_Ptr lil) {// #private
     assert(lil!=nullptr);
     Lil_list_Ptr words = lil_alloc_list(lil);
 
-        _skip_spaces(lil);
+    _skip_spaces(lil);
     while (lil->getHead() < lil->getCodeLen() && !_ateol(lil) && !lil->getError().inError()) {
         auto w = new Lil_value(lil);
         do {
@@ -678,19 +678,26 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
                         lil->sysInfo_->numProcsRuns_++;
                         lil_push_env(lil); // Add new callframe.
                         lil->getEnv()->setFunc() = cmd; // Set this callframe function.
-                        auto& elem0 = cmd->getArgnames()->getValue(0)->getValue();
-                        if (cmd->getArgnames()->getCount() == 1 && (elem0 == L_STR("args"))) {
+                        if (!cmd->getArgnames()->getCount()) {
+                            // #TODO what if no args? #FIXME
                             // Handling of variable number of arguments.
                             Lil_value_SPtr args(lil_list_to_value(lil, words, true)); // Delete on exit.
                             lil_set_var(lil, L_STR("args"), args.v, LIL_SETVAR_LOCAL_NEW);
-                        } else { // Handling of fix number of arguments.
-                            for (INT i = 0; i <
-                                        cmd->getArgnames()->getCount(); i++) { // Create named argument for each positional argument.
-                                lil_set_var(lil, lil_to_string(cmd->getArgnames()->getValue(i)),
-                                            i < words->getCount() - 1 ? words->getValue(i + 1) : lil->getEmptyVal(),
-                                            LIL_SETVAR_LOCAL_NEW);
+                        } else {
+                            auto& elem0 = cmd->getArgnames()->getValue(0)->getValue(); // #TODO cmd->getArgnames()->getValue(0)->getValue() implies numArgs > 0
+                            if (cmd->getArgnames()->getCount() == 1 && (elem0 == L_STR("args"))) {
+                                // Handling of variable number of arguments.
+                                Lil_value_SPtr args(lil_list_to_value(lil, words, true)); // Delete on exit.
+                                lil_set_var(lil, L_STR("args"), args.v, LIL_SETVAR_LOCAL_NEW);
+                            } else { // Handling of fix number of arguments.
+                                for (INT i = 0; i <
+                                    cmd->getArgnames()->getCount(); i++) { // Create named argument for each positional argument.
+                                    lil_set_var(lil, lil_to_string(cmd->getArgnames()->getValue(i)),
+                                        i < words->getCount() - 1 ? words->getValue(i + 1) : lil->getEmptyVal(),
+                                        LIL_SETVAR_LOCAL_NEW);
+                                }
                             }
-                        }
+                        } 
                         val                      = lil_parse_value(lil, cmd->getCode(), 1); // Actually func command.
                         lil_pop_env(lil); // Pop functions callframe.
                     }

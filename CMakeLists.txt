@@ -79,7 +79,7 @@ add_executable(lilcxxsh
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 # EXAMPLE: target_include_directories(myawesomelib PUBLIC include)
 # target_include_directories(lil SYSTEM PUBLIC gsl)
-target_include_directories(lilcxxsh SYSTEM PUBLIC inc)
+target_include_directories(lilcxxsh SYSTEM PUBLIC inc boost_1_79_0)
 
 # <help> Add library to "target"
 # target_include_directories(<target> [SYSTEM] [AFTER|BEFORE]
@@ -109,7 +109,7 @@ add_custom_command ( OUTPUT inc/git_info.h
 # will be run every time (the command cannot be called ALL).
 add_custom_target(BuildDocs ALL DEPENDS inc/git_info.h)
 
-target_include_directories(lilcxx SYSTEM PUBLIC inc)
+target_include_directories(lilcxx SYSTEM PUBLIC inc boost_1_79_0)
 
 # <help> apply option to all target files
 # target_compile_options(<target> [BEFORE]

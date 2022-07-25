@@ -14,8 +14,12 @@ build/
 *.mk
 *.lb1
 *.exe
+*.pdb
+*.idb
+*.log
 /lil1
 /fileio.txt
 
 *.tds
 /cmake-build-debug/
+/msvc/vc2019b/
