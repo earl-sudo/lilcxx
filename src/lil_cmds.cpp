@@ -639,7 +639,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         invars.reset(lil_subst_to_list(lil, argv[0]));
         varvalues.resize(lil_list_size(invars.get()), nullptr); // alloc Lil_value_Ptr[]
 
-        assert(varvalues.size()>=invars->getCount());
+        assert(CAST(INT)varvalues.size()>=invars->getCount());
 
         auto      invars_it = invars->cbegin(); auto varvalues_it = varvalues.begin();
         for (; invars_it != invars->end(); ++invars_it, ++varvalues_it) {
@@ -654,7 +654,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     }
     lil_push_env(lil); // Add level to stack where we are going to operate.
     if (invars) { // In we have invars copy them into this level.
-        assert(varvalues.size()>=invars->getCount());
+        assert(CAST(INT)varvalues.size()>=invars->getCount());
 
         auto     invars_it = invars->cbegin(); auto varvalues_it = varvalues.begin();
         for (; invars_it != invars->end(); ++invars_it, ++varvalues_it) {
@@ -664,14 +664,14 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     Lil_value_Ptr              r       = lil_parse_value(lil, argv[codeindex], 0); // Evaluate code.
     if (invars || outvars) {
         if (outvars) { // If we have outvars save their values from this level to varvalues.
-            assert(varvalues.size()>=outvars->getCount());
+            assert(CAST(INT)varvalues.size()>=outvars->getCount());
             varvalues.resize(lil_list_size(outvars.get()), nullptr); // realloc  Lil_value_Ptr* (array of ptrs)
             auto      outvars_it = outvars->cbegin(); auto varvalues_it = varvalues.begin();
             for (; outvars_it != outvars->end(); ++outvars_it, ++varvalues_it) {
                 *varvalues_it = cloneVar(*outvars_it);
             }
         } else { // Save invars values to varvalues.
-            assert(varvalues.size()>=invars->getCount());
+            assert(CAST(INT)varvalues.size()>=invars->getCount());
             auto     invars_it = invars->cbegin(); auto varvalues_it = varvalues.begin();
             for (; invars_it != invars->end(); ++invars_it, ++varvalues_it) {
                 *varvalues_it = cloneVar(*invars_it);

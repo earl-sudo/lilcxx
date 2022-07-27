@@ -59,6 +59,7 @@
 NS_BEGIN(Lil)
 
 #define ND [[nodiscard]]
+#define UNUSED(X) (void)(X)
 
 enum LilTypes {
     EE_INT,
@@ -188,8 +189,8 @@ struct FuncTimer {
     struct Timer {
         lcstrp          name_;
         FuncTimer*        si_;
-        std::clock_t    startTime_;
-        TimerInfo*      timeInfo_;
+        std::clock_t    startTime_{};
+        TimerInfo*      timeInfo_ = nullptr;
 
         Timer(lcstrp  name, FuncTimer* si) : name_(name), si_(si) {
             if (!si_->doTiming_) return;
@@ -517,7 +518,7 @@ public:
         assert(lil!=nullptr);
         setSysInfo(lil, sysInfo_);
         LIL_CTOR(sysInfo_, "Lil_callframe");
-        if (sysInfo_->varHTinitSize_) {
+        if (sysInfo_ && sysInfo_->varHTinitSize_) {
             varmap_.reserve(sysInfo_->varHTinitSize_);
         }
     }
@@ -556,7 +557,7 @@ public:
     void hashmap_put(lcstrp name, Lil_var_Ptr v) {
         assert(name!=nullptr); assert(v!=nullptr);
         varmap_[name] = v;
-        auto sz = varmap_.size();
+        auto sz = CAST(INT)varmap_.size();
         if (sz > sysInfo_->varHTMaxSize_) {
             sysInfo_->varHTMaxSize_ = sz;
         }
@@ -619,7 +620,7 @@ public:
     void append(Lil_value_Ptr val) {
         assert(val!=nullptr);
         listRep_.push_back(val);
-        if (listRep_.size() > sysInfo_->maxListLengthAcheved_)
+        if (CAST(INT)listRep_.size() > sysInfo_->maxListLengthAcheved_)
             sysInfo_->maxListLengthAcheved_ = listRep_.size(); // #topic
     }
     ND Lil_value_Ptr getValue(INT index) const { return listRep_[index]; }
@@ -725,7 +726,7 @@ private:
     std::vector<lil_callback_proc_t> callback_{NUM_CALLBACKS}; // index LIL_CALLBACK_*
 
     lstring   catcher_; // Pointer to "catch" command (own memory)
-    bool      in_catcher_ = false; // Are we in a "catch" command?
+    INT      in_catcher_ = 0; // Are we in a "catch" command?
 
     ErrorCode errorCode_; // Error code_.
     INT       errPosition_ = 0; // Position in code_ where error occured.

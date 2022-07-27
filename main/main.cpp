@@ -163,7 +163,8 @@ static LILCALLBACK Lil_value_Ptr fnc_readline(LilInterp_Ptr lil, [[maybe_unused]
 
 // Interactive mode.
 static int repl() {
-    lchar          buffer[16384];
+    std::vector<lchar>  bufferMem(16384); // #MAGIC
+    lchar*          buffer = &bufferMem[0];
     LilInterp_Ptr lil = lil_new();
 
     // Register some non-standard functions for IO.

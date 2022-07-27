@@ -226,7 +226,7 @@ Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_e
     for (auto it = list->cbegin(); it != list->cend(); ++it) {
         // *it => Lil_value(); it->getValue() => lcstrp
         auto strval = (*it)->getValue();
-        auto valLen = strval.length();
+        auto valLen = CAST(INT)strval.length();
 
         bool escape = do_escape ? _needs_escape(strval) : false;
         if (i) { lil_append_char(val, LC(' ')); } // Separate each value with ' '.
@@ -715,6 +715,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
         } // while (lil->getHead() < lil->getCodeLen() && !lil->getError())
     } catch (const lil_parse_exit& lpe) {
         // Nothing to do.
+        UNUSED(lpe);
         DBGPRINTF(L_VSTR(0x30b3, "Throw lil_parse_exit exception."));
     }
 
@@ -827,9 +828,11 @@ double lil_to_double(Lil_value_Ptr val, bool& inError) {
         ret = std::stod(lil_to_string(val));
         inError = false;
     } catch(std::invalid_argument& ia) {
+        UNUSED(ia);
         DBGPRINTF("lil_to_double() couldn't parse, invalid_argument |%s|\n", lil_to_string(val));
         inError = true;
     } catch(std::out_of_range& ofr) {
+        UNUSED(ofr);
         DBGPRINTF("lil_to_double() couldn't parse, out_of_range: |%s|\n", lil_to_string(val));
         inError = true;
     }

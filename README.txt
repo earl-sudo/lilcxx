@@ -62,3 +62,6 @@ x86-64 clang
 	12.0.1
 	11.0.1
 	10.0.1
+
+Visual Studio 2019
+Visual Studio 2022

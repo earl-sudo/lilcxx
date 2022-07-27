@@ -320,8 +320,8 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
 // Handle add/subtract math operations.
 static void _ee_addsub(Lil_exprVal* ee) { // #private
     assert(ee!=nullptr);
-        _ee_mutlipleDivide(ee);
-        _ee_skip_spaces(ee);
+    _ee_mutlipleDivide(ee);
+    _ee_skip_spaces(ee);
     while (_ee_validParseState(ee) && !_ee_invalidpunct(ee->getHeadChar(1)) &&
            (nextCharIs(ee, LC('+')) ||
             nextCharIs(ee, LC('-')))) {

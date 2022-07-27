@@ -1,5 +1,6 @@
 # convert all the source files into one combined file.
 
+# All the cpp files in project in rough dependency order.
 set fileList {
     src/lil.cpp
     src/lil_eval_expr.cpp
@@ -7,6 +8,8 @@ set fileList {
     src/LilcxxTest.cpp
     main/main.cpp
 }
+
+# All project include files with and without directory names.
 set myIncs {
     inc/comp_info.h
     inc/funcPointers.h
@@ -29,21 +32,23 @@ set myIncs {
     unittest.cxx
     lil_inter.h
 }
+
+# myIncsArray associates include names
 foreach i $myIncs { set myIncsArray([set i]) 1 }
 
 
 set includedFiles("") ""
 set knownIncs("") ""
 
-set ofp [open newFile.cpp w]
 
 proc readFile {fileName} {
     puts ">${fileName}"
     global includedFiles ofp fileList myIncs myIncsArray knownIncs
     puts $ofp "//INCFILE: ${fileName}"
+    # Open cpp file
     set fp [open $fileName r]
     while {![eof $fp]} {
-        set l [gets $fp]
+        set l [gets $fp] ; # each line of cpp file
         # puts $l
         if {[regexp {^[ ]*\#[ ]*include[ ]+[\"<]{1,1}([A-Za-z0-9/_\.]+)[\">]{1,1}} $l find name]} {
             puts "include $name"
@@ -68,6 +73,12 @@ proc readFile {fileName} {
     close $fp
 }
 
+# Open the output file.  All of lilcxxsh in 1 file.
+set ofp [open lilcxxsh_combined.cpp w]
+
+# for each cpp file
 foreach f $fileList {
     readFile $f
 }
+
+close $ofp

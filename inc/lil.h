@@ -50,6 +50,7 @@ NS_BEGIN(Lil)
 #define L_STR(X) (X)
 #define L_VSTR(ID,X) (X)
 #define LC(X) (X)
+#define CAST(X) (X)
 using lstring = std::string;
 using lstring_view = std::string_view;
 using lchar = char;
