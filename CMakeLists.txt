@@ -48,7 +48,7 @@ set(CMAKE_CXX_STANDARD 20)
 # CMAKE_<TARGETTYPE>_LINKER_FLAGS_<CONFIG>
 # EXAMPLE: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
 # EXAMPLE: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -g -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Wall -g -O2")
 
 # SETTING "target PROPERTIES 
 # ================================================================
@@ -99,7 +99,7 @@ add_library(lilcxx
         inc/narrow_cast.h
         inc/MemCache.h
         inc/comp_info.h
-        inc/funcPointers.h inc/LilcxxTest.h src/LilcxxTest.cpp)
+        inc/funcPointers.h)
 
 add_custom_command ( OUTPUT inc/git_info.h
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gen_gitInfo.sh
@@ -117,9 +117,9 @@ target_include_directories(lilcxx SYSTEM PUBLIC inc boost_1_79_0)
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 # EXAMPLE: target_compile_options(propertyTree PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>)
 # EXAMPLE: target_compile_options(Foo PRIVATE -fno-exceptions)
-target_compile_options(lilcxxsh PRIVATE -Wnonnull)
 # -Werror -Wold-style-cast  -Wpadding -Wpadded -Waggregate-return
-target_compile_options(lilcxxsh PRIVATE -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
+target_compile_options(lilcxxsh PRIVATE  -Wnonnull
+        -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
         -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op
         -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept  -Woverloaded-virtual
         -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel
@@ -147,9 +147,9 @@ target_compile_options(lilcxxsh PRIVATE -pedantic -Wall -Wextra -Wcast-align -Wc
 
         -Wno-unknown-pragmas -Wno-sign-compare -Wno-inline)
 
-target_compile_options(lilcxx PRIVATE -Wnonnull)
 # -Werror -Wold-style-cast  -Wpadding -Wpadded -Waggregate-return
-target_compile_options(lilcxx PRIVATE -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
+target_compile_options(lilcxx PRIVATE -Wnonnull
+        -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
         -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op
         -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept  -Woverloaded-virtual
         -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel

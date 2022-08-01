@@ -53,7 +53,8 @@
     {"n": "Convert to UTF-16 characters", "rank": 100, "version2": 1},
     {"n": "Make SysInfo work mostly off callbacks.", "rank": 100},
     {"n": "tclParseNumber project", "rank": 100},
-    {"n": "string class", "rank": 100, "version2": 1}
+    {"n": "string class", "rank": 100, "version2": 1},
+    {"n": "Get github actions working to test, and package"}
   ],
   "optimizations": [
     {"n": "Object cache", "rank": 1},

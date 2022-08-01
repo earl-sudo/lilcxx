@@ -23,7 +23,7 @@
 #ifndef UNITTEST_CXX
 #define UNITTEST_CXX
 
-#include "LilcxxTest.h"
+#include "lilcxxTest.h"
 
 static const char* and_lil = R"Xraw(#
 # Short-circuit logical "and" macro-like function using upeval and downeval.

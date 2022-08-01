@@ -1,4 +1,4 @@
-#include "LilcxxTest.h"
+#include "lilcxxTest.h"
 
 LilTests  g_allLilTest;
 
