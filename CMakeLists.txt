@@ -53,6 +53,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Wall -g -O2")
 # SETTING "target PROPERTIES 
 # ================================================================
 
+add_test(NAME lilcxxsh_unittest
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build/normal/lilcxxsh unittest
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/)
+
 # add_executable(<name> [WIN32] [MACOSX_BUNDLE]
 #               [EXCLUDE_FROM_ALL]
 #               [source1] [source2 ...])
@@ -107,7 +111,7 @@ add_custom_command ( OUTPUT inc/git_info.h
 
 # ALL - Indicate that this target should be added to the default build target so that it
 # will be run every time (the command cannot be called ALL).
-add_custom_target(BuildDocs ALL DEPENDS inc/git_info.h)
+add_custom_target(buildGitInfo ALL DEPENDS inc/git_info.h)
 
 target_include_directories(lilcxx SYSTEM PUBLIC inc boost_1_79_0)
 
