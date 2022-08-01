@@ -102,7 +102,7 @@ add_library(lilcxx
         inc/funcPointers.h)
 
 add_custom_command ( OUTPUT inc/git_info.h
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gen_gitInfo.sh
+        COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/gen_gitInfo.sh
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/)
 
 # ALL - Indicate that this target should be added to the default build target so that it

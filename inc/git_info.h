@@ -2,8 +2,8 @@
 #define GITINFO_H
 
 #define GIT_BRANCH "main"
-#define GIT_HASH "0ca46ae83ce9f5e1923d5105f7cf1f054c08e31f"
-#define GIT_DATE "Date:   Tue Jul 26 20:30:49 2022 -0400"
+#define GIT_HASH "2172cc5378f16e810f43c8cd09ee2b006cc124c8"
+#define GIT_DATE "Date:   Sun Jul 31 21:15:29 2022 -0400"
 
 #endif
 
