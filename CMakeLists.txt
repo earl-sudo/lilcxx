@@ -57,6 +57,10 @@ add_test(NAME lilcxxsh_unittest
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build/normal/lilcxxsh unittest
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/)
 
+add_custom_target(lilcxxsh_unittest
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build/normal/lilcxxsh unittest
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/)
+
 # add_executable(<name> [WIN32] [MACOSX_BUNDLE]
 #               [EXCLUDE_FROM_ALL]
 #               [source1] [source2 ...])
