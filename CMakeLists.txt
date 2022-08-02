@@ -115,7 +115,7 @@ add_custom_command ( OUTPUT inc/git_info.h
 
 # ALL - Indicate that this target should be added to the default build target so that it
 # will be run every time (the command cannot be called ALL).
-add_custom_target(buildGitInfo ALL DEPENDS inc/git_info.h)
+add_custom_target(genGitInfo ALL DEPENDS inc/git_info.h)
 
 target_include_directories(lilcxx SYSTEM PUBLIC inc boost_1_79_0)
 
