@@ -6,15 +6,16 @@
     {"n": "safe mode", "rank":  1, "note":  "started"},
     {"n": "Add compile/os/date/commands tested info to log", "rank": 1},
     {"n": "test command & testfunc", "rank": 1},
-    {"n": "test windows and other linux builds", "rank": 1},
-    {"n": "Make argument error, action error, parser error, null return all distinct in commands.", "rank":  1},
+    {"n": "Operation of Make and unittest more standard for others", "rank": 1},
+    {"n": "Connect commands to unittest", "rank": 1},
+    {"n": "Get github actions working to test, and package", "rank": 1},
+
+    {"n": "Make argument error, action error, parser error, null return all distinct in commands.", "rank":  10},
     {"n": "numDeReferences_", "rank": 20},
     {"n": "numRedefinedProcs_", "rank": 20},
     {"n": "numRedefinedVars", "rank": 20},
 
-    {"n": "Connect commands to unittest"},
     {"n": "Add several build options, sanitizers address/leak/undef/thread/memory coverage,time-trace conan/vcpkg.json"},
-    {"n": "Operation of Make and unittest more standard for others"},
     {"n": "Use inspectors on code."},
     {"n": "Get rid of Lil_list.listRep_ use of for loops.  Remove getCount() - 80%"},
     {"n": "Lil_list copy ctor, assignment"},
@@ -53,8 +54,7 @@
     {"n": "Convert to UTF-16 characters", "rank": 100, "version2": 1},
     {"n": "Make SysInfo work mostly off callbacks.", "rank": 100},
     {"n": "tclParseNumber project", "rank": 100},
-    {"n": "string class", "rank": 100, "version2": 1},
-    {"n": "Get github actions working to test, and package"}
+    {"n": "string class", "rank": 100, "version2": 1}
   ],
   "optimizations": [
     {"n": "Object cache", "rank": 1},
@@ -195,6 +195,8 @@
     ]}
   ],
   "done": [
+    {"n": "test windows and other linux builds - DONE"},
+
     {"n": "Get rid of all warnings - DONE"},
     {"n": "Can turn off unittest - DONE"},
     {"n": "build.tcl works and builds various ways we want to build - DONE"},
