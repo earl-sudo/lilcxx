@@ -9,6 +9,16 @@
     {"n": "Operation of Make and unittest more standard for others", "rank": 1},
     {"n": "Connect commands to unittest", "rank": 1},
     {"n": "Get github actions working to test, and package", "rank": 1},
+    {"n": "Easy changable namespace", "rank": 1},
+    {"n": "versatile headers and libs", "rank": 1},
+
+    {"n": "Record build type and compiler arguments"},
+    {"n": "RPM and YUM packaging"},
+    {"n": "conan.py"},
+    {"n": "optional 128 bit int calccrypto/uint128_t"},
+    {"n": "optional multiprecision"},
+    {"n": "Add boost::describe to data structures"},
+    {"n": "Shared libraries"},
 
     {"n": "Make argument error, action error, parser error, null return all distinct in commands.", "rank":  10},
     {"n": "numDeReferences_", "rank": 20},

@@ -56,7 +56,7 @@
 #define NS_END(X)  }; // X
 #endif
 
-NS_BEGIN(Lil)
+NS_BEGIN(LILNS)
 
 #define ND [[nodiscard]]
 #define UNUSED(X) (void)(X)
@@ -1048,6 +1048,6 @@ struct CommandAdaptor {
 
 #undef ND
 
-NS_END(Lil)
+NS_END(LILNS)
 
 #endif //LIL_LIL_INTER_H

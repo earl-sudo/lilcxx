@@ -42,7 +42,11 @@
 #define NS_END(X)  } // X
 #endif
 
-NS_BEGIN(Lil)
+#ifndef LILNS
+#  define LILNS Lil
+#endif
+
+NS_BEGIN(LILNS)
 
 #define ND [[nodiscard]]
 
@@ -185,7 +189,7 @@ LILAPI void                lil_write(LilInterp_Ptr lil, lcstrp msg);
 
 #undef ND
 
-NS_END(Lil)
+NS_END(LILNS)
 
 extern "C" {
     const char *getLilCxxGitId();

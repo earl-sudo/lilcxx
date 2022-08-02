@@ -39,7 +39,7 @@ fread_funcType  fread_func  = (fread_funcType)fread;
 fwrite_funcType fwrite_func = (fwrite_funcType)fwrite;
 fseek_funcType  fseek_func  = (fseek_funcType)fseek;
 
-NS_BEGIN(Lil)
+NS_BEGIN(LILNS)
 
 #define CAST(X) (X)
 #define ARGERR(TEST) if ( TEST ) { Lil_getSysInfo()->numCmdArgErrors_++; return nullptr; }
@@ -2115,4 +2115,4 @@ void LilInterp::register_stdcmds() {
     this->defineSystemCmds(); // This are special base commands so we save that info.
 }
 
-NS_END(Lil)
+NS_END(LILNS)

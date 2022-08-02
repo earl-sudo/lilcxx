@@ -28,7 +28,7 @@
 #include "narrow_cast.h"
 #include <cassert>
 
-NS_BEGIN(Lil)
+NS_BEGIN(LILNS)
 
 #define ND [[nodiscard]]
 #define CAST(X) (X)
@@ -810,4 +810,4 @@ void _ee_expr(Lil_exprVal *ee) { // #private
 
 #undef ND
 
-NS_END(Lil)
+NS_END(LILNS)

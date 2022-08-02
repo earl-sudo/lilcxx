@@ -35,7 +35,7 @@
 #include <cassert>
 #include "git_info.h"
 
-NS_BEGIN(Lil)
+NS_BEGIN(LILNS)
 
 
 [[maybe_unused]] const char* g_gitid   = GIT_HASH;
@@ -920,6 +920,6 @@ SysInfo* Lil_getSysInfo(bool reset) {
 
 #undef ND
 
-NS_END(Lil)
+NS_END(LILNS)
 
 #pragma clang diagnostic pop

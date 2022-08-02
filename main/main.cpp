@@ -47,7 +47,7 @@
 #undef HAS_POPEN
 #endif
 
-NS_BEGIN(Lil)
+NS_BEGIN(LILNS)
 
 static bool running = true;
 static int exit_code = 0;
@@ -234,7 +234,7 @@ static int nonint(int argc, lcstrp argv[]) {
     return exit_code;
 }
 
-NS_END(Lil)
+NS_END(LILNS)
 
 #include <iostream>
 #include <strstream>
@@ -247,7 +247,7 @@ struct UnitTestOutput {
 
     std::vector<std::string>  expectedLines_;
 
-    void append(Lil::lcstrp msg) {
+    void append(LILNS::lcstrp msg) {
         strm_.append(msg);
         //std::cout << msg << std::flush;
     }
@@ -297,13 +297,13 @@ struct UnitTestOutput {
 
 UnitTestOutput g_unitTestOutput;
 
-LILCALLBACK void lil_write_callback(Lil::LilInterp_Ptr lil, Lil::lcstrp msg) {
+LILCALLBACK void lil_write_callback(LILNS::LilInterp_Ptr lil, LILNS::lcstrp msg) {
     (void)lil;
     g_unitTestOutput.append(msg);
 }
 
 
-NS_BEGIN(Lil)
+NS_BEGIN(LILNS)
 
 // Run a string.
 static int run_a_string(lcstrp input) {
@@ -340,7 +340,7 @@ static int run_a_string(lcstrp input) {
     return exit_code;
 }
 
-NS_END(Lil)
+NS_END(LILNS)
 
 int main(int argc, const char* argv[]) {
     std::cout << "DEF_COMPILER:" << DEF_COMPILER << std::endl;
@@ -352,7 +352,7 @@ int main(int argc, const char* argv[]) {
     std::cout << "LilCxx-git-branch:" << getLilCxxGitBranch() << std::endl;
     std::cout << "C++ version:" << __cplusplus << std::endl;
 
-    using namespace Lil;
+    using namespace LILNS;
 #ifndef LIL_NO_UNITTEST
     bool do_unit_test = false;
     if (argv[1] && strcmp(argv[1],"unittest")==0) do_unit_test = true;
