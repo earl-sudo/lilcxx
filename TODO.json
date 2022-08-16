@@ -9,10 +9,15 @@
     {"n": "Operation of Make and unittest more standard for others", "rank": 1},
     {"n": "Connect commands to unittest", "rank": 1},
     {"n": "Get github actions working to test, and package", "rank": 1},
-    {"n": "Easy changable namespace", "rank": 1},
     {"n": "versatile headers and libs", "rank": 1},
 
+    {"n": "optional naming conventions"},
+    {"n": "Option to build without exceptions"},
+    {"n": "Text operations based on editor, undo/redo"},
+    {"n": "API for configuration files"},
+    {"n": "API for package files"},
     {"n": "Record build type and compiler arguments"},
+
     {"n": "RPM and YUM packaging"},
     {"n": "conan.py"},
     {"n": "optional 128 bit int calccrypto/uint128_t"},
@@ -172,6 +177,7 @@
     {"n": "named if/for/while/switch/case/break/foreach/continue", "version2": 1},
     {"n": "counter for for/while/foreach", "version2": 1},
     {"n": "expanded-if: if elsif else catch break done finally name none log", "version2": 1},
+    {"n": "expanded-if: reflection stats-on-run safe/call-mult-places timing", "version2": 1},
     {"n": "expanded-for: for start test next body catch break done finally name counter none log limit", "version2": 1},
     {"n": "expanded-break: break name log", "version2": 1},
     {"n": "expanded-continue: continue name log", "version2": 1},
@@ -205,6 +211,7 @@
     ]}
   ],
   "done": [
+    {"n": "Easy changeable namespace - DONE"},
     {"n": "test windows and other linux builds - DONE"},
 
     {"n": "Get rid of all warnings - DONE"},

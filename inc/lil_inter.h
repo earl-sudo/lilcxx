@@ -84,7 +84,7 @@ const INT ERROR_FIXHEAD = 2;
 #  define DBGPRINTF printf
 #endif
 
-struct ND ErrorCode  {
+struct ND ErrorCode  { // #class
 private:
     INT v = 0;
 public:
@@ -100,18 +100,17 @@ public:
     ND bool inError() const { return v != 0; }
 };
 
-struct LilException : std::runtime_error {
+struct LilException : std::runtime_error { // #class #exception
     explicit LilException(const char* sv) : std::runtime_error{sv} { }
 };
 
 // We might want to add file/line what ever so use a macro during creation.
 #define LIL_ERROR(X) ErrorCode((X))
 
-struct ObjCounter {
+struct ObjCounter { // #class
     // Number of objects created. =========================================
     bool logObjectCount_      = false; // Do we actually log counts?
     std::ostream*       outStrm_ = nullptr;
-
 
     ~ObjCounter() = default;
     void printStats() const {
@@ -125,7 +124,7 @@ struct ObjCounter {
             }
         }
     }
-    struct ObjCount {
+    struct ObjCount { // #class
         INT  numCtor_ = 0;
         INT  numDtor_ = 0;
         INT  maxNum_ = 0;
@@ -155,7 +154,7 @@ struct ObjCounter {
     }
 };
 
-struct FuncTimer {
+struct FuncTimer { // #class
     // Timing of things ===================================================
     bool doTiming_     = false;
     std::ostream*       outStrm_ = nullptr;
@@ -175,7 +174,7 @@ struct FuncTimer {
             }
         }
     }
-    struct TimerInfo {
+    struct TimerInfo { // class
         std::clock_t    totalTime_ = 0;
         std::clock_t    maxTime_ = 0;
         INT             numCalls_ = 0;
@@ -186,7 +185,7 @@ struct FuncTimer {
     };
     std::unordered_map<lstring, TimerInfo>  timerInfo_;
 
-    struct Timer {
+    struct Timer { // #class
         lcstrp          name_;
         FuncTimer*        si_;
         std::clock_t    startTime_{};
@@ -213,7 +212,7 @@ struct FuncTimer {
     };
 };
 
-struct Coverage {
+struct Coverage { // #class
     // Coverage specific ==================================================
     bool                doCoverage_ = false;
     std::ostream*       outStrm_ = nullptr;
@@ -1022,7 +1021,7 @@ Lil_var_Ptr  _lil_find_var(LilInterp_Ptr lil, Lil_callframe_Ptr env, lcstrp name
 
 struct CommandAdaptor;
 
-struct Module {
+struct Module { // #class
     lstring     name_;
     INT         version_[2] = {0,0};
     using element = std::tuple<lstring,lil_func_proc_t,CommandAdaptor*>;
@@ -1032,7 +1031,7 @@ struct Module {
     }
 };
 
-struct CommandAdaptor {
+struct CommandAdaptor { // #class
     Module*  module_ = nullptr;
     lstring help_;
     lstring cmdHelp_;

@@ -1972,15 +1972,15 @@ LilTest  watch_lil_test = {
         .name_ = "watch_lil", .script_ = watch_lil, .expectedValue_ = watch_lil_result1
 };
 
-struct unittest {
-    const char* name;
-    const char* input;
-    const char* output;
+struct unittest { // #UNITTEST_VER1 #class
+    const char* name; // Name of test.
+    const char* input; // Text of test.
+    const char* output; // Text of expected output of test.
 };
 
 #define DEF_UNITEST(INPUT, OUTPUT) { #INPUT, INPUT, OUTPUT }
 
-const unittest  ut[] = {
+const unittest  ut[] = { // #UNITTEST_VER1
         DEF_UNITEST(and_lil, and_lil_result1),
         DEF_UNITEST(call_lil, call_lil_result1),
         DEF_UNITEST(catcher_lil, catcher_lil_result1),

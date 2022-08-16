@@ -977,7 +977,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    will print "foobar")cmt";
 #endif
 
-struct fnc_subst_type : Lilstd { // #cmd
+struct fnc_subst_type : Lilstd { // #cmd #class
     fnc_subst_type() {
         help_ = fnc_subst_doc; tags_ = "string variable";
         lilstd.add("subst", *this,  this); }
@@ -994,7 +994,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    substitutes each argument as a list, converts it to a string and
    returns all strings combined into one)cmt";
 
-struct fnc_concat_type : Lilstd { // #cmd
+struct fnc_concat_type : Lilstd { // #cmd #class
     fnc_concat_type() {
         help_ = fnc_concat_doc; tags_ = "string list";
         lilstd.add("concat", *this,  this); }
@@ -1025,7 +1025,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    list which is returned by the function)cmt";
 #endif
 
-struct fnc_foreach_type : Lilstd { // #cmd
+struct fnc_foreach_type : Lilstd { // #cmd #class
     fnc_foreach_type() {
         help_ = fnc_foreach_doc; tags_ = "language loop";
         lilstd.add("foreach", *this,  this); }
@@ -1066,7 +1066,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    return is always the passed valu)cmt";
 #endif
 
-struct fnc_return_type : Lilstd { // #cmd
+struct fnc_return_type : Lilstd { // #cmd #class
     fnc_return_type() {
         help_ = fnc_return_doc; tags_ = "language subroutine";
         lilstd.add("return", *this,  this); }
@@ -1095,7 +1095,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    itself)cmt";
 #endif
 
-struct fnc_result_type : Lilstd { // #cmd
+struct fnc_result_type : Lilstd { // #cmd #class
     fnc_result_type() {
         help_ = fnc_result_doc; tags_ = "language subroutine";
         lilstd.add("result", *this,  this); }
@@ -1153,7 +1153,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
       a && b     - logical AND)cmt";
 #endif
 
-struct fnc_expr_type : Lilstd { // #cmd
+struct fnc_expr_type : Lilstd { // #cmd #class
     fnc_expr_type() {
         help_ = fnc_expr_doc; tags_ = "language math logic expression";
         lilstd.add("expr", *this,  this); }
@@ -1200,7 +1200,7 @@ static Lil_value_Ptr _real_inc(LilInterp_Ptr lil, lcstrp varname, double v) {  /
    provided, 1 will be added instead)cmt";
 #endif
 
-struct fnc_inc_type : Lilstd { // #cmd
+struct fnc_inc_type : Lilstd { // #cmd #class
     fnc_inc_type() {
         help_ = fnc_inc_doc; tags_ = "math";
         lilstd.add("inc", *this,  this); }
@@ -1224,7 +1224,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    not provided, 1 will be subtracted instead)cmt";
 #endif
 
-struct fnc_dec_type : Lilstd { // #cmd
+struct fnc_dec_type : Lilstd { // #cmd #class
     fnc_dec_type() {
         help_ = fnc_dec_doc; tags_ = "math";
         lilstd.add("dec", *this,  this); }
@@ -1251,7 +1251,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    however than a file can also be empty by itself))cmt";
 #endif
 
-struct fnc_read_type : Lilstd { // #cmd
+struct fnc_read_type : Lilstd { // #cmd #class
     fnc_read_type() {
         help_ = fnc_read_doc; isSafe_ = false; tags_ = "io file";
         lilstd.add("read", *this,  this); }
@@ -1297,7 +1297,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    always return <value>)cmt";
 #endif
 
-struct fnc_store_type : Lilstd { // #cmd
+struct fnc_store_type : Lilstd { // #cmd #class
     fnc_store_type() {
         help_ = fnc_store_doc; isSafe_ = false; tags_ = "io file";
         lilstd.add("store", *this,  this); }
@@ -1334,7 +1334,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    whichever code is evaluated)cmt";
 #endif
 
-struct fnc_if_type : Lilstd { // #cmd
+struct fnc_if_type : Lilstd { // #cmd #class
     fnc_if_type() {
         help_ = fnc_if_doc; tags_ = "language logic conditional";
         lilstd.add("if", *this,  this); }
@@ -1372,7 +1372,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    also return an empty value))cmt";
 #endif
 
-struct fnc_while_type : Lilstd { // #cmd
+struct fnc_while_type : Lilstd { // #cmd #class
     fnc_while_type() {
         help_ = fnc_while_doc; tags_ = "language loop";
         lilstd.add("while", *this,  this); }
@@ -1411,7 +1411,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    function returns the result of the last evaluation of <code>)cmt";
 #endif
 
-struct fnc_for_type : Lilstd { // #cmd
+struct fnc_for_type : Lilstd { // #cmd #class
     fnc_for_type() {
         help_ = fnc_for_doc; tags_ = "language loop";
         lilstd.add("for", *this,  this); }
@@ -1446,7 +1446,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    will be returned instead)cmt";
 #endif
 
-struct fnc_char_type : Lilstd { // #cmd
+struct fnc_char_type : Lilstd { // #cmd #class
     fnc_char_type() {
         help_ = fnc_char_doc; tags_ = "string character";
         lilstd.add("char", *this,  this); }
@@ -1473,7 +1473,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    returned)cmt";
 #endif
 
-struct fnc_charat_type : Lilstd { // #cmd
+struct fnc_charat_type : Lilstd { // #cmd #class
     fnc_charat_type() {
         help_ = fnc_charat_doc; tags_ = "string character";
         lilstd.add("charat", *this,  this); }
@@ -1503,7 +1503,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    be returned)cmt";
 #endif
 
-struct fnc_codeat_type : Lilstd { // #cmd
+struct fnc_codeat_type : Lilstd { // #cmd #class
     fnc_codeat_type() {
         help_ = fnc_codeat_doc; tags_ = "string character";
         lilstd.add("codeat", *this,  this); }
@@ -1543,7 +1543,7 @@ static auto _str_to_integer(const char* val, bool& inError) {
    will be clamped to be within the string boundaries)cmt";
 #endif
 
-struct fnc_substr_type : Lilstd { // #cmd
+struct fnc_substr_type : Lilstd { // #cmd #class
     fnc_substr_type() {
         help_ = fnc_substr_doc; tags_ = "string";
         lilstd.add("substr", *this,  this); }
@@ -1580,7 +1580,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    part is not found, the function will return -1)cmt";
 #endif
 
-struct fnc_strpos_type : Lilstd { // #cmd
+struct fnc_strpos_type : Lilstd { // #cmd #class
     fnc_strpos_type() {
         help_ = fnc_strpos_doc; tags_ = "string";
         lilstd.add("strpos", *this,  this); }
@@ -1610,7 +1610,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    the function will return the sum of the length of all arguments)cmt";
 #endif
 
-struct fnc_length_type : Lilstd { // #cmd
+struct fnc_length_type : Lilstd { // #cmd #class
     fnc_length_type() {
         help_  = fnc_length_doc; tags_ = "list string";
         lilstd.add("length", *this,  this); }
@@ -1656,7 +1656,7 @@ static Lil_value_Ptr _real_trim(LilInterp_Ptr lil, lcstrp str, lcstrp chars, INT
    newline, carriage return, horizontal tab and vertical tab) are used)cmt";
 #endif
 
-struct fnc_trim_type : Lilstd { // #cmd
+struct fnc_trim_type : Lilstd { // #cmd #class
     fnc_trim_type() {
         help_ = fnc_trim_doc; tags_ = "string";
         lilstd.add("trim", *this,  this); }
@@ -1677,7 +1677,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    string (the beginning))cmt";
 #endif
 
-struct fnc_ltrim_type : Lilstd { // #cmd
+struct fnc_ltrim_type : Lilstd { // #cmd #class
     fnc_ltrim_type() {
         help_ = fnc_ltrim_doc; tags_ = "string";
         lilstd.add("ltrim", *this,  this); }
@@ -1698,7 +1698,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    string (the ending))cmt";
 #endif
 
-struct fnc_rtrim_type : Lilstd { // #cmd
+struct fnc_rtrim_type : Lilstd { // #cmd #class
     fnc_rtrim_type() {
         help_ = fnc_rtrim_doc; tags_ = "string";
         lilstd.add("rtrim", *this,  this); }
@@ -1721,7 +1721,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    wrap for C's strcmp() function))cmt";
 #endif
 
-struct fnc_strcmp_type : Lilstd { // #cmd
+struct fnc_strcmp_type : Lilstd { // #cmd #class
     fnc_strcmp_type() {
         help_ = fnc_strcmp_doc; tags_ = "string";
         lilstd.add("strcmp", *this,  this); }
@@ -1742,7 +1742,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    returns a true value if both strings are equal)cmt";
 #endif
 
-struct fnc_streq_type : Lilstd { // #cmd
+struct fnc_streq_type : Lilstd { // #cmd #class
     fnc_streq_type() {
         help_ = fnc_streq_doc; tags_ = "string";
         lilstd.add("streq", *this,  this); }
@@ -1776,7 +1776,7 @@ static void FindAndReplace(std::string &data, const std::string& Searching, cons
     }
 }
 
-struct fnc_repstr_type : Lilstd { // #cmd
+struct fnc_repstr_type : Lilstd { // #cmd #class
     fnc_repstr_type() {
         help_ = fnc_repstr_doc; tags_ = "string";
         lilstd.add("repstr", *this,  this); }
@@ -1808,7 +1808,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    empty string, the <str> is returned unchanged)cmt";
 #endif
 
-struct fnc_split_type : Lilstd { // #cmd
+struct fnc_split_type : Lilstd { // #cmd #class
     fnc_split_type() {
         help_ = fnc_split_doc; tags_ = "string list";
         lilstd.add("split", *this,  this); }
@@ -1850,7 +1850,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    provided the function returns 0)cmt";
 #endif
 
-struct fnc_try_type : Lilstd { // #cmd
+struct fnc_try_type : Lilstd { // #cmd #class
     fnc_try_type() {
         help_ = fnc_try_doc; tags_ = "language exception";
         lilstd.add("try", *this,  this); }
@@ -1880,7 +1880,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    the try function (see above))cmt";
 #endif
 
-struct fnc_error_type : Lilstd { // #cmd
+struct fnc_error_type : Lilstd { // #cmd #class
     fnc_error_type() {
         help_ = fnc_error_doc; tags_ = "language exception";
         lilstd.add("error", *this,  this); }
@@ -1906,7 +1906,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    back control and handles the request)cmt";
 #endif
 
-struct fnc_exit_type : Lilstd { // #cmd
+struct fnc_exit_type : Lilstd { // #cmd #class
     fnc_exit_type() {
         help_ = fnc_exit_doc; tags_ = "language";
         lilstd.add("exit", *this,  this); }
@@ -1932,7 +1932,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    but the program can override that by using LIL_CALLBACK_SOURCE)cmt";
 #endif
 
-struct fnc_source_type : Lilstd { // #cmd
+struct fnc_source_type : Lilstd { // #cmd #class
     fnc_source_type() {
         help_ = fnc_source_doc; isSafe_ = false;
         tags_ = "language io file";
@@ -1983,7 +1983,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    variable pear)cmt";
 #endif
 
-struct fnc_lmap_type : Lilstd { // #cmd
+struct fnc_lmap_type : Lilstd { // #cmd #class
     fnc_lmap_type() {
         help_ = fnc_lmap_doc; tags_ = "list";
         lilstd.add("lmap", *this,  this); }
@@ -2007,7 +2007,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    returns a random number between 0.0 and 1.0)cmt";
 #endif
 
-struct fnc_rand_type : Lilstd { // #cmd
+struct fnc_rand_type : Lilstd { // #cmd #class
     fnc_rand_type() {
         help_ = fnc_rand_doc; tags_ = "math";
         lilstd.add("rand", *this,  this); }
@@ -2060,7 +2060,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    source file.)cmt";
 #endif
 
-struct fnc_catcher_type : Lilstd { // #cmd
+struct fnc_catcher_type : Lilstd { // #cmd #class
     fnc_catcher_type() {
         help_ = fnc_catcher_doc; tags_ = "language exception";
         lilstd.add("catcher", *this,  this); }
@@ -2088,7 +2088,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    regardless of where the variable is modified from.)cmt";
 #endif
 
-struct fnc_watch_type : Lilstd { // #cmd
+struct fnc_watch_type : Lilstd { // #cmd #class
     fnc_watch_type() {
         help_ = fnc_watch_doc; tags_ = "language trace";
         lilstd.add("watch", *this, this); }

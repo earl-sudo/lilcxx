@@ -11,7 +11,7 @@ struct LilTestPackage;
 struct LilTestParent;
 struct LilTest;
 
-struct LilTests {
+struct LilTests { // #class
     std::ostream* outPut_ = &std::cout;
     std::list<LilTestPackage*> allTestPackages_;
     std::list<LilTest*> allTest_;
@@ -21,18 +21,19 @@ extern LilTests  g_allLilTest;
 void addTest(LilTest* test);
 void addTestPackage(LilTestPackage* package);
 
-struct LilTestPackage {
+struct LilTestPackage { // #UNITTEST_VER2 #class
     const char* name_ = nullptr;
     const char* description_ = nullptr;
     const char* setupScript_ = nullptr;
     const char* tearDownScript_ = nullptr;
 };
 
-struct LilTestParent {
+struct LilTestParent { // #UNITTEST_VER2 #class
     LilTestParent() { /*addTest((LilTest*)this);*/ }
 };
 
-struct LilTest : LilTestParent {
+// Definition of a test.  (see struct unittest #UNITTEST_VER1)
+struct LilTest : LilTestParent { // #UNITTEST_VER2 #class
     bool redirectStdout_ = true; bool redirectStderr_ = true; bool redirectFileOut_ = false;
     const char* package_name_ = nullptr;
     const char* name_ = nullptr;

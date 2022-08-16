@@ -63,7 +63,7 @@ constexpr T narrow_cast(U&& u) noexcept {
     return static_cast<T>(std::forward<U>(u));
 }
 
-struct narrowing_error : public std::bad_cast {
+struct narrowing_error : public std::bad_cast { // #class
     const char* filename_ = nullptr;
     uint32_t line_ = 0;
     narrowing_error(const char* filenameD, uint32_t idD) : line_(idD), filename_(filenameD)  { }

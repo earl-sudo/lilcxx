@@ -241,21 +241,28 @@ NS_END(LILNS)
 #include <sstream>
 #include <list>
 
-struct UnitTestOutput {
-    std::string            strm_;
-    std::vector<std::string> outputLines_;
+// Gathers output and compares with expected output. #UNITTEST
+struct UnitTestOutput { // #class
+    std::string              strm_; //< Output as a single string.
+    std::vector<std::string> outputLines_; // strm_ split into lines.
+    std::vector<std::string> expectedLines_; // expected output split into lines
+    bool                     echoOutputToStdOut_ = false;
 
-    std::vector<std::string>  expectedLines_;
-
+    // Unittest: Save output for later comparison
     void append(LILNS::lcstrp msg) {
+
         strm_.append(msg);
-        //std::cout << msg << std::flush;
+        if (echoOutputToStdOut_) {
+            std::cout << msg << std::flush;
+        }
     }
+    // Unittest: Clear both output and expected value.
     void reset() {
         strm_.clear();
         outputLines_.clear();
         expectedLines_.clear();
     }
+    // Unittest: split output recorded into list of lines of text.
     void splitIntoLines() {
         std::stringstream strm(strm_);
         std::string to;
@@ -264,6 +271,7 @@ struct UnitTestOutput {
             outputLines_.push_back(to);
         }
     }
+    // Unittest: split expected output into list lines of text.
     void splitExpected(const char* expect) {
         (void)expect;
         std::stringstream strm(strm_);
@@ -273,6 +281,7 @@ struct UnitTestOutput {
             expectedLines_.push_back(to);
         }
     }
+    // Unittest: Compare our lines of output with lines of expected.
     int diff(const char* testName) {
         int numDiffs = 0, numSame = 0;
         int i = 0, j = 0;
@@ -295,9 +304,10 @@ struct UnitTestOutput {
     }
 };
 
-UnitTestOutput g_unitTestOutput;
+UnitTestOutput g_unitTestOutput; // #UNITTEST
 
-LILCALLBACK void lil_write_callback(LILNS::LilInterp_Ptr lil, LILNS::lcstrp msg) {
+// Gathers all output and appends to g_unitTestOutput for later comparison to expected value.
+LILCALLBACK void lil_write_callback_for_unittest(LILNS::LilInterp_Ptr lil, LILNS::lcstrp msg) { // #UNITTEST
     (void)lil;
     g_unitTestOutput.append(msg);
 }
@@ -306,13 +316,14 @@ LILCALLBACK void lil_write_callback(LILNS::LilInterp_Ptr lil, LILNS::lcstrp msg)
 NS_BEGIN(LILNS)
 
 // Run a string.
-static int run_a_string(lcstrp input) {
+static int unittest_eval(lcstrp input) { // #UNITTEST
     configure_interpreter();
     LilInterp_Ptr lil = lil_new();
     lcstrp err_msg;
     INT       pos;
 
-    lil_callback(lil, LIL_CALLBACK_WRITE, (lil_callback_proc_t)lil_write_callback);
+    // Redirect output to a std::string for comparison to expected.
+    lil_callback(lil, LIL_CALLBACK_WRITE, (lil_callback_proc_t) lil_write_callback_for_unittest);
 
     // Register some non-standard functions for IO.
     lil_register(lil, "writechar", fnc_writechar);
@@ -330,6 +341,7 @@ static int run_a_string(lcstrp input) {
     Lil_value_Ptr result = lil_parse(lil, buffer, 0, 1);
     lil_free_value(result);
     lil_free_value(code);
+    // #TODO
     if (lil_error(lil, &err_msg, &pos)) { // #INTERP_ERR
         fprintf(stderr, L_VSTR(0xf8ff, "lil: error at %i: %s\n"), (int) pos, err_msg);
     }
@@ -354,14 +366,15 @@ int main(int argc, const char* argv[]) {
 
     using namespace LILNS;
 #ifndef LIL_NO_UNITTEST
-    bool do_unit_test = false;
+    bool do_unit_test = false; // #UNITTEST
     if (argv[1] && strcmp(argv[1],"unittest")==0) do_unit_test = true;
     if (do_unit_test) {
         int numErrors = 0;
-        for (int i = 0; i < sizeof(ut)/sizeof(unittest); i++) {
+// #UNITTEST_VER1 #TODO old unittest based on "ut" array.
+        for (int i = 0; i < sizeof(ut)/sizeof(unittest); i++) { // For each test #UNITTEST_VER1
             std::cout << "TEST: " << i << ":";
             g_unitTestOutput.reset();
-            run_a_string(ut[i].input);
+            unittest_eval(ut[i].input);
             g_unitTestOutput.splitExpected(ut[i].output);
             numErrors += g_unitTestOutput.diff(ut[i].name);
         }
