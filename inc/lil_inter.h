@@ -556,7 +556,7 @@ public:
     void hashmap_put(lcstrp name, Lil_var_Ptr v) {
         assert(name!=nullptr); assert(v!=nullptr);
         varmap_[name] = v;
-        auto sz = CAST(INT)varmap_.size();
+        auto sz = std::ssize(varmap_);
         if (sz > sysInfo_->varHTMaxSize_) {
             sysInfo_->varHTMaxSize_ = sz;
         }
@@ -619,11 +619,11 @@ public:
     void append(Lil_value_Ptr val) {
         assert(val!=nullptr);
         listRep_.push_back(val);
-        if (CAST(INT)listRep_.size() > sysInfo_->maxListLengthAcheved_)
-            sysInfo_->maxListLengthAcheved_ = listRep_.size(); // #topic
+        if (std::ssize(listRep_) > sysInfo_->maxListLengthAcheved_)
+            sysInfo_->maxListLengthAcheved_ = std::ssize(listRep_); // #topic
     }
     ND Lil_value_Ptr getValue(INT index) const { return listRep_[index]; }
-    ND INT getCount() const { return (INT)listRep_.size(); }
+    ND INT getCount() const { return std::ssize(listRep_); }
     // Cmds are list we skip first word which is the command name.
     Lil_value_Ptr* getArgs() { return (&listRep_[0]) + 1; }
     void convertListToArrayForArgs(std::vector<Lil_value_Ptr>& argsArray) {
@@ -841,16 +841,16 @@ public:
     ND lil_callback_proc_t getCallback(LIL_CALLBACK_IDS index) { return callback_[index]; }
     // Set callbackk function pointer.
     void setCallback(LIL_CALLBACK_IDS index, lil_callback_proc_t val) {
-        assert(index > 0 || index < callback_.size());
+        assert(index > 0 || index < std::ssize(callback_));
         callback_[index] = val;
     }
     INT addNewCallback(lil_callback_proc_t val) {
         callback_.push_back(val);
-        return callback_.size()-1;
+        return std::ssize(callback_)-1;
     }
     INT addCallback(lil_callback_proc_t val) {
         callback_.push_back(val);
-        return callback_.size()-1;
+        return std::size(callback_)-1;
     }
     // Should we ignore EOL character?
     ND bool getIgnoreEol() const { return ignoreeol_; }
@@ -858,7 +858,7 @@ public:
     ND bool& setIgnoreEol() { return ignoreeol_; }
 
     // Get number of commands.
-    ND INT getNumCmds() const { return sysCmdMap_.size(); }
+    ND INT getNumCmds() const { return std::ssize(sysCmdMap_); }
 
     // Get catcher if inside "catch" or nullptr if not.
     ND const lstring & getCatcher() const { return catcher_; }

@@ -32,7 +32,7 @@ The players are simple enough.
 
     Lil_callframe is mostly a hashtable which given a name returns Lil_var.  All Lil_var(s) live on Lil_callframes.
     Among Lil_callframe(s) 2 special ones are the first one which define "global" variables, and the current one
-    which defines current variables.  All Lil_callframe are live a list that is rooted in our "interpreter" object
+    which defines current variables.  All Lil_callframe live on a list that is rooted in our "interpreter" object
     LilInterp.  Lil_callframe have a few more things.  One, it has a place to put return values from the next callframe.
     Also Lil_callframe can have a "catcher" to catch an error generated in Lil code.  Without a "cather" an error
     is pass one to next callframe and this callframe is "poped" off list.

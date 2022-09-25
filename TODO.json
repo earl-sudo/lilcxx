@@ -19,7 +19,7 @@
     {"n": "Record build type and compiler arguments"},
 
     {"n": "RPM and YUM packaging"},
-    {"n": "conan.py"},
+    {"n": "conanfile.py"},
     {"n": "optional 128 bit int calccrypto/uint128_t"},
     {"n": "optional multiprecision"},
     {"n": "Add boost::describe to data structures"},
@@ -44,7 +44,7 @@
     {"n": "get rid of most \".c_str()\" - 70%"},
     {"n": "make expr code \"re-usable\""},
     {"n": "Cmd error management"},
-    {"n": "Make Lil_value more string link."},
+    {"n": "Make Lil_value more string like."},
     {"n": "redirect stdout stderr"},
     {"n": "Add error ids to all errors"},
     {"n": "Use tcl test suit."},
@@ -153,7 +153,6 @@
   ],
   "unsorted": [
     {"n": "compress static text", "version2": 1},
-    {"n": "Visual C++ build", "version2": 1},
     {"n": "clang build", "version2": 1},
     {"n": "simulate tcl API", "version2": 1},
     {"n": "simulate python API", "version2": 1},
@@ -163,7 +162,6 @@
     {"n": "Track lib/exe size"},
     {"n": "LTO and non-LTO builds"},
     {"n": "File access logging"},
-    {"n": "Single file version for \"Compiler Explorer\""},
     {"n": "Unittest log - banner and summary"},
     {"n": "gdb-breakpoints", "version2": 1},
     {"n": "lilcxx breakpoints", "version2": 1},
@@ -211,8 +209,10 @@
     ]}
   ],
   "done": [
+    {"n": "Visual C++ build - DONE", "version2": 1},
     {"n": "Easy changeable namespace - DONE"},
     {"n": "test windows and other linux builds - DONE"},
+    {"n": "Single file version for \"Compiler Explorer\" - DONE"},
 
     {"n": "Get rid of all warnings - DONE"},
     {"n": "Can turn off unittest - DONE"},

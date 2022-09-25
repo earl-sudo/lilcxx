@@ -23,11 +23,11 @@
     {"n": "gihub https://github.com/earl-sudo/lilcxx"},
     {"n": "license open source"}
   ],
-  "language": [ee
+  "language": [
     {"n": "Mostly same syntax as Tcl with notable exceptions"},
     {"changes-from-lil": [
       "no command \"embed_write\""
-      ]}
+      ]},
     {"unlike-tcl-big-items": [
       "escapes \\o for { and \\c for }",
       "\"func\" command to define subroutines",
@@ -123,6 +123,7 @@
     {"n": "CMake build"},
     {"n": "build.sh bash build"},
     {"n": "build.tcl tcl build"},
+    {"n": "Visual C++ (2019) build"},
     {"n": "builds a liblilcxx.a"},
     {"n": "Way to remove all the help text macro LILCXX_NO_HELP_TEXT"},
     {"n": "Way to remove unittest from lilcxxsh"},
@@ -155,6 +156,7 @@
       {"n": "CommandAdaptor"}
   ],
   "codefeatures-internal": [
+    "Easy changeable namespace (#define LILNS)",
     "Counter of instances of objects created, see object ObjCounter",
     "Timer for functions, see object FuncTimer",
     "Coverage for code, see object Coverage",

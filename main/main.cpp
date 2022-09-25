@@ -285,18 +285,18 @@ struct UnitTestOutput { // #class
     int diff(const char* testName) {
         int numDiffs = 0, numSame = 0;
         int i = 0, j = 0;
-        //std::cout << "outputLines_.size() " << outputLines_.size() << " expectedLines_.size() " << expectedLines_.size() << std::endl;
-        for (i = 0, j = 0; (i < outputLines_.size()) && (j < expectedLines_.size()); i++, j++) {
+        //std::cout << "outputLines_.size() " << std::ssize(outputLines_) << " expectedLines_.size() " << std::ssize(expectedLines_) << std::endl;
+        for (i = 0, j = 0; (i < std::ssize(outputLines_)) && (j < std::ssize(expectedLines_)); i++, j++) {
             if (outputLines_[i]==expectedLines_[j]) { numSame++;
                 //std::cout << "NODIF:" << outputLines_[i] << "|" <<   expectedLines_[j] << "|" << std::endl;
             } else {
                 std::cout << "DIFF_:" << outputLines_[i] << "|" <<   expectedLines_[j] << "|" << std::endl; numDiffs++;
             }
         }
-        for (; i < outputLines_.size(); i++) {
+        for (; i < std::ssize(outputLines_); i++) {
             std::cout << "DIFF_:" << outputLines_[i] << "|" << "----------------" << std::endl; numDiffs++;
         }
-        for (; j < expectedLines_.size(); j++) {
+        for (; j < std::ssize(expectedLines_); j++) {
             std::cout << "EXTRA:" << "----------------" << "|" <<  expectedLines_[j] << "|" << std::endl; numDiffs++;
         }
         std::cout << "TEST: " << testName << " numFail " <<  numDiffs << " numSame " << numSame << ((numDiffs)?("****"):("")) << std::endl;
