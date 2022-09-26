@@ -112,7 +112,10 @@ NS_BEGIN(LILNS)
    function is unknown))cmt";
 #endif
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 static Module lilstd = { .name_ = "lilstd", .version_ = { 0, 0} };
+#pragma GCC diagnostic pop
 
 struct Lilstd : public CommandAdaptor {
     Lilstd() { module_ = &lilstd; }
@@ -637,7 +640,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 
         // Create copy of input values, put them in varvalues.
         invars.reset(lil_subst_to_list(lil, argv[0]));
-        varvalues.resize(lil_list_size(invars.get()), nullptr); // alloc Lil_value_Ptr[]
+        varvalues.resize(CAST(size_t)lil_list_size(invars.get()), nullptr); // alloc Lil_value_Ptr[]
 
         assert(std::ssize(varvalues)>=invars->getCount());
 
@@ -665,7 +668,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     if (invars || outvars) {
         if (outvars) { // If we have outvars save their values from this level to varvalues.
             assert(std::ssize(varvalues)>=outvars->getCount());
-            varvalues.resize(lil_list_size(outvars.get()), nullptr); // realloc  Lil_value_Ptr* (array of ptrs)
+            varvalues.resize(CAST(size_t)lil_list_size(outvars.get()), nullptr); // realloc  Lil_value_Ptr* (array of ptrs)
             auto      outvars_it = outvars->cbegin(); auto varvalues_it = varvalues.begin();
             for (; outvars_it != outvars->end(); ++outvars_it, ++varvalues_it) {
                 *varvalues_it = cloneVar(*outvars_it);
@@ -750,7 +753,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     lchar buff[64]; // #magic
     if (!argc) { CMD_SUCCESS_RET(new Lil_value(lil, L_STR("0"))); }
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
-    LSPRINTF(buff, L_STR("%u"), (UINT) list.v->getCount());
+    LSPRINTF(buff, L_STR("%lu"), (UINT) list.v->getCount());
     CMD_SUCCESS_RET(new Lil_value(lil, buff));
 }
 } fnc_count;
@@ -1264,7 +1267,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     if (lil->getCallback(LIL_CALLBACK_READ)) {
         auto proc = (lil_read_callback_proc_t) lil->getCallback(LIL_CALLBACK_READ);
         std::unique_ptr<lchar>  buffer(proc(lil, lil_to_string(argv[0])));
-        lil->sysInfo_->bytesAttemptedRead_ += LSTRLEN(buffer.get());
+        lil->sysInfo_->bytesAttemptedRead_ += CAST(Lil::INT)LSTRLEN(buffer.get());
         r = lil_alloc_string(lil, buffer.get());
     } else {
         FILE *f = fopen_func(lil_to_string(argv[0]), L_STR("rb"));
@@ -1273,12 +1276,12 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         auto size = ftell(f);
         lil->sysInfo_->bytesAttemptedRead_ += size;
         fseek_func(f, 0, SEEK_SET);
-        std::vector<lchar>  buffer((size+1),LC('\0'));
+        std::vector<lchar>  buffer(CAST(size_t)(size+1),LC('\0'));
         if (fread_func(&buffer[0], 1, _NT(size_t,size), f)!=_NT(size_t,size)) {
             fclose_func(f);
             CMD_ERROR_RET(nullptr);
         }
-        buffer[size] = 0;
+        buffer[CAST(size_t)size] = 0;
         fclose_func(f);
         r = lil_alloc_string(lil, &buffer[0]);
     }
@@ -1770,9 +1773,9 @@ static void FindAndReplace(std::string &data, const std::string& Searching, cons
     // Repeating till end is reached
     while (position != std::string::npos) {
         // Replace this occurrence of Sub String
-        data.replace(position, std::ssize(Searching), replaceStr);
+        data.replace(position, std::size(Searching), replaceStr);
         // Get the next occurrence from the current position
-        position = data.find(Searching, position + std::ssize(replaceStr));
+        position = data.find(Searching, position + std::size(replaceStr));
     }
 }
 
@@ -1993,7 +1996,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     ARGERR(argc < 2); // #argErr
     Lil_list_SPtr list(lil_subst_to_list(lil, argv[0])); // Delete on exit.
     for (ARGINT   i = 1; i < argc; i++) {
-        lil_set_var(lil, lil_to_string(argv[i]), lil_list_get(list.v, i - 1), LIL_SETVAR_LOCAL);
+        lil_set_var(lil, lil_to_string(argv[i]), lil_list_get(list.v, (Lil::INT)(i - 1)), LIL_SETVAR_LOCAL);
     }
     CMD_SUCCESS_RET(nullptr);
 }

@@ -60,9 +60,12 @@ print "a is $a"
 static const char* and_lil_result1 = R"Xraw(Got '3'
 )Xraw"; // and_lil_result1
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   and_lil_test = {
         .name_ = "and_lil", .script_ = and_lil, .expectedValue_ = and_lil_result1
 };
+#pragma GCC diagnostic pop
 
 // Changed file: call.lil to static string call_lil
 
@@ -126,9 +129,12 @@ tralala
 
 // Changed file: catcher.lil to static string catcher_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   call_lil_test = {
         .name_ = "call_lil", .script_ = call_lil, .expectedValue_ = call_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* catcher_lil = R"Xraw(#
 # Test for the 'catcher' function. The catcher function can be used to call
@@ -281,10 +287,12 @@ Catcher test 3
 
 // Changed file: dollar.lil to static string dollar_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   catcher_lil_test = {
         .name_ = "catcher_lil", .script_ = catcher_lil, .expectedValue_ = catcher_lil_result1
 };
-
+#pragma GCC diagnostic pop
 static const char* dollar_lil = R"Xraw(#
 # Test for "reflect dollar-prefix"
 #
@@ -327,9 +335,12 @@ bar
 
 // Changed file: downeval.lil to static string downeval_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   dollar_lil_test = {
         .name_ = "dollar_lil", .script_ = dollar_lil, .expectedValue_ = dollar_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* downeval_lil = R"Xraw(#
 # downeval is the complement of upeval: it allows code inside an upeval block
@@ -374,9 +385,12 @@ Items: foo bar baz blah moo boo
 
 // Changed file: enveval.lil to static string enveval_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   downeval_lil_test = {
         .name_ = "downeval_lil", .script_ = downeval_lil, .expectedValue_ = downeval_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* enveval_lil = R"Xraw(#
 # enveval is a code evaluation function like eval, topeval, upeval, jaileval,
@@ -420,9 +434,12 @@ x in the global environment is 300
 
 // Changed file: expr.lil to static string expr_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   enveval_lil_test = {
         .name_ = "enveval_lil", .script_ = enveval_lil, .expectedValue_ = enveval_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* expr_lil = R"Xraw(#
 # expr test and demo
@@ -481,10 +498,12 @@ print done
 static const char* expr_lil_result1 = R"Xraw(7 (should be 7))Xraw"; // expr_lil_result1
 
 // Changed file: extract.lil to static string extract_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   expr_lil_test = {
         .name_ = "expr_lil", .script_ = expr_lil, .expectedValue_ = expr_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* extract_lil = R"Xraw(#
 # Example for extracting data inside a function by taking
@@ -603,9 +622,12 @@ Data for each name:
 
 // Changed file: fileio.lil to static string fileio_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   extract_lil_test = {
         .name_ = "extract_lil", .script_ = extract_lil, .expectedValue_ = extract_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* fileio_lil = R"Xraw(#
 # As asked in http://stackoverflow.com/questions/3538156
@@ -622,10 +644,12 @@ static const char* fileio_lil_result1 = R"Xraw(world
 )Xraw"; // fileio_lil_result1
 
 // Changed file: filter.lil to static string filter_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   fileio_lil_test = {
         .name_ = "fileio_lil", .script_ = fileio_lil, .expectedValue_ = fileio_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* filter_lil = R"Xraw(#
 # Test for the "filter" function. The "filter" function can be used to
@@ -664,10 +688,12 @@ static const char* filter_lil_result1 = R"Xraw(Functions with small names:
 )Xraw"; // filter_lil_result1
 
 // Changed file: funcs.lil to static string funcs_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest   filter_lil_test = {
         .name_ = "filter_lil", .script_ = filter_lil, .expectedValue_ = filter_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* funcs_lil = R"Xraw(#
 # Functions test
@@ -747,9 +773,12 @@ The function's code is
 
 // Changed file: hello.lil to static string hello_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  funcs_lil_test = {
         .name_ = "funcs_lil", .script_ = funcs_lil, .expectedValue_ = funcs_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* hello_lil = R"Xraw(#
 # Hello world in lil
@@ -765,10 +794,12 @@ static const char* hello_lil_result1 = R"Xraw(Hello, world!
 )Xraw"; // hello_lil_result1
 
 // Changed file: jaileval.lil to static string jaileval_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  hello_lil_test = {
         .name_ = "hello_lil", .script_ = hello_lil, .expectedValue_ = hello_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* jaileval_lil = R"Xraw(#
 # jaileval test
@@ -804,10 +835,12 @@ hey dude, here i am
 )Xraw"; // jaileval_lil_result1
 
 // Changed file: lists.lil to static string lists_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  jaileval_lil_test = {
         .name_ = "jaileval_lil", .script_ = jaileval_lil, .expectedValue_ = jaileval_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* lists_lil = R"Xraw(#
 # Lists test
@@ -928,10 +961,12 @@ Done
 )Xraw"; // lists_lil_result1
 
 // Changed file: local.lil to static string local_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  lists_lil_test = {
         .name_ = "lists_lil", .script_ = lists_lil, .expectedValue_ = lists_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* local_lil = R"Xraw(#
 # local can be used to "localize" variables in an environment, which is useful
@@ -965,10 +1000,12 @@ static const char* local_lil_result1 = R"Xraw(10 bits needed for 1001
 )Xraw"; // local_lil_result1
 
 // Changed file: mandelbrot.lil to static string mandelbrot_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  local_lil_test = {
         .name_ = "local_lil", .script_ = local_lil, .expectedValue_ = local_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* mandelbrot_lil = R"Xraw(#
 # A mandelbrot generator that outputs a PBM file. This can be used to measure
@@ -1039,10 +1076,12 @@ for {set y 0} {$y < $height} {inc y} {
 static const char* mandelbrot_lil_result1 = R"Xraw()Xraw"; // mandelbrot_lil_result1
 
 // Changed file: mlcmt.lil to static string mlcmt_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  mandelbrot_lil_test = {
         .name_ = "mandelbrot_lil", .script_ = mandelbrot_lil, .expectedValue_ = mandelbrot_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* mlcmt_lil = R"Xraw(# this line will not be executed, but the following will
 print hello, world
@@ -1095,10 +1134,12 @@ The Final Hello!
 )Xraw"; // mlcmt_lil_result1
 
 // Changed file: mlhello.lil to static string mlhello_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  mlcmt_lil_test = {
         .name_ = "mlcmt_lil", .script_ = mlcmt_lil, .expectedValue_ = mlcmt_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* mlhello_lil = R"Xraw(#
 # Line escaping example
@@ -1114,10 +1155,12 @@ static const char* mlhello_lil_result1 = R"Xraw(hello world
 )Xraw"; // mlhello_lil_result1
 
 // Changed file: oop_animals.lil to static string oop_animals_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  mlhello_lil_test = {
         .name_ = "mlhello_lil", .script_ = mlhello_lil, .expectedValue_ = mlhello_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* oop_animals_lil = R"Xraw(#
 # Simple object oriented example: animals. This script declares four prototype
@@ -1200,10 +1243,12 @@ foreach animal $animals {
 static const char* oop_animals_lil_result1 = R"Xraw()Xraw"; // oop_animals_lil_result1
 
 // Changed file: oop.lil to static string oop_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  oop_animals_lil_test = {
         .name_ = "oop_animals_lil", .script_ = oop_animals_lil, .expectedValue_ = oop_animals_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* oop_lil = R"Xraw(#
 # Prototype-based object oriented LIL example. This file defines all the
@@ -1292,10 +1337,12 @@ func typeof {obj} {
 static const char* oop_lil_result1 = R"Xraw()Xraw"; // oop_lil_result1
 
 // Changed file: recfuncdef.lil to static string recfuncdef_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  oop_lil_test = {
         .name_ = "oop_lil", .script_ = oop_lil, .expectedValue_ = oop_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* recfuncdef_lil = R"Xraw(#
 # Recursive function definition error test
@@ -1340,10 +1387,12 @@ done
 )Xraw"; // recfuncdef_lil_result1
 
 // Changed file: renamefunc.lil to static string renamefunc_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  recfuncdef_lil_test = {
         .name_ = "recfuncdef_lil", .script_ = recfuncdef_lil, .expectedValue_ = recfuncdef_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* renamefunc_lil = R"Xraw(#
 # LIL test for "rename" and "unusedname". This test shows how to implement an
@@ -1405,10 +1454,12 @@ Known functions:
 )Xraw"; // renamefunc_lil_result1
 
 // Changed file: result.lil to static string result_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  renamefunc_lil_test = {
         .name_ = "renamefunc_lil", .script_ = renamefunc_lil, .expectedValue_ = renamefunc_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* result_lil = R"Xraw(#
 # Showing how 'result' can be used to define the return value of a
@@ -1441,10 +1492,12 @@ Bits for 300:	9
 )Xraw"; // result_lil_result1
 
 // Changed file: return.lil to static string return_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  result_lil_test = {
         .name_ = "result_lil", .script_ = result_lil, .expectedValue_ = result_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* return_lil = R"Xraw(#
 # Shows how return can be omitted 
@@ -1475,10 +1528,12 @@ The result of 'does_not_use_return 10' is 100
 )Xraw"; // return_lil_result1
 
 // Changed file: robot.lil to static string robot_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  return_lil_test = {
         .name_ = "return_lil", .script_ = return_lil, .expectedValue_ = return_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* robot_lil = R"Xraw(#
 # A test for sm.lil
@@ -1545,10 +1600,12 @@ fred is seeking
 )Xraw"; // robot_lil_result1
 
 // Changed file: sm.lil to static string sm_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  robot_lil_test = {
         .name_ = "robot_lil", .script_ = robot_lil, .expectedValue_ = robot_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* sm_lil = R"Xraw(#
 # A simple state machine implementation in LIL. The implementation uses LIL's
@@ -1636,10 +1693,12 @@ func sm:call {args} {
 static const char* sm_lil_result1 = R"Xraw()Xraw"; // sm_lil_result1
 
 // Changed file: strings.lil to static string strings_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  sm_lil_test = {
         .name_ = "sm_lil", .script_ = sm_lil, .expectedValue_ = sm_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* strings_lil = R"Xraw(#
 # Strings test
@@ -1708,10 +1767,12 @@ String b splitted:
 )Xraw"; // strings_lil_result1
 
 // Changed file: topeval.lil to static string topeval_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  strings_lil_test = {
         .name_ = "strings_lil", .script_ = strings_lil, .expectedValue_ = strings_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* topeval_lil = R"Xraw(#
 # topeval is like an "extreme" version of upeval: it evaluates code at the
@@ -1756,10 +1817,12 @@ now x in global is 42 and y is 420
 )Xraw"; // topeval_lil_result1
 
 // Changed file: trim.lil to static string trim_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  topeval_lil_test = {
         .name_ = "topeval_lil", .script_ = topeval_lil, .expectedValue_ = topeval_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* trim_lil = R"Xraw(#
 # Test for trim, ltrim and rtrim. These functions can be used to remove
@@ -1797,10 +1860,12 @@ Alternative method using "split" and "filter":
 )Xraw"; // trim_lil_result1
 
 // Changed file: upeval.lil to static string upeval_lil
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  trim_lil_test = {
         .name_ = "trim_lil", .script_ = trim_lil, .expectedValue_ = trim_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* upeval_lil = R"Xraw(#
 # Test for "upeval". The "upeval" function allows code to be evaluated in the
@@ -1872,9 +1937,12 @@ Last name:  Tokarz
 
 // Changed file: watch.lil to static string watch_lil
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  upeval_lil_test = {
         .name_ = "upeval_lil", .script_ = upeval_lil, .expectedValue_ = upeval_lil_result1
 };
+#pragma GCC diagnostic pop
 
 static const char* watch_lil = R"Xraw(#
 # Example and test for the 'watch' function that can be used to call some
@@ -1968,9 +2036,12 @@ moo and coo are `theglobal` and `last-coo-set`
 moo and coo are `last-moo-set` and `last-coo-set`
 )Xraw"; // watch_lil_result1
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 LilTest  watch_lil_test = {
         .name_ = "watch_lil", .script_ = watch_lil, .expectedValue_ = watch_lil_result1
 };
+#pragma GCC diagnostic pop
 
 struct unittest { // #UNITTEST_VER1 #class
     const char* name; // Name of test.

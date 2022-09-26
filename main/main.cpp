@@ -54,6 +54,8 @@ static int exit_code = 0;
 
 std::fstream logFile("lilcxx.log", std::fstream::out | std::fstream::app);
 
+void configure_interpreter();
+
 void configure_interpreter() {
 
 
@@ -126,7 +128,7 @@ static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, 
         sargv[i] = lil_to_string(argv[i]);
     }
     sargv[argc] = nullptr;
-    rv = do_system(argc, (lchar **) sargv);
+    rv = do_system(argc, CAST(Lil::lchar **) sargv);
     if (rv) {
         r = lil_alloc_string(lil, rv);
         delete(rv); //delete char*
@@ -155,7 +157,7 @@ static LILCALLBACK Lil_value_Ptr fnc_readline(LilInterp_Ptr lil, [[maybe_unused]
         }
         if (ch == LC('\r')) { continue; }
         if (ch == LC('\n')) { break; }
-        buffer.append(1, ch);
+        buffer.append(1, CAST(char)ch);
     }
     retval = lil_alloc_string(lil, buffer.c_str());
     return retval;
@@ -237,7 +239,6 @@ static int nonint(int argc, lcstrp argv[]) {
 NS_END(LILNS)
 
 #include <iostream>
-#include <strstream>
 #include <sstream>
 #include <list>
 
@@ -284,7 +285,7 @@ struct UnitTestOutput { // #class
     // Unittest: Compare our lines of output with lines of expected.
     int diff(const char* testName) {
         int numDiffs = 0, numSame = 0;
-        int i = 0, j = 0;
+        std::string::size_type i = 0, j = 0;
         //std::cout << "outputLines_.size() " << std::ssize(outputLines_) << " expectedLines_.size() " << std::ssize(expectedLines_) << std::endl;
         for (i = 0, j = 0; (i < std::ssize(outputLines_)) && (j < std::ssize(expectedLines_)); i++, j++) {
             if (outputLines_[i]==expectedLines_[j]) { numSame++;

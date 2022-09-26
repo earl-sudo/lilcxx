@@ -97,7 +97,7 @@ proc statelogic.list { } { }
 # catch script ; Add catch condition
 if expr script 
 	stats statsProc name ifName dynamic bool onlyonce bool save bool
-	doc string catch script
+	doc string catch script else elsif
 
 # add condition to dynamic conditions to "if"
 proc dynamic.elseif {expr script index} { }

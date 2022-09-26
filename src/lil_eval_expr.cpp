@@ -44,7 +44,8 @@ ND static inline double getDouble(Lil_exprVal* ee) { return ee->getDouble(); }
 ND static inline bool _ee_validParseState(Lil_exprVal* ee) { return ee->getHead() < ee->getLen() && !ee->getError(); }
 
 ND static bool _ee_invalidpunct(INT ch) { // #private
-    return LISPUNCT(ch) && ch != LC('!') && ch != LC('~') && ch != LC('(') && ch != LC(')') && ch != LC('-') && ch != LC('+');
+    int ich = CAST(int)ch;
+    return LISPUNCT(ich) && ch != LC('!') && ch != LC('~') && ch != LC('(') && ch != LC(')') && ch != LC('-') && ch != LC('+');
 }
 
 static void _ee_skip_spaces(Lil_exprVal *ee) { // #private
@@ -75,7 +76,7 @@ static void _ee_numeric_element(Lil_exprVal* ee) { // #private
         ee->nextHead();
     }
     if (ee->getType() == EE_FLOAT) {
-        ee->setDouble() = getInt(ee) + CAST(double) fpart / CAST(double) fpartlen;
+        ee->setDouble() = CAST(double)getInt(ee) + CAST(double) fpart / CAST(double) fpartlen;
     }
 }
 
@@ -174,7 +175,7 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setDouble() = getDouble(ee)*odval; break;
-                            case EE_INT:   ee->setDouble() = getInt(ee)*odval; isFloat(ee); break;
+                            case EE_INT:   ee->setDouble() = CAST(double)getInt(ee)*odval; isFloat(ee); break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -183,7 +184,7 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
                         _ee_unaryOperators(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT:  ee->setDouble() = getDouble(ee)*oival; isFloat(ee); break;
+                            case EE_FLOAT:  ee->setDouble() = getDouble(ee)*CAST(double)oival; isFloat(ee); break;
                             case EE_INT:    ee->setInteger() = getInt(ee)*oival; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
@@ -204,7 +205,7 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
                                 break;
                             case EE_INT:
                                 if (getInt(ee) == 0) { ee->setError() = EERR_DIVISION_BY_ZERO;
-                                } else {                     ee->setDouble() = fmod(odval, getInt(ee)); }
+                                } else {                     ee->setDouble() = fmod(odval, CAST(double)getInt(ee)); }
                                 isFloat(ee);
                                 break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
@@ -217,7 +218,7 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
                         switch (ee->getType()) {
                             case EE_FLOAT:
                                 if (getDouble(ee) == 0.0) { ee->setError() = EERR_DIVISION_BY_ZERO;
-                                } else {                      ee->setDouble() = fmod(oival, getDouble(ee)); }
+                                } else {                      ee->setDouble() = fmod(CAST(double)oival, getDouble(ee)); }
                                 break;
                             case EE_INT:
                                 if (getInt(ee) == 0) {  ee->setError() = EERR_DIVISION_BY_ZERO;
@@ -337,7 +338,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setDouble() = getDouble(ee)+odval; break;
-                            case EE_INT:   ee->setDouble() = getInt(ee)+odval; isFloat(ee); break;
+                            case EE_INT:   ee->setDouble() = CAST(double)getInt(ee)+odval; isFloat(ee); break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -346,7 +347,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                         _ee_mutlipleDivide(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT: ee->setDouble() = getDouble(ee)+oival; isFloat(ee); break;
+                            case EE_FLOAT: ee->setDouble() = getDouble(ee)+CAST(double)oival; isFloat(ee); break;
                             case EE_INT:   ee->setInteger() = getInt(ee)+oival; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
@@ -364,7 +365,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setDouble() = odval-getDouble(ee); break;
-                            case EE_INT:   ee->setDouble() = odval-getInt(ee); isFloat(ee); break;
+                            case EE_INT:   ee->setDouble() = CAST(double)odval-CAST(double)getInt(ee); isFloat(ee); break;
                             default: setInvalidTypeError(ee); break;
                         }
                         break;
@@ -488,7 +489,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setInteger() = (odval < getDouble(ee))?1:0; isInt(ee);  break;
-                            case EE_INT:   ee->setInteger() = (odval < getInt(ee))?1:0; break;
+                            case EE_INT:   ee->setInteger() = (odval < CAST(double)getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -496,7 +497,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         _ee_shift(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT: ee->setInteger() = (oival < getDouble(ee))?1:0; isInt(ee); break;
+                            case EE_FLOAT: ee->setInteger() = (CAST(double)oival < getDouble(ee))?1:0; isInt(ee); break;
                             case EE_INT:   ee->setInteger() = (oival < getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
@@ -513,7 +514,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setInteger() = (odval > getDouble(ee))?1:0; isInt(ee); break;
-                            case EE_INT:   ee->setInteger() = (odval > getInt(ee))?1:0; break;
+                            case EE_INT:   ee->setInteger() = (odval > CAST(double)getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -521,7 +522,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         _ee_shift(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT: ee->setInteger() = (oival > getDouble(ee))?1:0; isInt(ee); break;
+                            case EE_FLOAT: ee->setInteger() = (CAST(double)oival > getDouble(ee))?1:0; isInt(ee); break;
                             case EE_INT:   ee->setInteger() = (oival > getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
@@ -536,7 +537,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setInteger() = (odval <= getDouble(ee))?1:0; isInt(ee); break;
-                            case EE_INT:   ee->setInteger() = (odval <= getInt(ee))?1:0; break;
+                            case EE_INT:   ee->setInteger() = (odval <= CAST(double)getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -544,7 +545,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         _ee_shift(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT: ee->setInteger() = (oival <= getDouble(ee))?1:0; isInt(ee); break;
+                            case EE_FLOAT: ee->setInteger() = (CAST(double)oival <= getDouble(ee))?1:0; isInt(ee); break;
                             case EE_INT:   ee->setInteger() = (oival <= getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break;
                         }
@@ -559,7 +560,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setInteger() = (odval >= getDouble(ee))?1:0; isInt(ee); break;
-                            case EE_INT:   ee->setInteger() = (odval >= getInt(ee))?1:0; break;
+                            case EE_INT:   ee->setInteger() = (odval >= CAST(double)getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -567,7 +568,7 @@ static void _ee_compare(Lil_exprVal* ee) {// #private
                         _ee_shift(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT: ee->setInteger() = (oival >= getDouble(ee))?1:0; isInt(ee); break;
+                            case EE_FLOAT: ee->setInteger() = (CAST(double)oival >= getDouble(ee))?1:0; isInt(ee); break;
                             case EE_INT:   ee->setInteger() = (oival >= getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
@@ -603,7 +604,7 @@ static void _ee_equals(Lil_exprVal* ee) { // #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setInteger() = (odval == getDouble(ee))?1:0; isInt(ee); break;
-                            case EE_INT:   ee->setInteger() = (odval == getInt(ee))?1:0; break;
+                            case EE_INT:   ee->setInteger() = (odval == CAST(double)getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -611,8 +612,8 @@ static void _ee_equals(Lil_exprVal* ee) { // #private
                         _ee_compare(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT: ee->setInteger() = (oival == getDouble(ee))?1:0; isInt(ee); break;
-                            case EE_INT:   ee->setInteger() = (oival == getInt(ee))?1:0; break;
+                            case EE_FLOAT: ee->setInteger() = (CAST(double)oival == getDouble(ee))?1:0; isInt(ee); break;
+                            case EE_INT:   ee->setInteger() = (CAST(double)oival == CAST(double)getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }
                         break;
@@ -626,7 +627,7 @@ static void _ee_equals(Lil_exprVal* ee) { // #private
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setInteger() = (odval != getDouble(ee))?1:0; isInt(ee); break;
-                            case EE_INT:   ee->setInteger() = (odval != getInt(ee))?1:0; break;
+                            case EE_INT:   ee->setInteger() = (odval != CAST(double)getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break;
                         }
                         break;
@@ -634,7 +635,7 @@ static void _ee_equals(Lil_exprVal* ee) { // #private
                         _ee_compare(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
-                            case EE_FLOAT: ee->setInteger() = (oival != getDouble(ee))?1:0; isInt(ee); break;
+                            case EE_FLOAT: ee->setInteger() = (CAST(double)oival != getDouble(ee))?1:0; isInt(ee); break;
                             case EE_INT:   ee->setInteger() = (oival != getInt(ee))?1:0; break;
                             default: setInvalidTypeError(ee); break; // #ERR_RET
                         }

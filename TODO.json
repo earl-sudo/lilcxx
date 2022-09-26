@@ -206,7 +206,9 @@
       " /*cmt*/ ", " __LINE__ ", " __FILE__ ", " __FILE_SHORT__ ",
       " #define WORD VAL ", "#pragma require fileIO",
       "#pragma once", "#pragma preprocessor 1", "constexpr"
-    ]}
+    ]},
+    {"n": "Find compile-time,runtime-static,runtime-dynamic parameters and set them up."}
+
   ],
   "done": [
     {"n": "Visual C++ build - DONE", "version2": 1},
