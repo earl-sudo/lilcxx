@@ -674,7 +674,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
                             lil->sysInfo_->numExceptionsInCommands_++;
                             printf(L_VSTR(0x2b43, "ERROR: Command threw exception: cmd %s type: %s msg %s\n"),
                                    words->getValue(0)->getValue().c_str(), typeid(ex).name(), ex.what());
-                            // TODO: make this conditional so C++ cmds can use this to signal errors.
+                            // #TODO: make this conditional so C++ cmds can use this to signal errors.
                             throw; // Rethrow the exception.
                         }
 

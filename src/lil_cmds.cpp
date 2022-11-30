@@ -486,7 +486,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     LIL_BEENHERE_CMD(*lil->sysInfo_, "fnc_eval");
     if (argc == 1) { CMD_SUCCESS_RET(lil_parse_value(lil, argv[0], 0)); }
     if (argc > 1) {
-        Lil_value_Ptr val = new Lil_value(lil), r; // #TODO reivew this doesn't make sense!
+        Lil_value_Ptr val = new Lil_value(lil), r; // #TODO review this doesn't make sense!
         for (ARGINT   i   = 0; i < argc; i++) {
             if (i) { lil_append_char(val, LC(' ')); }
             lil_append_val(val, argv[i]);
@@ -794,7 +794,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 #else
 [[maybe_unused]] const auto fnc_indexof_doc = R"cmt(
  indexof <list> <value>
-   returns the index of the first occurence of <value> in a LIL list.  If
+   returns the index of the first occurrence of <value> in a LIL list.  If
    the <value> does not exist indexof will return an empty string.  The
    indices begin from zero (so 0 is the first index, 1 is the second,
    etc))cmt";
@@ -831,7 +831,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    variable)cmt";
 #endif
 
-struct fnc_append_type : Lilstd { // #cmd
+[[maybe_unused]] struct fnc_append_type : Lilstd { // #cmd
     fnc_append_type() {
         help_ = fnc_append_doc; tags_ = "list";
         lilstd.add("append", *this,  this); }
@@ -864,7 +864,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 [[maybe_unused]] const auto fnc_slice_doc = R"cmt(
  slice <list> <from> [to]
    returns a slice of the given list from the index <from> to the index
-   [to]-1 (that is, the [to]-th item is not includd).  The indices are
+   [to]-1 (that is, the [to]-th item is not included).  The indices are
    clamped to be within the 0..<list length> range.  If [to] is not
    given, the slice contains all items from the <from> index up to the
    end of the list)cmt";
@@ -1023,7 +1023,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 [[maybe_unused]] const auto fnc_foreach_doc = R"cmt(
  foreach [name] <list> <code>
    for each item in the <list> list, stores it to a variable named "i"
-   and evalues the code in <code>.  If [name] is provided, this will be
+   and eval the code in <code>.  If [name] is provided, this will be
    used instead of "i".  The results of all evaluations are stored in a
    list which is returned by the function)cmt";
 #endif
@@ -1066,7 +1066,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
    stops the execution of a function's code and uses <value> as the
    result of that function (note that normally the result of a function
    is the result of the last command of that function).  The result of
-   return is always the passed valu)cmt";
+   return is always the passed value)cmt";
 #endif
 
 struct fnc_return_type : Lilstd { // #cmd #class
@@ -1763,7 +1763,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
 #else
 [[maybe_unused]] const auto fnc_repstr_doc = R"cmt(
  repstr <str> <from> <to>
-   returns the string <str> with all occurences of <from> replaced with
+   returns the string <str> with all occurrences of <from> replaced with
    <to>)cmt";
 #endif
 
@@ -2115,7 +2115,7 @@ void LilInterp::register_stdcmds() {
     for (auto& cmd : lilstd.commands_) {
         lil_register(this, std::get<0>(cmd).c_str(), std::get<1>(cmd));
     }
-    this->defineSystemCmds(); // This are special base commands so we save that info.
+    this->defineSystemCmds(); // These are special base commands, so we save that info.
 }
 
 NS_END(LILNS)
