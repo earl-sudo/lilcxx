@@ -153,7 +153,7 @@ static void _ee_unaryOperators(Lil_exprVal* ee) { // #private
 }
 
 // Handle multiple and divide math operations.
-static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
+static void _ee_multipleDivide(Lil_exprVal* ee) { // #private
     assert(ee!=nullptr);
         _ee_unaryOperators(ee);
     if (ee->getError()) return;
@@ -321,7 +321,7 @@ static void _ee_mutlipleDivide(Lil_exprVal* ee) { // #private
 // Handle add/subtract math operations.
 static void _ee_addsub(Lil_exprVal* ee) { // #private
     assert(ee!=nullptr);
-    _ee_mutlipleDivide(ee);
+        _ee_multipleDivide(ee);
     _ee_skip_spaces(ee);
     while (_ee_validParseState(ee) && !_ee_invalidpunct(ee->getHeadChar(1)) &&
            (nextCharIs(ee, LC('+')) ||
@@ -334,7 +334,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                 switch (ee->getType()) {
                     case EE_FLOAT:
                         ee->nextHead();
-                        _ee_mutlipleDivide(ee);
+                        _ee_multipleDivide(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setDouble() = getDouble(ee)+odval; break;
@@ -344,7 +344,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                         break;
                     case EE_INT:
                         ee->nextHead();
-                        _ee_mutlipleDivide(ee);
+                        _ee_multipleDivide(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setDouble() = getDouble(ee)+CAST(double)oival; isFloat(ee); break;
@@ -361,7 +361,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                 switch (ee->getType()) {
                     case EE_FLOAT:
                         ee->nextHead();
-                        _ee_mutlipleDivide(ee);
+                        _ee_multipleDivide(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setDouble() = odval-getDouble(ee); break;
@@ -371,7 +371,7 @@ static void _ee_addsub(Lil_exprVal* ee) { // #private
                         break;
                     case EE_INT:
                         ee->nextHead();
-                        _ee_mutlipleDivide(ee);
+                        _ee_multipleDivide(ee);
                         if (ee->getError()) return;
                         switch (ee->getType()) {
                             case EE_FLOAT: ee->setDouble() = CAST(double)oival-getDouble(ee); isFloat(ee); break;

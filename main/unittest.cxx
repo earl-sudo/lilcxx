@@ -62,7 +62,7 @@ static const char* and_lil_result1 = R"Xraw(Got '3'
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   and_lil_test = {
+[[maybe_unused]] LilTest   and_lil_test = {
         .name_ = "and_lil", .script_ = and_lil, .expectedValue_ = and_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -131,7 +131,7 @@ tralala
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   call_lil_test = {
+[[maybe_unused]] LilTest   call_lil_test = {
         .name_ = "call_lil", .script_ = call_lil, .expectedValue_ = call_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -289,7 +289,7 @@ Catcher test 3
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   catcher_lil_test = {
+[[maybe_unused]] LilTest   catcher_lil_test = {
         .name_ = "catcher_lil", .script_ = catcher_lil, .expectedValue_ = catcher_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -337,7 +337,7 @@ bar
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   dollar_lil_test = {
+[[maybe_unused]] LilTest   dollar_lil_test = {
         .name_ = "dollar_lil", .script_ = dollar_lil, .expectedValue_ = dollar_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -387,7 +387,7 @@ Items: foo bar baz blah moo boo
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   downeval_lil_test = {
+[[maybe_unused]] LilTest   downeval_lil_test = {
         .name_ = "downeval_lil", .script_ = downeval_lil, .expectedValue_ = downeval_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -436,7 +436,7 @@ x in the global environment is 300
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   enveval_lil_test = {
+[[maybe_unused]] LilTest   enveval_lil_test = {
         .name_ = "enveval_lil", .script_ = enveval_lil, .expectedValue_ = enveval_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -500,7 +500,7 @@ static const char* expr_lil_result1 = R"Xraw(7 (should be 7))Xraw"; // expr_lil_
 // Changed file: extract.lil to static string extract_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   expr_lil_test = {
+[[maybe_unused]] LilTest   expr_lil_test = {
         .name_ = "expr_lil", .script_ = expr_lil, .expectedValue_ = expr_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -624,7 +624,7 @@ Data for each name:
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   extract_lil_test = {
+[[maybe_unused]] LilTest   extract_lil_test = {
         .name_ = "extract_lil", .script_ = extract_lil, .expectedValue_ = extract_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -646,7 +646,7 @@ static const char* fileio_lil_result1 = R"Xraw(world
 // Changed file: filter.lil to static string filter_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   fileio_lil_test = {
+[[maybe_unused]] LilTest   fileio_lil_test = {
         .name_ = "fileio_lil", .script_ = fileio_lil, .expectedValue_ = fileio_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -690,7 +690,7 @@ static const char* filter_lil_result1 = R"Xraw(Functions with small names:
 // Changed file: funcs.lil to static string funcs_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest   filter_lil_test = {
+[[maybe_unused]] LilTest   filter_lil_test = {
         .name_ = "filter_lil", .script_ = filter_lil, .expectedValue_ = filter_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -775,7 +775,7 @@ The function's code is
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  funcs_lil_test = {
+[[maybe_unused]] LilTest  funcs_lil_test = {
         .name_ = "funcs_lil", .script_ = funcs_lil, .expectedValue_ = funcs_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -796,7 +796,7 @@ static const char* hello_lil_result1 = R"Xraw(Hello, world!
 // Changed file: jaileval.lil to static string jaileval_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  hello_lil_test = {
+[[maybe_unused]] LilTest  hello_lil_test = {
         .name_ = "hello_lil", .script_ = hello_lil, .expectedValue_ = hello_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -837,7 +837,7 @@ hey dude, here i am
 // Changed file: lists.lil to static string lists_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  jaileval_lil_test = {
+[[maybe_unused]] LilTest  jaileval_lil_test = {
         .name_ = "jaileval_lil", .script_ = jaileval_lil, .expectedValue_ = jaileval_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -963,7 +963,7 @@ Done
 // Changed file: local.lil to static string local_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  lists_lil_test = {
+[[maybe_unused]] LilTest  lists_lil_test = {
         .name_ = "lists_lil", .script_ = lists_lil, .expectedValue_ = lists_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1002,7 +1002,7 @@ static const char* local_lil_result1 = R"Xraw(10 bits needed for 1001
 // Changed file: mandelbrot.lil to static string mandelbrot_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  local_lil_test = {
+[[maybe_unused]] LilTest  local_lil_test = {
         .name_ = "local_lil", .script_ = local_lil, .expectedValue_ = local_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1078,7 +1078,7 @@ static const char* mandelbrot_lil_result1 = R"Xraw()Xraw"; // mandelbrot_lil_res
 // Changed file: mlcmt.lil to static string mlcmt_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  mandelbrot_lil_test = {
+[[maybe_unused]] LilTest  mandelbrot_lil_test = {
         .name_ = "mandelbrot_lil", .script_ = mandelbrot_lil, .expectedValue_ = mandelbrot_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1136,7 +1136,7 @@ The Final Hello!
 // Changed file: mlhello.lil to static string mlhello_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  mlcmt_lil_test = {
+[[maybe_unused]] LilTest  mlcmt_lil_test = {
         .name_ = "mlcmt_lil", .script_ = mlcmt_lil, .expectedValue_ = mlcmt_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1157,7 +1157,7 @@ static const char* mlhello_lil_result1 = R"Xraw(hello world
 // Changed file: oop_animals.lil to static string oop_animals_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  mlhello_lil_test = {
+[[maybe_unused]] LilTest  mlhello_lil_test = {
         .name_ = "mlhello_lil", .script_ = mlhello_lil, .expectedValue_ = mlhello_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1245,7 +1245,7 @@ static const char* oop_animals_lil_result1 = R"Xraw()Xraw"; // oop_animals_lil_r
 // Changed file: oop.lil to static string oop_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  oop_animals_lil_test = {
+[[maybe_unused]] LilTest  oop_animals_lil_test = {
         .name_ = "oop_animals_lil", .script_ = oop_animals_lil, .expectedValue_ = oop_animals_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1339,7 +1339,7 @@ static const char* oop_lil_result1 = R"Xraw()Xraw"; // oop_lil_result1
 // Changed file: recfuncdef.lil to static string recfuncdef_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  oop_lil_test = {
+[[maybe_unused]] LilTest  oop_lil_test = {
         .name_ = "oop_lil", .script_ = oop_lil, .expectedValue_ = oop_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1389,7 +1389,7 @@ done
 // Changed file: renamefunc.lil to static string renamefunc_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  recfuncdef_lil_test = {
+[[maybe_unused]] LilTest  recfuncdef_lil_test = {
         .name_ = "recfuncdef_lil", .script_ = recfuncdef_lil, .expectedValue_ = recfuncdef_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1456,7 +1456,7 @@ Known functions:
 // Changed file: result.lil to static string result_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  renamefunc_lil_test = {
+[[maybe_unused]] LilTest  renamefunc_lil_test = {
         .name_ = "renamefunc_lil", .script_ = renamefunc_lil, .expectedValue_ = renamefunc_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1494,7 +1494,7 @@ Bits for 300:	9
 // Changed file: return.lil to static string return_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  result_lil_test = {
+[[maybe_unused]] LilTest  result_lil_test = {
         .name_ = "result_lil", .script_ = result_lil, .expectedValue_ = result_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1530,7 +1530,7 @@ The result of 'does_not_use_return 10' is 100
 // Changed file: robot.lil to static string robot_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  return_lil_test = {
+[[maybe_unused]] LilTest  return_lil_test = {
         .name_ = "return_lil", .script_ = return_lil, .expectedValue_ = return_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1602,7 +1602,7 @@ fred is seeking
 // Changed file: sm.lil to static string sm_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  robot_lil_test = {
+[[maybe_unused]] LilTest  robot_lil_test = {
         .name_ = "robot_lil", .script_ = robot_lil, .expectedValue_ = robot_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1695,7 +1695,7 @@ static const char* sm_lil_result1 = R"Xraw()Xraw"; // sm_lil_result1
 // Changed file: strings.lil to static string strings_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  sm_lil_test = {
+[[maybe_unused]] LilTest  sm_lil_test = {
         .name_ = "sm_lil", .script_ = sm_lil, .expectedValue_ = sm_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1769,7 +1769,7 @@ String b splitted:
 // Changed file: topeval.lil to static string topeval_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  strings_lil_test = {
+[[maybe_unused]] LilTest  strings_lil_test = {
         .name_ = "strings_lil", .script_ = strings_lil, .expectedValue_ = strings_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1819,7 +1819,7 @@ now x in global is 42 and y is 420
 // Changed file: trim.lil to static string trim_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  topeval_lil_test = {
+[[maybe_unused]] LilTest  topeval_lil_test = {
         .name_ = "topeval_lil", .script_ = topeval_lil, .expectedValue_ = topeval_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1862,7 +1862,7 @@ Alternative method using "split" and "filter":
 // Changed file: upeval.lil to static string upeval_lil
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  trim_lil_test = {
+[[maybe_unused]] LilTest  trim_lil_test = {
         .name_ = "trim_lil", .script_ = trim_lil, .expectedValue_ = trim_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -1939,7 +1939,7 @@ Last name:  Tokarz
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  upeval_lil_test = {
+[[maybe_unused]] LilTest  upeval_lil_test = {
         .name_ = "upeval_lil", .script_ = upeval_lil, .expectedValue_ = upeval_lil_result1
 };
 #pragma GCC diagnostic pop
@@ -2038,7 +2038,7 @@ moo and coo are `last-moo-set` and `last-coo-set`
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-LilTest  watch_lil_test = {
+[[maybe_unused]] LilTest  watch_lil_test = {
         .name_ = "watch_lil", .script_ = watch_lil, .expectedValue_ = watch_lil_result1
 };
 #pragma GCC diagnostic pop

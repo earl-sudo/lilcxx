@@ -1037,6 +1037,7 @@ struct CommandAdaptor { // #class
     lstring cmdHelp_;
     bool isSafe_ = true;
     lstring tags_;
+    virtual ~CommandAdaptor() { }
     virtual Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr* argv) {
         (void)lil; (void)argc; (void)argv;
         return nullptr;

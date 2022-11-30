@@ -238,7 +238,6 @@ static int nonint(int argc, lcstrp argv[]) {
 
 NS_END(LILNS)
 
-#include <iostream>
 #include <sstream>
 #include <list>
 
