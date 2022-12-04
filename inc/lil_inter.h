@@ -258,14 +258,14 @@ struct SysInfo { // #class
 
     INT numCommandsRegisteredTotal_ = 0;
     INT numErrorsSetInterpreter_ = 0;
-    INT maxParseDepthAcheved_ = 0;
-    INT maxListLengthAcheved_ = 0;
-    INT numCommandsRun_ = 0;
+    INT maxParseDepthAchieved_ = 0;
+    INT maxListLengthAchieved_ = 0;
+    INT numCommandsRun_        = 0;
     //- 5
     INT numExceptionsInCommands_ = 0;
-    INT numProcsRuns_ = 0;
-    INT numUnfoundCommands_ = 0;
-    INT numExpressions_ = 0;
+    INT numProcsRuns_        = 0;
+    INT numNonFoundCommands_ = 0;
+    INT numExpressions_      = 0;
     INT numEvalCalls_ = 0;
     //- 10
     INT numWatchCode_ = 0;
@@ -298,9 +298,9 @@ struct SysInfo { // #class
     INT numCmdSuccess_ = 0;
     INT numCmdFailed_ = 0;
 
-    INT varHTinitSize_ = 0; // 0 is unset
-    INT cmdHTinitSize_ = 0; // 0 is unset
-    INT limit_Parsedepth_  = 0xFFFF; // 0 is off
+    INT varHTinitSize_    = 0; // 0 is unset
+    INT cmdHTinitSize_    = 0; // 0 is unset
+    INT limit_ParseDepth_ = 0xFFFF; // 0 is off
 
     SysInfo() { // #ctor
         startTime_ = std::clock();
@@ -318,13 +318,13 @@ struct SysInfo { // #class
 #define SYSINFO_ENTRY(X) if (outStrm_ != nullptr && X) *outStrm_ << #X << " = " << (X) << "\n";
         SYSINFO_ENTRY(numCommandsRegisteredTotal_);
         SYSINFO_ENTRY(numErrorsSetInterpreter_);
-        SYSINFO_ENTRY(maxParseDepthAcheved_);
-        SYSINFO_ENTRY(maxListLengthAcheved_);
+        SYSINFO_ENTRY(maxParseDepthAchieved_);
+        SYSINFO_ENTRY(maxListLengthAchieved_);
         SYSINFO_ENTRY(numCommandsRun_);
         //- 5
         SYSINFO_ENTRY(numExceptionsInCommands_);
         SYSINFO_ENTRY(numProcsRuns_);
-        SYSINFO_ENTRY(numUnfoundCommands_);
+        SYSINFO_ENTRY(numNonFoundCommands_);
         SYSINFO_ENTRY(numExpressions_);
         SYSINFO_ENTRY(numEvalCalls_);
         //- 10
@@ -487,7 +487,7 @@ public:
         watchCode_ = value;
         sysInfo_->numWatchCode_++;
     }
-    ND bool hasWatchcode() const { return watchCode_.length() > 0; }
+    ND bool hasWatchCode() const { return watchCode_.length() > 0; }
     // Get variable value_.
     ND Lil_value_Ptr getValue() const { return value_; }
     void setValue(Lil_value_Ptr vD) {
@@ -511,7 +511,7 @@ private:
     Lil_value_Ptr catcher_for_ = nullptr; // Exception catcher.
     Lil_value_Ptr retval_      = nullptr; // Return value_ from this callframe. (can be nullptr)
     bool          retval_set_  = false;   // Has the retval_ been set.
-    bool          breakrun_    = false;
+    bool          breakRun_ = false;
 public:
     explicit Lil_callframe(LilInterp_Ptr lil) {
         assert(lil!=nullptr);
@@ -590,8 +590,8 @@ public:
     // Set return value_ been set.
     ND bool& setRetval_set() { return retval_set_; }
 
-    ND bool getBreakrun() const { return breakrun_; }
-    ND bool& setBreakrun() { return breakrun_; }
+    ND bool getBreakrun() const { return breakRun_; }
+    ND bool& setBreakrun() { return breakRun_; }
 
     ND Lil_value_Ptr getCatcher_for() const { return catcher_for_; }
     void setCatcher_for(Lil_value_Ptr var) {
@@ -619,8 +619,8 @@ public:
     void append(Lil_value_Ptr val) {
         assert(val!=nullptr);
         listRep_.push_back(val);
-        if (std::ssize(listRep_) > sysInfo_->maxListLengthAcheved_)
-            sysInfo_->maxListLengthAcheved_ = std::ssize(listRep_); // #topic
+        if (std::ssize(listRep_) > sysInfo_->maxListLengthAchieved_)
+            sysInfo_->maxListLengthAchieved_ = std::ssize(listRep_); // #topic
     }
     ND Lil_value_Ptr getValue(INT index) const { return listRep_[index]; }
     ND INT getCount() const { return std::ssize(listRep_); }
@@ -647,7 +647,7 @@ struct Lil_func { // #class
     lstring         name_; // Name of function.
     SysInfo*        sysInfo_ = nullptr;
 private:
-    Lil_list_Ptr    argnames_ = nullptr; // List of arguments to function. Owns memory.
+    Lil_list_Ptr    argNames_ = nullptr; // List of arguments to function. Owns memory.
     Lil_value_Ptr   code_     = nullptr; // Body of function. Owns memory.
     lil_func_proc_t proc_     = nullptr; // Function pointer to binary command.
 public:
@@ -664,7 +664,7 @@ public:
     void eraseOrgDefinition() {
         if (this->getArgnames()) { lil_free_list(this->getArgnames()); }
         if (this->getCode())     { lil_free_value(this->getCode()); }
-        this->argnames_ = nullptr;
+        this->argNames_ = nullptr;
         this->code_     = nullptr;
         this->setProc(nullptr);
     }
@@ -684,8 +684,8 @@ public:
     }
 
     // Get list of arguments to function.
-    ND Lil_list_Ptr getArgnames() const { return argnames_; }
-    void setArgnames(Lil_list_Ptr v) { argnames_ = v; }
+    ND Lil_list_Ptr getArgnames() const { return argNames_; }
+    void setArgnames(Lil_list_Ptr v) { argNames_ = v; }
 
     // Get function pointer.
     ND lil_func_proc_t getProc() const { return proc_; }
@@ -703,40 +703,40 @@ struct LilInterp { // #class
 private:
     lstring         err_msg_; // Error message.
 
-    // NOTE: A Lil_func_Ptr and now exists in both cmdmap_ and sysCmdMap_.
+    // NOTE: A Lil_func_Ptr and now exists in both cmdMap_ and sysCmdMap_.
     using Cmds_HashTable = std::unordered_map<lstring,Lil_func_Ptr>;
-    Cmds_HashTable  cmdmap_;    // Hashmap of "commands".
-    Cmds_HashTable  sysCmdMap_; // Hashmap of initial or system "commands".
+    Cmds_HashTable cmdMap_;    // Hashmap of "commands".
+    Cmds_HashTable sysCmdMap_; // Hashmap of initial or system "commands".
 
-    lstring         dollarprefix_; // own memory
+    lstring dollarPrefix_; // own memory
 
-    lstring         code_; /* need save on parse */ // Waste some space owning, but simplify conception.
-    INT             head_    = 0; // Position in code_ (need save on parse)
-    INT             codeLen_ = 0; // Length of code_  (need save on parse)
-    lcstrp          rootcode_ = nullptr; // The original code_
+    lstring code_; /* need save on parse */ // Waste some space owning, but simplify conception.
+    INT     head_     = 0; // Position in code_ (need save on parse)
+    INT     codeLen_  = 0; // Length of code_  (need save on parse)
+    lcstrp  rootCode_ = nullptr; // The original code_
 
-    bool            ignoreeol_ = false; // Do we ignore EOL during parsing.
+    bool    ignoreEOL_ = false; // Do we ignore EOL during parsing.
 
-    Lil_callframe_Ptr rootenv_ = nullptr; // Root/global callframe.
-    Lil_callframe_Ptr downenv_ = nullptr; // Another callframe for use with "upeval".
+    Lil_callframe_Ptr rootEnv_ = nullptr; // Root/global callframe.
+    Lil_callframe_Ptr downEnv_ = nullptr; // Another callframe for use with "upeval".
     Lil_callframe_Ptr env_     = nullptr; // Current callframe.
 
     Lil_value_Ptr       empty_                   = nullptr; // A "empty" Lil_value. (own memory)
     std::vector<lil_callback_proc_t> callback_{NUM_CALLBACKS}; // index LIL_CALLBACK_*
 
     lstring   catcher_; // Pointer to "catch" command (own memory)
-    INT      in_catcher_ = 0; // Are we in a "catch" command?
+    INT       in_catcher_ = 0; // Are we in a "catch" command?
 
     ErrorCode errorCode_; // Error code_.
-    INT       errPosition_ = 0; // Position in code_ where error occured.
+    INT       errPosition_ = 0; // Position in code_ where error occurred.
 
     INT       parse_depth_ = 0; // Current parse depth.
 
     // Set root/global "callframe".
-    void setRootEnv(Lil_callframe_Ptr v) { rootenv_ = v; }
+    void setRootEnv(Lil_callframe_Ptr v) { rootEnv_ = v; }
     // Set "empty" value_.
     void setEmptyVal(Lil_value_Ptr v) { empty_ = v; }
-    void defineSystemCmds() { sysCmdMap_ = cmdmap_; }
+    void defineSystemCmds() { sysCmdMap_ = cmdMap_; }
     // Set interp text.
     void setCode(lcstrp  ptr) { code_ = ptr; }
     // Set current offset in code_.
@@ -768,43 +768,43 @@ public:
     }
 
     // Size commands hashtable.  #optimization
-    void cmdmap_reserve(Cmds_HashTable::size_type sz) { cmdmap_.reserve(sz); }
+    void cmdmap_reserve(Cmds_HashTable::size_type sz) { cmdMap_.reserve(sz); }
 
     // Does command exists.
     ND bool cmdExists(lcstrp  target)  {
         assert(target!=nullptr);
-        return cmdmap_.contains(target);
+        return cmdMap_.contains(target);
     }
     // Add command.
     void hashmap_addCmd(lcstrp  name, Lil_func_Ptr func) {
         assert(name!=nullptr); assert(func!=nullptr);
-        cmdmap_[name] = std::shared_ptr<Lil_func>(func);
+        cmdMap_[name] = std::shared_ptr<Lil_func>(func);
     }
     // Remove command.
     void hashmap_removeCmd(lcstrp  name) {
         assert(name!=nullptr);
-        auto it = cmdmap_.find(name); if (it != cmdmap_.end()) cmdmap_.erase(it);
+        auto it = cmdMap_.find(name); if (it != cmdMap_.end()) cmdMap_.erase(it);
     }
     void duplicate_cmds(LilInterp_Ptr parent) {
         assert(parent!=nullptr);
-        cmdmap_ = parent->cmdmap_;
+        cmdMap_    = parent->cmdMap_;
         sysCmdMap_ = parent->sysCmdMap_;
     }
     void jail_cmds(LilInterp_Ptr parent) {
         assert(parent!=nullptr);
-        cmdmap_ = parent->sysCmdMap_;
+        cmdMap_    = parent->sysCmdMap_;
         sysCmdMap_ = parent->sysCmdMap_;
     }
     void applyToFuncs(std::function<void(const lstring&, const Lil_func_Ptr)> func) {
-        for( const auto& n : cmdmap_ ) {
+        for( const auto& n : cmdMap_ ) {
             func(n.first, n.second);
         }
     }
     void delete_cmds(Lil_func_Ptr cmdD) {
         assert(cmdD!=nullptr);
-        for (auto it = cmdmap_.begin(); it != cmdmap_.end(); ++it) {
+        for (auto it = cmdMap_.begin(); it != cmdMap_.end(); ++it) {
             if (it->second == cmdD) {
-                cmdmap_.erase(it);
+                cmdMap_.erase(it);
                 return;
             }
         }
@@ -814,9 +814,9 @@ public:
     ND INT getCodeLen() const { return codeLen_; }
 
     // Get original code_.
-    ND lcstrp  getRootcode() const { return rootcode_; }
+    ND lcstrp  getRootCode() const { return rootCode_; }
     // Set original code_.
-    ND lcstrp & setRootcode() { return rootcode_; }
+    ND lcstrp & setRootCode() { return rootCode_; }
 
     // Set interp text.
     void setCode(lcstrp  codeD, INT codelen, INT headPos = 0) { // codeD could be nullptr.
@@ -839,7 +839,7 @@ public:
 
     // Get callback function pointer.
     ND lil_callback_proc_t getCallback(LIL_CALLBACK_IDS index) { return callback_[index]; }
-    // Set callbackk function pointer.
+    // Set callback function pointer.
     void setCallback(LIL_CALLBACK_IDS index, lil_callback_proc_t val) {
         assert(index > 0 || index < std::ssize(callback_));
         callback_[index] = val;
@@ -853,9 +853,9 @@ public:
         return std::size(callback_)-1;
     }
     // Should we ignore EOL character?
-    ND bool getIgnoreEol() const { return ignoreeol_; }
+    ND bool getIgnoreEol() const { return ignoreEOL_; }
     // Set EOL character handling.
-    ND bool& setIgnoreEol() { return ignoreeol_; }
+    ND bool& setIgnoreEol() { return ignoreEOL_; }
 
     // Get number of commands.
     ND INT getNumCmds() const { return std::ssize(sysCmdMap_); }
@@ -871,16 +871,16 @@ public:
     // Change number of "catchers".
     void incr_in_catcher(int val) { in_catcher_ += val; }
 
-    ND const lstring & getDollarprefix() const { return dollarprefix_; }
-    void setDollarprefix(lcstrp  v) { dollarprefix_ = v; }
+    ND const lstring & getDollarPrefix() const { return dollarPrefix_; }
+    void setDollarPrefix(lcstrp  v) { dollarPrefix_ = v; }
 
     // Get "empty" value_.
     ND Lil_value_Ptr getEmptyVal() const { return empty_; }
 
     // Get saved "callframe".
-    ND Lil_callframe_Ptr getDownEnv() const { return downenv_; }
+    ND Lil_callframe_Ptr getDownEnv() const { return downEnv_; }
     // Set saved "callframe".
-    void setDownEnv(Lil_callframe_Ptr v) { downenv_ = v; }
+    void setDownEnv(Lil_callframe_Ptr v) { downEnv_ = v; }
 
     // Get current "callframe".
     ND Lil_callframe_Ptr getEnv() const { return env_; }
@@ -888,16 +888,16 @@ public:
     Lil_callframe_Ptr setEnv(Lil_callframe_Ptr v) { env_ = v; return env_; }
 
     // Get root/global "callframe".
-    ND Lil_callframe_Ptr getRootEnv() const { return rootenv_; }
+    ND Lil_callframe_Ptr getRootEnv() const { return rootEnv_; }
 
     // Get current parse depth.
     ND INT getParse_depth() const { return parse_depth_; }
     // Change parse depth.
     void incrParse_depth(INT n) {
         parse_depth_ += n;
-        if (parse_depth_ > sysInfo_->maxParseDepthAcheved_) { // #topic
-            sysInfo_->maxParseDepthAcheved_ = parse_depth_;
-            if (sysInfo_->maxParseDepthAcheved_ >= sysInfo_->limit_Parsedepth_) {
+        if (parse_depth_ > sysInfo_->maxParseDepthAchieved_) { // #topic
+            sysInfo_->maxParseDepthAchieved_ = parse_depth_;
+            if (sysInfo_->maxParseDepthAchieved_ >= sysInfo_->limit_ParseDepth_) {
                 DBGPRINTF(L_VSTR(0x44af,"EXCEPTION: Exceeded max parse depth\n"));
                 throw LilException{L_VSTR(0x88d3,"Exceeded max parse depth")};
             }
@@ -945,7 +945,8 @@ public:
     ND Lil_func_Ptr find_cmd(lcstrp  name);
     ND Lil_func_Ptr add_func(lcstrp  name);
     void del_func(Lil_func_Ptr cmdD);
-    ND Lil_value_Ptr rename_func(INT argc, Lil_value_Ptr* argv);
+
+        [[maybe_unused]] ND Lil_value_Ptr rename_func(INT argc, Lil_value_Ptr* argv);
     ND bool registerFunc(lcstrp  name, lil_func_proc_t proc);
 
     // Used to filter command that can be added.

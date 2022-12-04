@@ -43,10 +43,6 @@ NS_BEGIN(LILNS)
 [[maybe_unused]] const char* g_gitbranch = GIT_BRANCH;
 
 extern "C" {
-const char *getLilCxxGitId();
-const char *getLilCxxGitData();
-const char *getLilCxxGitBranch();
-
 const char *getLilCxxGitId() { return g_gitid; }
 const char *getLilCxxGitData() { return g_gitdate; }
 const char *getLilCxxGitBranch() { return GIT_BRANCH; }
@@ -69,7 +65,7 @@ const char *getLilCxxGitBranch() { return GIT_BRANCH; }
         LIL_CTOR(sysInfo_, "LilInterp");
         this->setRootEnv( this->setEnv(new Lil_callframe(this)) );
         this->setEmptyVal(new Lil_value(this) );
-        this->dollarprefix_ = L_VSTR(0x59e0,"set ");
+        this->dollarPrefix_ = L_VSTR(0x59e0, "set ");
         register_stdcmds();
         if (sysInfo_->cmdHTinitSize_) {
             cmdmap_reserve(CAST(size_t)sysInfo_->cmdHTinitSize_);
@@ -84,7 +80,7 @@ const char *getLilCxxGitBranch() { return GIT_BRANCH; }
         }
     }
     inline Lil_func_Ptr LilInterp::find_cmd(lcstrp name) {
-        auto it = cmdmap_.find(name); return (it == cmdmap_.end()) ? (nullptr) : (it->second);
+        auto it = cmdMap_.find(name); return (it == cmdMap_.end()) ? (nullptr) : (it->second);
     }
     inline Lil_func_Ptr LilInterp::add_func(lcstrp name) {
         Lil_func_Ptr cmdD = find_cmd(name);
@@ -98,7 +94,9 @@ const char *getLilCxxGitBranch() { return GIT_BRANCH; }
     inline void LilInterp::del_func(Lil_func_Ptr cmdD) {
         delete_cmds(cmdD);
     }
-    inline Lil_value_Ptr LilInterp::rename_func(INT argc, Lil_value_Ptr* argv) {
+
+    [[maybe_unused]] inline
+    Lil_value_Ptr LilInterp::rename_func(INT argc, Lil_value_Ptr* argv) {
         Lil_value_Ptr r;
         Lil_func_Ptr  func;
         if (argc < 2) return nullptr; // #argErr
@@ -142,19 +140,23 @@ const char *getLilCxxGitBranch() { return GIT_BRANCH; }
     }
 // ===============================
 
-ND [[maybe_unused]] static Lil_value_Ptr _alloc_value_len(LilInterp_Ptr lil, lcstrp str, INT len) { // #private
+ND [[maybe_unused]] static
+Lil_value_Ptr _alloc_value_len(LilInterp_Ptr lil, lcstrp str, INT len) { // #private
     assert(lil!=nullptr); assert(str!=nullptr);
     return new Lil_value(lil, {str, CAST(std::string::size_type)len}); //alloc Lil_value_Ptr
 }
 
-ND Lil_value_Ptr _alloc_value(LilInterp_Ptr lil, lcstrp str) { // #private
+ND [[maybe_unused]]
+Lil_value_Ptr _alloc_value(LilInterp_Ptr lil, lcstrp str) { // #private
     assert(lil!=nullptr); assert(str!=nullptr);
     return str ? (new Lil_value(lil, str)):(new Lil_value(lil));
 }
 
+[[maybe_unused]]
 Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil);
 
-ND Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil) { // #private
+[[maybe_unused]] ND
+Lil_value_Ptr _alloc_empty_value(LilInterp_Ptr lil) { // #private
     assert(lil!=nullptr);
     return new Lil_value(lil); //alloc Lil_value_Ptr
 }
@@ -231,20 +233,20 @@ Lil_value_Ptr lil_list_to_value(LilInterp_Ptr lil, Lil_list_CPtr list, bool do_e
     INT i = 0;
     for (auto it = list->cbegin(); it != list->cend(); ++it) {
         // *it => Lil_value(); it->getValue() => lcstrp
-        auto strval = (*it)->getValue();
-        auto valLen = CAST(INT)strval.length();
+        auto strValue = (*it)->getValue();
+        auto valLen   = CAST(INT)strValue.length();
 
-        bool escape = do_escape ? _needs_escape(strval) : false;
+        bool escape = do_escape ? _needs_escape(strValue) : false;
         if (i) { lil_append_char(val, LC(' ')); } // Separate each value with ' '.
         if (escape) { // It needs an escape.
             lil_append_char(val, LC('{')); // Embrace with "{...}".
             for (INT j = 0; j < valLen; j++) {
-                std::string::size_type jj = CAST(std::string::size_type)j;
-                if (strval[jj] == LC('{')) {
+                auto jj = CAST(std::string::size_type)j;
+                if (strValue[jj] == LC('{')) {
                     lil_append_string(val, L_STR(R"(}"\o"{)"));
-                } else if (strval[jj] == LC('}')) {
+                } else if (strValue[jj] == LC('}')) {
                     lil_append_string(val, L_STR(R"(}"\c"{)"));
-                } else { lil_append_char(val, strval[jj]); }
+                } else { lil_append_char(val, strValue[jj]); }
             }
             lil_append_char(val, LC('}')); // Embrace with "{...}".
         } else { lil_append_val(val, *it); }
@@ -309,18 +311,18 @@ Lil_var_Ptr lil_set_var(LilInterp_Ptr lil, lcstrp name, Lil_value_Ptr val, LIL_V
         // If var not exists and in root callframe or var exists and the variable is in root callframe.
         if (((!var && currCallFrame == lil->getRootEnv()) || (var && var->getCallframe() == lil->getRootEnv())) &&
             lil->getCallback(LIL_CALLBACK_SETVAR)) {
-            auto          proc   = CAST(lil_setvar_callback_proc_t) lil->getCallback(LIL_CALLBACK_SETVAR);
-            Lil_value_Ptr newval = val;
-            INT           r      = proc(lil, name, &newval);
+            auto          proc     = CAST(lil_setvar_callback_proc_t) lil->getCallback(LIL_CALLBACK_SETVAR);
+            Lil_value_Ptr newValue = val;
+            INT           r        = proc(lil, name, &newValue);
             if (r < 0) return nullptr; // #ERR_RET ERROR:callback
             if (r) {
-                val     = newval;
+                val     = newValue;
                 freeval = true;
             }
         }
         if (var) {
             var->setValue((freeval ? val : lil_clone_value(val))); // Set new variable value to input value.
-            if (var->hasWatchcode()) {
+            if (var->hasWatchCode()) {
                 Lil_callframe_Ptr save_env = lil->getEnv();
                 lil->setEnv(var->getCallframe());
                 lil_free_value(lil_parse(lil, var->getWatchCode().c_str(), 0, 1));
@@ -396,7 +398,7 @@ ND static bool _ateol(LilInterp_Ptr lil) { // #private
     return !(lil->getIgnoreEol()) && _eolchar(lil->getHeadChar());
 }
 
-// Called from lil_parse(), _next_word(), substitue()
+// Called from lil_parse(), _next_word(), substitute()
 static void _skip_spaces(LilInterp_Ptr lil) { // #private
     assert(lil!=nullptr);
     while (lil->getHead() < lil->getCodeLen()) {
@@ -459,7 +461,7 @@ ND static Lil_value_Ptr _get_dollarpart(LilInterp_Ptr lil) { // #private
     assert(lil!=nullptr);
     lil->incrHead(1);
     Lil_value_SPtr name(_next_word(lil)); // Delete on exit.
-    Lil_value_SPtr tmp(new Lil_value(lil, lil->getDollarprefix())); // Delete on exit
+    Lil_value_SPtr tmp(new Lil_value(lil, lil->getDollarPrefix())); // Delete on exit
     lil_append_val(tmp.v, name.v);
     Lil_value_Ptr val = lil_parse_value(lil, tmp.v, 0);
     return val;
@@ -597,13 +599,13 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
     struct lil_parse_exit : std::exception { };
 
     try {
-        if (save_code.empty()) { lil->setRootcode() = code; }
+        if (save_code.empty()) { lil->setRootCode() = code; }
         lil->setCode(code, codelen ? codelen : CAST(Lil::INT)LSTRLEN(code));
         _skip_spaces(lil);
         lil->incrParse_depth(1); // Start new parse level.
         //LPRINTF("DEBUG> code_ %s level %d\n", (std::string(code_, 20).c_str()), lil->getParse_depth());
-        if (lil->sysInfo_->limit_Parsedepth_) { // Do we limit recursion? #TODO
-            if (lil->getParse_depth() > lil->sysInfo_->limit_Parsedepth_) {
+        if (lil->sysInfo_->limit_ParseDepth_) { // Do we limit recursion? #TODO
+            if (lil->getParse_depth() > lil->sysInfo_->limit_ParseDepth_) {
                 LIL_PARSE_ERROR(lil->sysInfo_);
                 lil_set_error(lil, L_VSTR(0xee78, "Too many recursive calls")); // #INTERP_ERR
                 throw lil_parse_exit();
@@ -624,10 +626,10 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
             if (words->getCount()) {
                 Lil_func_Ptr cmd = _find_cmd(lil, words->getValue(0)->getValue().c_str()); // Try dispatch on first word.
                 if (!cmd) { // Found a command.
-                    lil->sysInfo_->numUnfoundCommands_++;
+                    lil->sysInfo_->numNonFoundCommands_++;
                     if (words->getValue(0)->getValueLen()) {
                         if (lil->isCatcherEmpty()) {
-                            if (lil->getIn_catcher() < lil->sysInfo_->limit_Parsedepth_) { // #topic
+                            if (lil->getIn_catcher() < lil->sysInfo_->limit_ParseDepth_) { // #topic
                                 lil->incr_in_catcher(true);
                                 {
                                     lil_push_env(lil);
@@ -659,7 +661,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
                 if (cmd) { // Got a command.
                     if (cmd->getProc()) { // Got a "binary" command.
                         lil->sysInfo_->numCommandsRun_++;
-                        INT shead = lil->getHead();
+                        INT currCodeOffset = lil->getHead();
                         try {
 #ifdef LIL_LIST_IS_ARRAY
                             val = cmd->getProc()(lil, CAST(size_t)(words->getCount() - 1), words->getArgs());
@@ -674,12 +676,12 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
                             lil->sysInfo_->numExceptionsInCommands_++;
                             printf(L_VSTR(0x2b43, "ERROR: Command threw exception: cmd %s type: %s msg %s\n"),
                                    words->getValue(0)->getValue().c_str(), typeid(ex).name(), ex.what());
-                            // #TODO: make this conditional so C++ cmds can use this to signal errors.
+                            // #TODO: make this conditional so C++ commands can use this to signal errors.
                             throw; // Rethrow the exception.
                         }
 
                         if (lil->getError().val() == ERROR_FIXHEAD) {
-                            lil->setError(LIL_ERROR(ERROR_DEFAULT), shead);
+                            lil->setError(LIL_ERROR(ERROR_DEFAULT), currCodeOffset);
                         }
                     } else { // Got a "proc" command.
                         lil->sysInfo_->numProcsRuns_++;
@@ -856,7 +858,7 @@ lilint_t lil_to_integer(Lil_value_Ptr val, bool& inError) {
     auto ret = strtoll(lil_to_string(val), nullptr, 0);
     inError = false;
     if (errno == ERANGE && (ret == LLONG_MAX || ret == LLONG_MIN)) {
-        DBGPRINTF("lil_to_intger couldn't parse; |%s|\n", lil_to_string(val));
+        DBGPRINTF("lil_to_integer couldn't parse; |%s|\n", lil_to_string(val));
         inError = true;
     }
     if (inError) val->sysInfo_->failedStrToInteger_++;
@@ -903,7 +905,7 @@ Lil_value_Ptr lil_alloc_integer(LilInterp_Ptr lil, lilint_t num) {
     return new Lil_value(lil, buff);
 }
 
-// Free Lil interpeter.
+// Free Lil interpreter.
 void lil_free(LilInterp_Ptr lil) {
     delete (lil); //delete LilInterp_Ptr
 }

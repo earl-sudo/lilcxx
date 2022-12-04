@@ -66,12 +66,12 @@ namespace EjUtil {
             }
         }
         bool fromBlock(const TN* in) const { // Check that address is one of our memory objects, i.e. from freeList.
-            auto inAddr = (uint64_t)in;
+            auto inAddress = (uint64_t)in;
             for (auto block : blocks_) {
-                auto blockAddr = (uint64_t)block;
-                if (blockAddr > inAddr) continue; // before block
-                if (inAddr > (blockAddr + itemsInBlock_*sizeof(TN))) continue; // past block
-                if ((inAddr-blockAddr)%sizeof(TN)!=0) continue; // wrong alignment.
+                auto blockAddress = (uint64_t)block;
+                if (blockAddress > inAddress) continue; // before block
+                if (inAddress > (blockAddress + itemsInBlock_ * sizeof(TN))) continue; // past block
+                if ((inAddress - blockAddress) % sizeof(TN) != 0) continue; // wrong alignment.
                 return true;
             }
             return false;

@@ -203,16 +203,16 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         CMD_SUCCESS_RET(lil->getErrMsg().length() ? new Lil_value(lil, lil->getErrMsg()) : nullptr);
     }
     if (typeObj == L_STR("dollar-prefix")) { // #subcmd
-        if (argc == 1) { CMD_SUCCESS_RET(new Lil_value(lil, lil->getDollarprefix())); }
-        auto rr = new Lil_value(lil, lil->getDollarprefix());
-        lil->setDollarprefix(lil_to_string(argv[1]));
+        if (argc == 1) { CMD_SUCCESS_RET(new Lil_value(lil, lil->getDollarPrefix())); }
+        auto rr = new Lil_value(lil, lil->getDollarPrefix());
+        lil->setDollarPrefix(lil_to_string(argv[1]));
         CMD_SUCCESS_RET(rr);
     }
     if (typeObj == L_STR("this")) { // #subcmd
         Lil_callframe_Ptr env = lil->getEnv();
         while (env != lil->getRootEnv() && !env->getCatcher_for() && !env->getFunc()) { env = env->getParent(); }
         if (env->getCatcher_for()) { CMD_SUCCESS_RET(new Lil_value(lil, lil->getCatcher())); }
-        if (env == lil->getRootEnv()) { CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getRootcode())); }
+        if (env == lil->getRootEnv()) { CMD_SUCCESS_RET(lil_alloc_string(lil, lil->getRootCode())); }
         CMD_SUCCESS_RET(env->setFunc() ? lil_clone_value(env->getFunc()->getCode()) : nullptr);
     }
     if (typeObj == L_STR("name")) { // #subcmd
@@ -636,7 +636,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
     std::unique_ptr<Lil_list>  invars  = nullptr; // Input vars.
     std::unique_ptr<Lil_list>  outvars = nullptr; // Output vars.
     std::vector<Lil_value_Ptr> varvalues; // temp hold varvalues from either invars and/or outvars.
-    INT                        codeindex; // Which argument is <code>
+    INT                        codeIndex; // Which argument is <code>
 
     // Given a value with a name look up variable by that name and clone it's value.
     auto cloneVar          = [&lil](Lil_value_Ptr var) {
@@ -648,7 +648,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
         lil_free_value(value);
     };
     ARGERR(argc < 1); // #argErr
-    if (argc == 1) { codeindex = 0; } // Just has <code>
+    if (argc == 1) { codeIndex = 0; } // Just has <code>
     else if (argc >= 2) { // if argc==2 invars_it's either "[invars] <code>" or "[outvars] <code>".
 
         // Create copy of input values, put them in varvalues.
@@ -662,10 +662,10 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
             *varvalues_it = cloneVar(*invars_it);
         }
         if (argc > 2) { // Has [invars] [outvars] <code>.
-            codeindex = 2;
+            codeIndex = 2;
             outvars.reset(lil_subst_to_list(lil, argv[1]));
         } else {
-            codeindex = 1;
+            codeIndex = 1;
         }
     }
     lil_push_env(lil); // Add level to stack where we are going to operate.
@@ -677,7 +677,7 @@ Lil_value_Ptr operator()(LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) ov
             arrayValuesToVars(*varvalues_it, *invars_it, LIL_SETVAR_LOCAL);
         }
     }
-    Lil_value_Ptr              r       = lil_parse_value(lil, argv[codeindex], 0); // Evaluate code.
+    Lil_value_Ptr              r       = lil_parse_value(lil, argv[codeIndex], 0); // Evaluate code.
     if (invars || outvars) {
         if (outvars) { // If we have outvars save their values from this level to varvalues.
             assert(std::ssize(varvalues)>=outvars->getCount());

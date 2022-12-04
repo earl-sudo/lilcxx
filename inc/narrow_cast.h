@@ -89,7 +89,7 @@ constexpr CASTTO_TYPE narrow_cast_checked(CASTFROM_TYPE u, const char* filename 
 
 #include <cstdint>
 
-// If the runtime type conversion would lose information this will throw an narrowing_error exception.
+// If the runtime type conversion would lose information this will throw a narrowing_error exception.
 #define NARROW(TOVAR,FROMVAR, ID) narrow_cast_checked<decltype( TOVAR ), decltype( FROMVAR )>( FROMVAR , ID )
 #define NARROWT(TOVARTYPE,FROMVAR, ID) narrow_cast_checked< TOVARTYPE , decltype( FROMVAR )>( FROMVAR , ID )
 #define _NT(TOVARTYPE,FROMVAR) narrow_cast_checked< TOVARTYPE , decltype( FROMVAR )>( FROMVAR , __FILE__, __LINE__ )

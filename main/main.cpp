@@ -137,7 +137,7 @@ static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, 
     return r;
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_canread([[maybe_unused]] LilInterp_Ptr lil, [[maybe_unused]] SIZE_T argc, [[maybe_unused]] Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_canRead([[maybe_unused]] LilInterp_Ptr lil, [[maybe_unused]] SIZE_T argc, [[maybe_unused]] Lil_value_Ptr *argv) {
     return (feof(stdin) || ferror(stdin)) ? nullptr : lil_alloc_integer(lil,  1);
 }
 
@@ -172,7 +172,7 @@ static int repl() {
     // Register some non-standard functions for IO.
     lil_register(lil, "writechar", fnc_writechar);
     lil_register(lil, "system", fnc_system);
-    lil_register(lil, "canread", fnc_canread);
+        lil_register(lil, "canread", fnc_canRead);
     lil_register(lil, "readline", fnc_readline);
 
     // Startup prompt
@@ -211,7 +211,7 @@ static int nonint(int argc, lcstrp argv[]) {
     // Register some non-standard functions for IO.
     lil_register(lil, "writechar", fnc_writechar);
     lil_register(lil, "system", fnc_system);
-    lil_register(lil, "canread", fnc_canread);
+        lil_register(lil, "canread", fnc_canRead);
     lil_register(lil, "readline", fnc_readline);
 
     // Generate argument list "argv" in interpreter.
@@ -328,7 +328,7 @@ static int unittest_eval(lcstrp input) { // #UNITTEST
     // Register some non-standard functions for IO.
     lil_register(lil, "writechar", fnc_writechar);
     lil_register(lil, "system", fnc_system);
-    lil_register(lil, "canread", fnc_canread);
+        lil_register(lil, "canread", fnc_canRead);
     lil_register(lil, "readline", fnc_readline);
 
     Lil_value_Ptr  code = lil_alloc_string(lil, input);
