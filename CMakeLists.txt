@@ -79,7 +79,8 @@ add_executable(lilcxxsh
         inc/narrow_cast.h
         inc/MemCache.h
         inc/comp_info.h
-        inc/funcPointers.h)
+        inc/funcPointers.h
+        src/lil_serialize.cpp)
 
 # <help> Add include path to "target"
 # target_include_directories(<target> [SYSTEM] [AFTER|BEFORE]
@@ -87,7 +88,7 @@ add_executable(lilcxxsh
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 # EXAMPLE: target_include_directories(myawesomelib PUBLIC include)
 # target_include_directories(lil SYSTEM PUBLIC gsl)
-target_include_directories(lilcxxsh SYSTEM PUBLIC inc boost_1_79_0)
+target_include_directories(lilcxxsh SYSTEM PUBLIC inc boost_1_79_0 extern)
 
 # <help> Add library to "target"
 # target_include_directories(<target> [SYSTEM] [AFTER|BEFORE]
@@ -107,7 +108,8 @@ add_library(lilcxx
         inc/narrow_cast.h
         inc/MemCache.h
         inc/comp_info.h
-        inc/funcPointers.h)
+        inc/funcPointers.h
+        src/lil_serialize.cpp)
 
 add_custom_command ( OUTPUT inc/git_info.h
         COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/gen_gitInfo.sh
@@ -117,7 +119,7 @@ add_custom_command ( OUTPUT inc/git_info.h
 # will be run every time (the command cannot be called ALL).
 add_custom_target(genGitInfo ALL DEPENDS inc/git_info.h)
 
-target_include_directories(lilcxx SYSTEM PUBLIC inc boost_1_79_0)
+target_include_directories(lilcxx SYSTEM PUBLIC inc boost_1_79_0 extern)
 
 # <help> apply option to all target files
 # target_compile_options(<target> [BEFORE]

@@ -664,7 +664,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
                         INT currCodeOffset = lil->getHead();
                         try {
 #ifdef LIL_LIST_IS_ARRAY
-                            val = cmd->getProc()(lil, CAST(size_t)(words->getCount() - 1), words->getArgs());
+                            val = cmd->getProc()(lil, CAST(ARGINT)(words->getCount() - 1), words->getArgs());
 #else
                             // Call our command function pointer.
                             std::vector<Lil_value_Ptr> listRep;
@@ -725,7 +725,7 @@ Lil_value_Ptr lil_parse(LilInterp_Ptr lil, lcstrp code, INT codelen, INT funclev
     } catch (const lil_parse_exit& lpe) {
         // Nothing to do.
         UNUSED(lpe);
-        DBGPRINTF(L_VSTR(0x30b3, "Throw lil_parse_exit exception."));
+        DBGPRINTF(L_VSTR(0x30b3, "Throw lil_parse_exit exception caught.\n"));
     }
 
     if (lil->getError().inError() && lil->getCallback(LIL_CALLBACK_ERROR) && lil->getParse_depth() == 1) {

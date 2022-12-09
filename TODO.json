@@ -1,4 +1,5 @@
 {
+  "comment": "This is TODO.json",
   "errors": [
     {"n": "Fix \"invalid read of size 1\", ~Lil_value()."}
   ],
@@ -152,6 +153,11 @@
     {"n": "Event loop", "version2": 1}
   ],
   "unsorted": [
+    {"n": "serialize"},
+    {"n": "compile to web assembly"},
+    {"n": "Use link script to make libraries safer to resuse"},
+    {"n": "Version libraries"},
+    {"n": "Start changing namespace name"},
     {"n": "compress static text", "version2": 1},
     {"n": "clang build", "version2": 1},
     {"n": "simulate tcl API", "version2": 1},

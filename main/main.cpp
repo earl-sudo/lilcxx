@@ -81,7 +81,7 @@ static LILCALLBACK void do_exit([[maybe_unused]] LilInterp_Ptr lil, Lil_value_Pt
     // #TODO Error condition?
 }
 
-static lstrp  do_system(SIZE_T argc, lchar** argv)
+static lstrp  do_system(ARGINT argc, lchar** argv)
 {
 #if !defined(HAS_POPEN)
     return nullptr;
@@ -110,7 +110,7 @@ static lstrp  do_system(SIZE_T argc, lchar** argv)
 #endif
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_writechar([[maybe_unused]] LilInterp_Ptr lil, SIZE_T argc, Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_writechar([[maybe_unused]] LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
     if (!argc) { return nullptr; } // #argErr
     bool inError = false;
     LPRINTF("%c", (lchar) lil_to_integer(argv[0], inError));
@@ -118,8 +118,8 @@ static LILCALLBACK Lil_value_Ptr fnc_writechar([[maybe_unused]] LilInterp_Ptr li
     return nullptr;
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, SIZE_T argc, Lil_value_Ptr *argv) {
-    auto *sargv = static_cast<lcstrp *>(malloc(sizeof(lstrp ) * (argc + 1))); // alloc char*
+static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, ARGINT argc, Lil_value_Ptr *argv) {
+    auto *sargv = static_cast<lcstrp *>(malloc(sizeof(lstrp ) * (val(argc) + 1))); // alloc char*
     Lil_value_Ptr r       = nullptr;
     lstrp rv;
     SIZE_T        i;
@@ -127,7 +127,7 @@ static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, 
     for (i      = 0; i < argc; i++) {
         sargv[i] = lil_to_string(argv[i]);
     }
-    sargv[argc] = nullptr;
+    sargv[val(argc)] = nullptr;
     rv = do_system(argc, CAST(Lil::lchar **) sargv);
     if (rv) {
         r = lil_alloc_string(lil, rv);
@@ -137,11 +137,11 @@ static LILCALLBACK Lil_value_Ptr fnc_system([[maybe_unused]] LilInterp_Ptr lil, 
     return r;
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_canRead([[maybe_unused]] LilInterp_Ptr lil, [[maybe_unused]] SIZE_T argc, [[maybe_unused]] Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_canRead([[maybe_unused]] LilInterp_Ptr lil, [[maybe_unused]] ARGINT argc, [[maybe_unused]] Lil_value_Ptr *argv) {
     return (feof(stdin) || ferror(stdin)) ? nullptr : lil_alloc_integer(lil,  1);
 }
 
-static LILCALLBACK Lil_value_Ptr fnc_readline(LilInterp_Ptr lil, [[maybe_unused]] SIZE_T argc, [[maybe_unused]] Lil_value_Ptr *argv) {
+static LILCALLBACK Lil_value_Ptr fnc_readline(LilInterp_Ptr lil, [[maybe_unused]] ARGINT argc, [[maybe_unused]] Lil_value_Ptr *argv) {
     lstring    buffer;
     int           ch;
     Lil_value_Ptr retval;
@@ -330,6 +330,7 @@ static int unittest_eval(lcstrp input) { // #UNITTEST
     lil_register(lil, "system", fnc_system);
         lil_register(lil, "canread", fnc_canRead);
     lil_register(lil, "readline", fnc_readline);
+    lil->serialize({0}); // #TEMP
 
     Lil_value_Ptr  code = lil_alloc_string(lil, input);
     lil_set_var(lil, "__lilmain:code__", code, LIL_SETVAR_GLOBAL);

@@ -311,6 +311,7 @@ struct SysInfo { // #class
     SysInfo(const SysInfo& rhs) = default;
     SysInfo& operator=(const SysInfo& rhs) = default;
     ~SysInfo() = default;
+    bool serialize(std::vector<int> types);
     void printStats() const {
         converage_.printStats();
         objCounter_.printStats();
@@ -474,6 +475,7 @@ public:
         LIL_DTOR(sysInfo_, "Lil_var");
         if (this->getValue()) lil_free_value(this->getValue());
     }
+    bool serialize(std::vector<int> type);
     // Get variable name_.
     ND const lstring& getName() const { return name_; }
     // Get variable value_.
@@ -535,6 +537,8 @@ public:
             delete (n.second); //delete Lil_var_Ptr
         }
     }
+    bool serialize(std::vector<int> tags);
+
     // Size commands hashtable.  #optimization
     void varmap_reserve(Var_HashTable::size_type sz) { varmap_.reserve(sz); }
 
@@ -694,6 +698,7 @@ public:
         proc_ = p;
         sysInfo_->numCommands_++;
     }
+    bool serialize(std::vector<int> type);
 };
 
 struct LilInterp { // #class
@@ -766,6 +771,8 @@ public:
         // Remember this is per-thread.
         if (parentInterp_==nullptr) Lil_getSysInfo(true);
     }
+
+    bool serialize(std::vector<int> type);
 
     // Size commands hashtable.  #optimization
     void cmdmap_reserve(Cmds_HashTable::size_type sz) { cmdMap_.reserve(sz); }

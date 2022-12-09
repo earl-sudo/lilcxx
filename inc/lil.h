@@ -99,9 +99,49 @@ enum LIL_CALLBACK_IDS {
 typedef int64_t         INT;
 typedef uint64_t        UINT;
 typedef size_t          SIZE_T;
-typedef size_t          ARGINT;
 
 typedef int64_t         lilint_t;
+
+#define ARGINT_IS_POD 1
+#ifdef ARGINT_IS_POD
+  typedef size_t          ARGINT;
+  inline size_t val(const ARGINT& vD) { return vD; }
+  inline INT INT_val(const ARGINT& vD) { return CAST(INT)vD; }
+  inline lilint_t lilint_val(const ARGINT& vD) { return CAST(lilint_t)vD; }
+#else
+struct ARGINT {
+  private:
+      SIZE_T val() const { return v_; }
+  public:
+    SIZE_T v_ = 0;
+    ARGINT() = default;
+    ARGINT(const ARGINT& lhs) = default;
+    ARGINT(size_t vD) : v_(vD) { }
+    ARGINT(int vD) : v_(vD) { }
+    ARGINT(long long int vD) : v_(vD) { }
+    ARGINT(int64_t vD) : v_(vD) { }
+    bool operator==(size_t valD) { return v_ == valD; }
+    bool operator!() const { return v_ > 0 ; }
+    const ARGINT& operator+=(SIZE_T vD) { v_ += vD; return *this; }
+    SIZE_T operator++(int) { v_++; return v_; }
+
+    friend const ARGINT& operator+(const ARGINT& lhsD, const SIZE_T& rhsD) { return ARGINT(lhsD.val() + rhsD); }
+    friend const ARGINT& operator-(const ARGINT& lhsD, const SIZE_T& rhsD) { return ARGINT(lhsD.val() - rhsD); }
+
+    friend bool operator<(const ARGINT& lhs, SIZE_T rhsD) { return lhs.v_ < rhsD; }
+    friend bool operator<(const ARGINT& lhs, const ARGINT& rhsD) { return lhs.v_ < rhsD.v_; }
+    friend bool operator<(const ARGINT& lhs, INT rhsD) { return lhs.v_ < rhsD; }
+    friend bool operator>(const ARGINT& lhs, SIZE_T rhsD) { return lhs.v_ < rhsD; }
+    friend bool operator>(const ARGINT& lhs, const ARGINT& rhsD) { return lhs.v_ < rhsD.v_; }
+    friend bool operator>=(const ARGINT& lhs, SIZE_T rhsD) { return lhs.v_ >= rhsD; }
+    friend bool operator>=(const ARGINT& lhs, INT rhsD) { return lhs.v_ >= rhsD; }
+    friend bool operator>=(const ARGINT& lhs, const ARGINT& rhsD) { return lhs.v_ >= rhsD.v_; }
+};
+inline size_t val(const ARGINT& vD) { return vD.v_; }
+inline INT INT_val(const ARGINT& vD) { return CAST(INT)vD.v_; }
+inline lilint_t lilint_val(const ARGINT& vD) { return CAST(lilint_t)vD.v_; }
+#endif // ifdef ARGINT_IS_POD
+
 
 struct Lil_func;
 struct Lil_value;

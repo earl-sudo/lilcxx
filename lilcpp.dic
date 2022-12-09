@@ -69,7 +69,6 @@ chstr
 cmdmap
 cmds
 codeat
-codeidx
 codeindex
 codelen
 cout
@@ -77,7 +76,6 @@ defvalue
 dollarpart
 downenv
 downeval
-dumplist
 endl
 enveval
 enveval's
@@ -120,7 +118,6 @@ lilcxx
 lilint
 lilmain
 lilstd
-listidx
 lmap
 mandelbrots
 mlcmt
