@@ -32,14 +32,50 @@ bool SysInfo::serialize(std::vector<int> types) {
 
 
 //    ObjCounter  objCounter_;
+    g_writerPtr->Key("objCounter_");
+    g_writerPtr->StartArray();
+    for (const auto& elem : objCounter_.objectCounts_) {
+        g_writerPtr->StartObject();
+
+        //std::cout << "name: " << elem.first << ", count: " << elem.second.maxNum_ << ", " << elem.second.numCtor_ << ", " << elem.second.numDtor_ << "\n";
+        g_writerPtr->Key("name"); g_writerPtr->String(elem.first.c_str(), elem.first.length());
+        g_writerPtr->Key("maxNum_"); g_writerPtr->Int64(elem.second.maxNum_);
+        g_writerPtr->Key("count"); g_writerPtr->Int64(elem.second.numCtor_ - elem.second.numDtor_);
+        g_writerPtr->EndObject();
+    }
+    g_writerPtr->EndArray();
+
 //    FuncTimer   funcTimer_;
+    g_writerPtr->Key("funcTimer_");
+    g_writerPtr->StartArray();
+    for (const auto& elem : funcTimer_.timerInfo_) {
+        g_writerPtr->StartObject();
+        g_writerPtr->Key("name"); g_writerPtr->String(elem.first.c_str(), elem.first.length());
+        g_writerPtr->Key("maxTime_"); g_writerPtr->Int64(elem.second.maxTime_);
+        g_writerPtr->Key("numCalls_"); g_writerPtr->Int64(elem.second.numCalls_);
+        g_writerPtr->Key("totalTime_"); g_writerPtr->Int64(elem.second.totalTime_);
+        g_writerPtr->EndObject();
+    }
+    g_writerPtr->EndArray();
 //    Coverage    converage_;
+    g_writerPtr->Key("converage_");
+    g_writerPtr->StartArray();
+    for (const auto& elem : converage_.coverageMap_) {
+        g_writerPtr->StartObject();
+        g_writerPtr->Key("name"); g_writerPtr->String(elem.first.c_str(), elem.first.length());
+        g_writerPtr->Key("count"); g_writerPtr->Int64(elem.second);
+        g_writerPtr->EndObject();
+    }
+    g_writerPtr->EndArray();
 //    std::ostream*       outStrm_ = nullptr;
+    g_writerPtr->Key("outStrm_"); g_writerPtr->String("placekeeper");
 //
 //    // Interpreter specific ================================================
 //    bool        logInterpInfo_ = false;
+    g_writerPtr->Key("logInterpInfo_"); g_writerPtr->Bool(logInterpInfo_);
 //
 //    clock_t     startTime_ = 0;
+    g_writerPtr->Key("startTime_"); g_writerPtr->Int64(startTime_);
 //
 //    INT numCommandsRegisteredTotal_ = 0;
     g_writerPtr->Key("numCommandsRegisteredTotal_"); g_writerPtr->Int64(numCommandsRegisteredTotal_);
@@ -158,6 +194,7 @@ bool Lil_callframe::serialize(std::vector<int> type) {
 
 //    SysInfo*        sysInfo_ = nullptr;
 //    Lil_callframe * parent_ = nullptr; // Parent callframe.
+    g_writerPtr->Key("parent_"); g_writerPtr->String("placekeeper");
 //
 //    using Var_HashTable = std::unordered_map<lstring,Lil_var_Ptr>;
 //    Var_HashTable varmap_; // Hashmap of variables in callframe.
@@ -174,6 +211,7 @@ bool Lil_callframe::serialize(std::vector<int> type) {
     }
     g_writerPtr->EndArray();
 //    Lil_func_Ptr  func_        = nullptr; // The function that generated this callframe.
+    g_writerPtr->Key("func_"); g_writerPtr->String("placekeeper");
 
     if (func_ == nullptr) {
         g_writerPtr->Key("func_"); g_writerPtr->Null();
@@ -328,6 +366,7 @@ bool LilInterp::serialize(std::vector<int> type) {
         writer.Key("parentInterp_"); writer.String("placeholder");
     }
 //    cmdFilterType  cmdFilter_;
+    g_writerPtr->Key("cmdFilter_"); g_writerPtr->String("placekeeper");
 //    bool           isSafe_ = false; // If true don't allow unsafe commands.
     writer.Key("isSafe_"); writer.Bool(isSafe_);
 //    std::ostream*  logFile_ = nullptr; // Log file, must be setup by main program.
