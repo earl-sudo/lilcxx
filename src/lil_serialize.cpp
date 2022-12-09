@@ -161,6 +161,8 @@ bool Lil_callframe::serialize(std::vector<int> type) {
 //
 //    using Var_HashTable = std::unordered_map<lstring,Lil_var_Ptr>;
 //    Var_HashTable varmap_; // Hashmap of variables in callframe.
+    g_writerPtr->StartObject();
+
     g_writerPtr->Key("varmap_");
     g_writerPtr->StartArray();
     for (const auto& elem : varmap_) {
@@ -172,7 +174,6 @@ bool Lil_callframe::serialize(std::vector<int> type) {
     }
     g_writerPtr->EndArray();
 //    Lil_func_Ptr  func_        = nullptr; // The function that generated this callframe.
-    g_writerPtr->StartObject();
 
     if (func_ == nullptr) {
         g_writerPtr->Key("func_"); g_writerPtr->Null();
@@ -289,32 +290,26 @@ bool LilInterp::serialize(std::vector<int> type) {
 //    bool    ignoreEOL_ = false; // Do we ignore EOL during parsing.
     writer.Key("ignoreEOL_"); writer.Bool(ignoreEOL_);
 //    Lil_callframe_Ptr rootEnv_ = nullptr; // Root/global callframe.
-    writer.Key("rootEnv_");
-    writer.StartArray();
     if (rootEnv_ == nullptr) {
         writer.Key("rootEnv_"); writer.Null();
     } else {
+        writer.Key("rootEnv_");
         rootEnv_->serialize(type);
     }
-    writer.EndArray();
 //    Lil_callframe_Ptr downEnv_ = nullptr; // Another callframe for use with "upeval".
-    writer.Key("downEnv_");
-    writer.StartArray();
     if (downEnv_ == nullptr) {
         writer.Key("downEnv_"); writer.Null();
     } else {
+        writer.Key("downEnv_");
         downEnv_->serialize(type);
     }
-    writer.EndArray();
 //    Lil_callframe_Ptr env_     = nullptr; // Current callframe.
-    writer.Key("env_");
-    writer.StartArray();
     if (env_ == nullptr) {
         writer.Key("env_"); writer.Null();
     } else {
+        writer.Key("env_");
         env_->serialize(type);
     }
-    writer.EndArray();
 //    Lil_value_Ptr       empty_                   = nullptr; // A "empty" Lil_value. (own memory)
 //    std::vector<lil_callback_proc_t> callback_{NUM_CALLBACKS}; // index LIL_CALLBACK_*
 //    lstring   catcher_; // Pointer to "catch" command (own memory)
