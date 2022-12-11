@@ -48,6 +48,10 @@
 
 NS_BEGIN(LILNS)
 
+#ifndef WHERE
+#  define WHERE do { std::cerr << "WHERE: " << __FILE__ << ":" << __LINE__ << "\n"; } while (0);
+#endif
+
 #define ND [[nodiscard]]
 
 // Prepare for the day we want to go to UTF16 or some other than std::string. See also macros LC(), L_STR(), L_VSTR()

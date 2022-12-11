@@ -10,6 +10,17 @@
 
 NS_BEGIN(LILNS)
 
+// if (flags.flags_[LILINTERP])
+enum SERIALIZATION_FLAGS {
+    LILINTERP, LILINTERP_BASIC, LILINTERP_SYSINFO, LILINTERP_CMDMAP, LILINTERP_SYSCMDMAP,
+    LILINTERP_CODE, LILINTERP_ROOTCODE, LILINTERP_ROOTENV, LILINTERP_DOWNENV, LILINTERP_ENV,
+    LILINTERP_PARENTINTERP,
+    SYSINFO_OBJCOUNTER, SYSINFO_TIMERINFO, SYSINFO_COVERAGE, SYSINFO_STATS,
+    LILVAR_WATCHCODE, LILVAR_THISCALLFRAME, LILVAR_VALUE,
+    LILCALLFRAME_VARMAP, LILCALLFRAME_RETVAL,
+    LILFUNC_ARGNAMES, LILFUNC_CODE, LILFUNC_PROC,
+    SERIALIZATION_NUM_FLAGS
+};
 namespace {
     rapidjson::PrettyWriter<rapidjson::FileWriteStream> *g_writerPtr = nullptr;
 
@@ -76,6 +87,7 @@ bool SysInfo::serialize(const SerializationFlags &flags) {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr, "sysInfo_");
 
         //    ObjCounter  objCounter_;
+        if (flags.flags_[SYSINFO_OBJCOUNTER])
         {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "objCounter_");
             for (const auto &elem: objCounter_.objectCounts_) {
@@ -89,6 +101,7 @@ bool SysInfo::serialize(const SerializationFlags &flags) {
         } // End json array.
 
         //    FuncTimer   funcTimer_;
+        if (flags.flags_[SYSINFO_TIMERINFO])
         {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object3(*g_writerPtr, "funcTimer_");
             for (const auto &elem: funcTimer_.timerInfo_) {
@@ -102,6 +115,7 @@ bool SysInfo::serialize(const SerializationFlags &flags) {
             }
         } // End json array
         //    Coverage    converage_;
+        if (flags.flags_[SYSINFO_COVERAGE])
         {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object5(*g_writerPtr, "converage_");
             for (const auto &elem: converage_.coverageMap_) {
@@ -123,83 +137,85 @@ bool SysInfo::serialize(const SerializationFlags &flags) {
         //    clock_t     startTime_ = 0;
         keyValue(*g_writerPtr, "startTime_", startTime_);
 
-        //
-        //    INT numCommandsRegisteredTotal_ = 0;
-        keyValue(*g_writerPtr, "numCommandsRegisteredTotal_", numCommandsRegisteredTotal_);
-        //    INT numErrorsSetInterpreter_ = 0;
-        keyValue(*g_writerPtr, "numErrorsSetInterpreter_", numErrorsSetInterpreter_);
-        //    INT maxParseDepthAchieved_ = 0;
-        keyValue(*g_writerPtr, "maxParseDepthAchieved_", maxParseDepthAchieved_);
-        //    INT maxListLengthAchieved_ = 0;
-        keyValue(*g_writerPtr, "maxListLengthAchieved_", maxListLengthAchieved_);
-        //    INT numCommandsRun_        = 0;
-        keyValue(*g_writerPtr, "numCommandsRun_", numCommandsRun_);
-        //    INT numExceptionsInCommands_ = 0;
-        keyValue(*g_writerPtr, "numExceptionsInCommands_", numExceptionsInCommands_);
-        //    INT numProcsRuns_        = 0;
-        keyValue(*g_writerPtr, "numProcsRuns_", numProcsRuns_);
-        //    INT numNonFoundCommands_ = 0;
-        keyValue(*g_writerPtr, "numNonFoundCommands_", numNonFoundCommands_);
-        //    INT numExpressions_      = 0;
-        keyValue(*g_writerPtr, "numExpressions_", numExpressions_);
-        //    INT numEvalCalls_ = 0;
-        keyValue(*g_writerPtr, "numEvalCalls_", numEvalCalls_);
-        //    INT numWatchCode_ = 0;
-        keyValue(*g_writerPtr, "numWatchCode_", numWatchCode_);
-        //    INT numVarMisses_ = 0;
-        keyValue(*g_writerPtr, "numVarMisses_", numVarMisses_);
-        //    INT numVarHits_ = 0;
-        keyValue(*g_writerPtr, "numVarHits_", numVarHits_);
-        //    INT varHTMaxSize_ = 0;
-        keyValue(*g_writerPtr, "varHTMaxSize_", varHTMaxSize_);
-        //    INT numProcs_ = 0;
-        keyValue(*g_writerPtr, "numProcs_", numProcs_);
-        //    INT maxProcSize_ = 0;
-        keyValue(*g_writerPtr, "maxProcSize_", maxProcSize_);
-        //    INT numCommands_ = 0;
-        keyValue(*g_writerPtr, "numCommands_", numCommands_);
-        //    INT numDelCommands_ = 0;
-        keyValue(*g_writerPtr, "numDelCommands_", numDelCommands_);
-        //    INT numRenameCommands_ = 0;
-        keyValue(*g_writerPtr, "numRenameCommands_", numRenameCommands_);
-        //    INT numWatchCalls_ = 0;
-        keyValue(*g_writerPtr, "numWatchCalls_", numWatchCalls_);
-        //    INT numParseErrors_ = 0;
-        keyValue(*g_writerPtr, "numParseErrors_", numParseErrors_);
-        //    INT numExprErrors_ = 0;
-        keyValue(*g_writerPtr, "numExprErrors_", numExprErrors_);
-        //    INT strToDouble_ = 0;
-        keyValue(*g_writerPtr, "strToDouble_", strToDouble_);
-        //    INT failedStrToDouble_ = 0;
-        keyValue(*g_writerPtr, "failedStrToDouble_", failedStrToDouble_);
-        //    INT strToInteger_ = 0;
-        keyValue(*g_writerPtr, "strToInteger_", strToInteger_);
-        //    INT failedStrToInteger_ = 0;
-        keyValue(*g_writerPtr, "failedStrToInteger_", failedStrToInteger_);
-        //    INT strToBool_ = 0;
-        keyValue(*g_writerPtr, "strToBool_", strToBool_);
-        //    INT failedStrToBool_ = 0;
-        keyValue(*g_writerPtr, "failedStrToBool_", failedStrToBool_);
-        //    INT numWrites_ = 0;
-        keyValue(*g_writerPtr, "numWrites_", numWrites_);
-        //    INT bytesAttemptedWritten_ = 0;
-        keyValue(*g_writerPtr, "bytesAttemptedWritten_", bytesAttemptedWritten_);
-        //    INT numReads_ = 0;
-        keyValue(*g_writerPtr, "numReads_", numReads_);
-        //    INT bytesAttemptedRead_ = 0;
-        keyValue(*g_writerPtr, "bytesAttemptedRead_", bytesAttemptedRead_);
-        //    INT numCmdArgErrors_ = 0;
-        keyValue(*g_writerPtr, "numCmdArgErrors_", numCmdArgErrors_);
-        //    INT numCmdSuccess_ = 0;
-        keyValue(*g_writerPtr, "numCmdSuccess_", numCmdSuccess_);
-        //    INT numCmdFailed_ = 0;
-        keyValue(*g_writerPtr, "numCmdFailed_", numCmdFailed_);
-        //    INT varHTinitSize_    = 0; // 0 is unset
-        keyValue(*g_writerPtr, "varHTinitSize_", varHTinitSize_);
-        //    INT cmdHTinitSize_    = 0; // 0 is unset
-        keyValue(*g_writerPtr, "cmdHTinitSize_", cmdHTinitSize_);
-        //    INT limit_ParseDepth_ = 0xFFFF; // 0 is off
-        keyValue(*g_writerPtr, "limit_ParseDepth_", limit_ParseDepth_);
+        if (flags.flags_[SYSINFO_STATS]) {
+            //
+            //    INT numCommandsRegisteredTotal_ = 0;
+            keyValue(*g_writerPtr, "numCommandsRegisteredTotal_", numCommandsRegisteredTotal_);
+            //    INT numErrorsSetInterpreter_ = 0;
+            keyValue(*g_writerPtr, "numErrorsSetInterpreter_", numErrorsSetInterpreter_);
+            //    INT maxParseDepthAchieved_ = 0;
+            keyValue(*g_writerPtr, "maxParseDepthAchieved_", maxParseDepthAchieved_);
+            //    INT maxListLengthAchieved_ = 0;
+            keyValue(*g_writerPtr, "maxListLengthAchieved_", maxListLengthAchieved_);
+            //    INT numCommandsRun_        = 0;
+            keyValue(*g_writerPtr, "numCommandsRun_", numCommandsRun_);
+            //    INT numExceptionsInCommands_ = 0;
+            keyValue(*g_writerPtr, "numExceptionsInCommands_", numExceptionsInCommands_);
+            //    INT numProcsRuns_        = 0;
+            keyValue(*g_writerPtr, "numProcsRuns_", numProcsRuns_);
+            //    INT numNonFoundCommands_ = 0;
+            keyValue(*g_writerPtr, "numNonFoundCommands_", numNonFoundCommands_);
+            //    INT numExpressions_      = 0;
+            keyValue(*g_writerPtr, "numExpressions_", numExpressions_);
+            //    INT numEvalCalls_ = 0;
+            keyValue(*g_writerPtr, "numEvalCalls_", numEvalCalls_);
+            //    INT numWatchCode_ = 0;
+            keyValue(*g_writerPtr, "numWatchCode_", numWatchCode_);
+            //    INT numVarMisses_ = 0;
+            keyValue(*g_writerPtr, "numVarMisses_", numVarMisses_);
+            //    INT numVarHits_ = 0;
+            keyValue(*g_writerPtr, "numVarHits_", numVarHits_);
+            //    INT varHTMaxSize_ = 0;
+            keyValue(*g_writerPtr, "varHTMaxSize_", varHTMaxSize_);
+            //    INT numProcs_ = 0;
+            keyValue(*g_writerPtr, "numProcs_", numProcs_);
+            //    INT maxProcSize_ = 0;
+            keyValue(*g_writerPtr, "maxProcSize_", maxProcSize_);
+            //    INT numCommands_ = 0;
+            keyValue(*g_writerPtr, "numCommands_", numCommands_);
+            //    INT numDelCommands_ = 0;
+            keyValue(*g_writerPtr, "numDelCommands_", numDelCommands_);
+            //    INT numRenameCommands_ = 0;
+            keyValue(*g_writerPtr, "numRenameCommands_", numRenameCommands_);
+            //    INT numWatchCalls_ = 0;
+            keyValue(*g_writerPtr, "numWatchCalls_", numWatchCalls_);
+            //    INT numParseErrors_ = 0;
+            keyValue(*g_writerPtr, "numParseErrors_", numParseErrors_);
+            //    INT numExprErrors_ = 0;
+            keyValue(*g_writerPtr, "numExprErrors_", numExprErrors_);
+            //    INT strToDouble_ = 0;
+            keyValue(*g_writerPtr, "strToDouble_", strToDouble_);
+            //    INT failedStrToDouble_ = 0;
+            keyValue(*g_writerPtr, "failedStrToDouble_", failedStrToDouble_);
+            //    INT strToInteger_ = 0;
+            keyValue(*g_writerPtr, "strToInteger_", strToInteger_);
+            //    INT failedStrToInteger_ = 0;
+            keyValue(*g_writerPtr, "failedStrToInteger_", failedStrToInteger_);
+            //    INT strToBool_ = 0;
+            keyValue(*g_writerPtr, "strToBool_", strToBool_);
+            //    INT failedStrToBool_ = 0;
+            keyValue(*g_writerPtr, "failedStrToBool_", failedStrToBool_);
+            //    INT numWrites_ = 0;
+            keyValue(*g_writerPtr, "numWrites_", numWrites_);
+            //    INT bytesAttemptedWritten_ = 0;
+            keyValue(*g_writerPtr, "bytesAttemptedWritten_", bytesAttemptedWritten_);
+            //    INT numReads_ = 0;
+            keyValue(*g_writerPtr, "numReads_", numReads_);
+            //    INT bytesAttemptedRead_ = 0;
+            keyValue(*g_writerPtr, "bytesAttemptedRead_", bytesAttemptedRead_);
+            //    INT numCmdArgErrors_ = 0;
+            keyValue(*g_writerPtr, "numCmdArgErrors_", numCmdArgErrors_);
+            //    INT numCmdSuccess_ = 0;
+            keyValue(*g_writerPtr, "numCmdSuccess_", numCmdSuccess_);
+            //    INT numCmdFailed_ = 0;
+            keyValue(*g_writerPtr, "numCmdFailed_", numCmdFailed_);
+            //    INT varHTinitSize_    = 0; // 0 is unset
+            keyValue(*g_writerPtr, "varHTinitSize_", varHTinitSize_);
+            //    INT cmdHTinitSize_    = 0; // 0 is unset
+            keyValue(*g_writerPtr, "cmdHTinitSize_", cmdHTinitSize_);
+            //    INT limit_ParseDepth_ = 0xFFFF; // 0 is off
+            keyValue(*g_writerPtr, "limit_ParseDepth_", limit_ParseDepth_);
+        }
     } // End json object
 
     return ret;
@@ -210,22 +226,29 @@ bool Lil_var::serialize(const SerializationFlags &flags) {
 
     //    SysInfo*            sysInfo_ = nullptr;
     //    lstring             watchCode_;
-    keyValue(*g_writerPtr, "watchCode_", watchCode_);
+    if (flags.flags_[LILVAR_WATCHCODE])
+        keyValue(*g_writerPtr, "watchCode_", watchCode_);
 
     //    lstring             name_; // Variable named.
     keyValue(*g_writerPtr, "name_", name_);
 
     //    Lil_callframe *     thisCallframe_ = nullptr; // Pointer to callframe defined in.
-    if (thisCallframe_ == nullptr) {
-        g_writerPtr->Key("thisCallframe_"); g_writerPtr->Null();
-    } else {
-        keyValue(*g_writerPtr, "thisCallframe_", "placeholder"); // #TODO
+    if (flags.flags_[LILVAR_THISCALLFRAME]) {
+        if (thisCallframe_ == nullptr) {
+            g_writerPtr->Key("thisCallframe_");
+            g_writerPtr->Null();
+        } else {
+            keyValue(*g_writerPtr, "thisCallframe_", "placeholder"); // #TODO
+        }
     }
     //    Lil_value_Ptr       value_ = nullptr;
-    if (value_ == nullptr) {
-        g_writerPtr->Key("value_"); g_writerPtr->Null();
-    } else {
-        keyValue(*g_writerPtr, "value_", "placeholder"); // #TODO
+    if (flags.flags_[LILVAR_VALUE]) {
+        if (value_ == nullptr) {
+            g_writerPtr->Key("value_");
+            g_writerPtr->Null();
+        } else {
+            keyValue(*g_writerPtr, "value_", "placeholder"); // #TODO
+        }
     }
     return ret;
 }
@@ -242,6 +265,7 @@ bool Lil_callframe::serialize(const SerializationFlags &flags) {
     {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object7(*g_writerPtr);
 
+        if (flags.flags_[LILCALLFRAME_VARMAP])
         {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object8(*g_writerPtr, "varmap_");
             for (const auto &elem: varmap_) {
@@ -267,11 +291,13 @@ bool Lil_callframe::serialize(const SerializationFlags &flags) {
             keyValue(*g_writerPtr, "catcher_for_", catcher_for_->getValue());
         }
         //    Lil_value_Ptr retval_      = nullptr; // Return value_ from this callframe. (can be nullptr)
-        if (retval_ == nullptr) {
-            g_writerPtr->Key("retval_");
-            g_writerPtr->Null();
-        } else {
-            keyValue(*g_writerPtr, "retval_", retval_->getValue());
+        if (flags.flags_[LILCALLFRAME_RETVAL]) {
+            if (retval_ == nullptr) {
+                g_writerPtr->Key("retval_");
+                g_writerPtr->Null();
+            } else {
+                keyValue(*g_writerPtr, "retval_", retval_->getValue());
+            }
         }
         //    bool          retval_set_  = false;   // Has the retval_ been set.
         keyValue(*g_writerPtr, "retval_set_", "retval_set_");
@@ -290,25 +316,34 @@ bool Lil_func::serialize(const SerializationFlags &flags) {
 
     // SysInfo*        sysInfo_ = nullptr;
     // Lil_list_Ptr    argNames_ = nullptr; // List of arguments to function. Owns memory.
-    if (argNames_ == nullptr) {
-        g_writerPtr->Key("argNames_"); g_writerPtr->Null();
-    } else {
-        JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr, "argNames_");
-        for (int i = 0; i < argNames_->getCount(); i++) {
-            keyValue(*g_writerPtr, "argNames_", argNames_->getValue(i)->getValue());
+    if (flags.flags_[LILFUNC_ARGNAMES]) {
+        if (argNames_ == nullptr) {
+            g_writerPtr->Key("argNames_");
+            g_writerPtr->Null();
+        } else {
+            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr, "argNames_");
+            for (int i = 0; i < argNames_->getCount(); i++) {
+                keyValue(*g_writerPtr, "argNames_", argNames_->getValue(i)->getValue());
+            }
         }
     }
     // Lil_value_Ptr   code_     = nullptr; // Body of function. Owns memory.
-    if (code_ == nullptr) {
-        g_writerPtr->Key("code_"); g_writerPtr->Null();
-    } else {
-        keyValue(*g_writerPtr, "code_", code_->getValue());
+    if (flags.flags_[LILFUNC_CODE]) {
+        if (code_ == nullptr) {
+            g_writerPtr->Key("code_");
+            g_writerPtr->Null();
+        } else {
+            keyValue(*g_writerPtr, "code_", code_->getValue());
+        }
     }
     // lil_func_proc_t proc_     = nullptr; // Function pointer to binary command.
-    if (code_ == nullptr) {
-        g_writerPtr->Key("proc_"); g_writerPtr->Null();
-    } else {
-        keyValue(*g_writerPtr, "proc_", "passholder"); // #TODO
+    if (flags.flags_[LILFUNC_PROC]) {
+        if (proc_ == nullptr) {
+            g_writerPtr->Key("proc_");
+            g_writerPtr->Null();
+        } else {
+            keyValue(*g_writerPtr, "proc_", "passholder"); // #TODO
+        }
     }
     return ret;
 }
@@ -328,9 +363,14 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
 
     Document   doc;
 
+    //for (int i = 0; i < SERIALIZATION_NUM_FLAGS; i++) std::cout << "flag: " << i << " " <<  flags.flags_[i] << "\n";
+    if (flags.flags_[LILINTERP])
     {
-        JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
 
+        JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+        keyValue(*g_writerPtr, "type", "LilInterp");
+
+        if (flags.flags_[LILINTERP_BASIC])
         {
             JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "basic");
             keyValue(*g_writerPtr, "DEF_COMPILER", DEF_COMPILER);
@@ -347,17 +387,20 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
             keyValue(*g_writerPtr, "currTime", ctime(&timenow));
         }
 
-        if (sysInfo_ == nullptr) {
-            writer.Key("sysInfo_");
-            writer.Null();
-        } else {
-            sysInfo_->serialize(flags);
+        if (flags.flags_[LILINTERP_SYSINFO]) {
+            if (sysInfo_ == nullptr) {
+                writer.Key("sysInfo_");
+                writer.Null();
+            } else {
+                sysInfo_->serialize(flags);
+            }
         }
 
         //lstring err_msg_; // Error message.
         keyValue(*g_writerPtr, "err_msg_", err_msg_);
 
         //    Cmds_HashTable cmdMap_;    // Hashmap of "commands".
+        if (flags.flags_[LILINTERP_CMDMAP])
         {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "cmdMap_");
             for (const auto &elem: cmdMap_) {
@@ -370,6 +413,7 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
         } // End json array
         // ===============
         //    Cmds_HashTable sysCmdMap_; // Hashmap of initial or system "commands".
+        if (flags.flags_[LILINTERP_SYSCMDMAP])
         {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object3(*g_writerPtr, "sysCmdMap_");
             for (const auto &elem: sysCmdMap_) {
@@ -384,43 +428,52 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
         //    lstring dollarPrefix_; // own memory
         keyValue(*g_writerPtr, "dollarPrefix_", dollarPrefix_);
         //    lstring code_; /* need save on parse */ // Waste some space owning, but simplify conception.
-        keyValue(*g_writerPtr, "code_", code_);
+        if (flags.flags_[LILINTERP_CODE])
+            keyValue(*g_writerPtr, "code_", code_);
         //    INT     head_     = 0; // Position in code_ (need save on parse)
         keyValue(*g_writerPtr, "head_", head_);
         //    INT     codeLen_  = 0; // Length of code_  (need save on parse)
         keyValue(*g_writerPtr, "codeLen_", codeLen_);
         //    lcstrp  rootCode_ = nullptr; // The original code_
-        if (rootCode_ == nullptr) {
-            writer.Key("rootCode_");
-            writer.Null();
-        } else {
-            keyValue(*g_writerPtr, "rootCode_", rootCode_);
+        if (flags.flags_[LILINTERP_ROOTCODE]) {
+            if (rootCode_ == nullptr) {
+                writer.Key("rootCode_");
+                writer.Null();
+            } else {
+                keyValue(*g_writerPtr, "rootCode_", rootCode_);
+            }
         }
         //    bool    ignoreEOL_ = false; // Do we ignore EOL during parsing.
         keyValue(*g_writerPtr, "ignoreEOL_", ignoreEOL_);
         //    Lil_callframe_Ptr rootEnv_ = nullptr; // Root/global callframe.
-        if (rootEnv_ == nullptr) {
-            writer.Key("rootEnv_");
-            writer.Null();
-        } else {
-            writer.Key("rootEnv_");
-            rootEnv_->serialize(flags);
+        if (flags.flags_[LILINTERP_ROOTENV]) {
+            if (rootEnv_ == nullptr) {
+                writer.Key("rootEnv_");
+                writer.Null();
+            } else {
+                writer.Key("rootEnv_");
+                rootEnv_->serialize(flags);
+            }
         }
         //    Lil_callframe_Ptr downEnv_ = nullptr; // Another callframe for use with "upeval".
-        if (downEnv_ == nullptr) {
-            writer.Key("downEnv_");
-            writer.Null();
-        } else {
-            writer.Key("downEnv_");
-            downEnv_->serialize(flags);
+        if (flags.flags_[LILINTERP_DOWNENV]) {
+            if (downEnv_ == nullptr) {
+                writer.Key("downEnv_");
+                writer.Null();
+            } else {
+                writer.Key("downEnv_");
+                downEnv_->serialize(flags);
+            }
         }
         //    Lil_callframe_Ptr env_     = nullptr; // Current callframe.
-        if (env_ == nullptr) {
-            writer.Key("env_");
-            writer.Null();
-        } else {
-            writer.Key("env_");
-            env_->serialize(flags);
+        if (flags.flags_[LILINTERP_ENV]) {
+            if (env_ == nullptr) {
+                writer.Key("env_");
+                writer.Null();
+            } else {
+                writer.Key("env_");
+                env_->serialize(flags);
+            }
         }
         //    Lil_value_Ptr       empty_                   = nullptr; // A "empty" Lil_value. (own memory)
         //    std::vector<lil_callback_proc_t> callback_{NUM_CALLBACKS}; // index LIL_CALLBACK_*
@@ -434,11 +487,13 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
         //    INT       parse_depth_ = 0; // Current parse depth.
         keyValue(*g_writerPtr, "parse_depth_", parse_depth_);
         //    LilInterp*  parentInterp_ = nullptr;
-        if (parentInterp_ == nullptr) {
-            writer.Key("parentInterp_");
-            writer.Null();
-        } else {
-            keyValue(*g_writerPtr, "parentInterp_", "placeholder"); // #TODO
+        if (flags.flags_[LILINTERP_PARENTINTERP]) {
+            if (parentInterp_ == nullptr) {
+                writer.Key("parentInterp_");
+                writer.Null();
+            } else {
+                keyValue(*g_writerPtr, "parentInterp_", "placeholder"); // #TODO
+            }
         }
         //    cmdFilterType  cmdFilter_;
         keyValue(*g_writerPtr, "cmdFilter_", "placeholder"); // #TODO
