@@ -331,7 +331,6 @@ static int unittest_eval(lcstrp input) { // #UNITTEST
         lil_register(lil, "canread", fnc_canRead);
     lil_register(lil, "readline", fnc_readline);
     SerializationFlags flags;
-    lil->serialize(flags); // #TEMP
 
     Lil_value_Ptr  code = lil_alloc_string(lil, input);
     lil_set_var(lil, "__lilmain:code__", code, LIL_SETVAR_GLOBAL);
@@ -341,6 +340,8 @@ static int unittest_eval(lcstrp input) { // #UNITTEST
     char buffer[256];
     LSPRINTF(buffer, "eval ${__lilmain:code__}\n");
     Lil_value_Ptr result = lil_parse(lil, buffer, 0, 1);
+    lil->serialize(flags); // #TEMP
+
     lil_free_value(result);
     lil_free_value(code);
     // #TODO

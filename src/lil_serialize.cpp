@@ -207,6 +207,7 @@ bool SysInfo::serialize(const SerializationFlags &flags) {
         }
     } // End json object
 
+    ret = true;
     return ret;
 }
 
@@ -227,7 +228,7 @@ bool Lil_var::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("thisCallframe_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "thisCallframe_", "placeholder"); // #TODO
+            keyValue(*g_writerPtr, "thisCallframe_", "placeHolder"); // #TODO
         }
     }
     //    Lil_value_Ptr       value_ = nullptr;
@@ -236,9 +237,10 @@ bool Lil_var::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("value_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "value_", "placeholder"); // #TODO
+            keyValue(*g_writerPtr, "value_", "placeHolder"); // #TODO
         }
     }
+    ret = true;
     return ret;
 }
 
@@ -246,22 +248,25 @@ bool Lil_callframe::serialize(const SerializationFlags &flags) {
     bool ret = false;
 
 //    SysInfo*        sysInfo_ = nullptr;
-//    Lil_callframe * parent_ = nullptr; // Parent callframe.
-    keyValue(*g_writerPtr, "parent_", "placeholder"); // #TODO
 //
-//    using Var_HashTable = std::unordered_map<lstring,Lil_var_Ptr>;
-//    Var_HashTable varmap_; // Hashmap of variables in callframe.
+
     {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object7(*g_writerPtr);
 
+        //    Lil_callframe * parent_ = nullptr; // Parent callframe.
+        keyValue(*g_writerPtr, "parent_", "placeHolder"); // #TODO
+
         if (flags.flags_[LILCALLFRAME_VARMAP])
         {
+        //     using Var_HashTable = std::unordered_map<lstring,Lil_var_Ptr>;
+        //    Var_HashTable varmap_; // Hashmap of variables in callframe.
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object8(*g_writerPtr, "varmap_");
             for (const auto &elem: varmap_) {
                 {
                     JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object9(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
-                    elem.second->serialize(flags);
+                    ret = elem.second->serialize(flags);
+                    if (!ret) return ret;
                 } // End json object
             }
         } // End json array
@@ -334,6 +339,7 @@ bool Lil_func::serialize(const SerializationFlags &flags) {
             keyValue(*g_writerPtr, "proc_", "placeHolder"); // #TODO
         }
     }
+    ret = true;
     return ret;
 }
 
@@ -342,10 +348,13 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
 
     using namespace rapidjson;
 
-    FILE* fp = fopen("LilInterp.json", "w");
-
     char writeBuffer[64*1024];
+
+    FILE* fp = fopen(flags.fileName_.c_str(), "w");
+    if (fp == nullptr) return ret;
+
     FileWriteStream out(fp, writeBuffer, sizeof(writeBuffer));
+
     //Writer<FileWriteStream>  writer(out);
     PrettyWriter<FileWriteStream> writer(out);
     g_writerPtr = &writer;
@@ -358,6 +367,7 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
 
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
         keyValue(*g_writerPtr, "type", "LilInterp");
+        keyValue(*g_writerPtr, "comment", flags.comment_);
 
         if (flags.flags_[LILINTERP_BASIC])
         {
@@ -381,7 +391,8 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 writer.Key("sysInfo_");
                 writer.Null();
             } else {
-                sysInfo_->serialize(flags);
+                ret = sysInfo_->serialize(flags);
+                if (!ret) return ret;
             }
         }
 
@@ -396,7 +407,8 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 {
                     JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object2(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
-                    elem.second->serialize(flags);
+                    ret = elem.second->serialize(flags);
+                    if (!ret) return ret;
                 } // End json object
             }
         } // End json array
@@ -409,7 +421,8 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 {
                     JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object4(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
-                    elem.second->serialize(flags);
+                    ret = elem.second->serialize(flags);
+                    if (!ret) return ret;
                 } // End json object
             }
         } // End json array
@@ -441,7 +454,8 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 writer.Null();
             } else {
                 writer.Key("rootEnv_");
-                rootEnv_->serialize(flags);
+                ret = rootEnv_->serialize(flags);
+                if (!ret) return ret;
             }
         }
         //    Lil_callframe_Ptr downEnv_ = nullptr; // Another callframe for use with "upeval".
@@ -451,7 +465,8 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 writer.Null();
             } else {
                 writer.Key("downEnv_");
-                downEnv_->serialize(flags);
+                ret = downEnv_->serialize(flags);
+                if (!ret) return ret;
             }
         }
         //    Lil_callframe_Ptr env_     = nullptr; // Current callframe.
@@ -461,7 +476,8 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 writer.Null();
             } else {
                 writer.Key("env_");
-                env_->serialize(flags);
+                ret = env_->serialize(flags);
+                if (!ret) return ret;
             }
         }
         //    Lil_value_Ptr       empty_                   = nullptr; // A "empty" Lil_value. (own memory)
@@ -481,11 +497,11 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 writer.Key("parentInterp_");
                 writer.Null();
             } else {
-                keyValue(*g_writerPtr, "parentInterp_", "placeholder"); // #TODO
+                keyValue(*g_writerPtr, "parentInterp_", "placeHolder"); // #TODO
             }
         }
         //    cmdFilterType  cmdFilter_;
-        keyValue(*g_writerPtr, "cmdFilter_", "placeholder"); // #TODO
+        keyValue(*g_writerPtr, "cmdFilter_", "placeHolder"); // #TODO
 
         //    bool           isSafe_ = false; // If true don't allow unsafe commands.
         keyValue(*g_writerPtr, "isSafe_", "isSafe_"); // #TODO
@@ -494,6 +510,7 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
 
     fclose(fp);
 
+    ret = true;
     return ret;
 }
 NS_END(LILNS)

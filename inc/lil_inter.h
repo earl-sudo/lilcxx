@@ -97,6 +97,8 @@ enum SERIALIZATION_FLAGS {
 
 struct SerializationFlags {
    std::vector<bool>        flags_;
+   std::string              fileName_{"LilInterp.json"};
+   std::string              comment_;
    SerializationFlags() : flags_(SERIALIZATION_NUM_FLAGS, true) { }
 };
 
