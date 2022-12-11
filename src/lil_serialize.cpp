@@ -69,12 +69,18 @@ namespace {
 
 } // un-named namespace
 
-bool SysInfo::serialize(const SerializationFlags &flags) {
+bool SysInfo::serialize(SerializationFlags &flags) {
     bool ret = false;
 
     {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr, "sysInfo_");
 
+        keyValue(*g_writerPtr, "type", "SysInfo");
+        {
+            char buffer[64];
+            sprintf(buffer, "%p", CAST(void*)this);
+            keyValue(*g_writerPtr, "id", buffer);
+        }
         //    ObjCounter  objCounter_;
         if (flags.flags_[SYSINFO_OBJCOUNTER])
         {
@@ -211,9 +217,16 @@ bool SysInfo::serialize(const SerializationFlags &flags) {
     return ret;
 }
 
-bool Lil_var::serialize(const SerializationFlags &flags) {
+bool Lil_var::serialize(SerializationFlags &flags) {
     bool ret = false;
 
+    keyValue(*g_writerPtr, "type", "Lil_var");
+
+    {
+        char buffer[64];
+        sprintf(buffer, "%p", CAST(void*)this);
+        keyValue(*g_writerPtr, "id", buffer);
+    }
     //    SysInfo*            sysInfo_ = nullptr;
     //    lstring             watchCode_;
     if (flags.flags_[LILVAR_WATCHCODE])
@@ -228,7 +241,12 @@ bool Lil_var::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("thisCallframe_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "thisCallframe_", "placeHolder"); // #TODO
+            g_writerPtr->Key("thisCallframe_");
+            {
+                char buffer[64];
+                sprintf(buffer, "%p", CAST(void*)thisCallframe_);
+                g_writerPtr->String(buffer);
+            }
         }
     }
     //    Lil_value_Ptr       value_ = nullptr;
@@ -237,14 +255,14 @@ bool Lil_var::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("value_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "value_", "placeHolder"); // #TODO
+            keyValue(*g_writerPtr, "value_", value_->getValue());
         }
     }
     ret = true;
     return ret;
 }
 
-bool Lil_callframe::serialize(const SerializationFlags &flags) {
+bool Lil_callframe::serialize(SerializationFlags &flags) {
     bool ret = false;
 
 //    SysInfo*        sysInfo_ = nullptr;
@@ -253,8 +271,20 @@ bool Lil_callframe::serialize(const SerializationFlags &flags) {
     {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object7(*g_writerPtr);
 
+        keyValue(*g_writerPtr, "type", "Lil_callframe");
+
+        {
+            char buffer[64];
+            sprintf(buffer, "%p", CAST(void*)this);
+            keyValue(*g_writerPtr, "id", buffer);
+        }
         //    Lil_callframe * parent_ = nullptr; // Parent callframe.
-        keyValue(*g_writerPtr, "parent_", "placeHolder"); // #TODO
+        g_writerPtr->Key("parent_");
+        {
+            char buffer[64];
+            sprintf(buffer, "%p", CAST(void*)parent_);
+            g_writerPtr->String(buffer);
+        }
 
         if (flags.flags_[LILCALLFRAME_VARMAP])
         {
@@ -275,7 +305,8 @@ bool Lil_callframe::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("func_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "func_", "placeHolder"); // #TODO
+            g_writerPtr->Key("func_");
+            func_->serialize(flags);
         }
         //    Lil_value_Ptr catcher_for_ = nullptr; // Exception catcher.
         if (catcher_for_ == nullptr) {
@@ -302,10 +333,17 @@ bool Lil_callframe::serialize(const SerializationFlags &flags) {
     return ret;
 }
 
-bool Lil_func::serialize(const SerializationFlags &flags) {
+bool Lil_func::serialize(SerializationFlags &flags) {
     bool ret = false;
     // class Lil_func
     // lstring         name_; // Name of function.
+    {
+        char buffer[64];
+        sprintf(buffer, "%p", CAST(void*)this);
+        keyValue(*g_writerPtr, "id", buffer);
+    }
+    keyValue(*g_writerPtr, "type", "Lil_func");
+
     keyValue(*g_writerPtr, "orgName", name_);
 
     // SysInfo*        sysInfo_ = nullptr;
@@ -336,14 +374,19 @@ bool Lil_func::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("proc_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "proc_", "placeHolder"); // #TODO
+            g_writerPtr->Key("proc_");
+            {
+                char buffer[64];
+                sprintf(buffer, "%p", CAST(void*)&proc_);
+                g_writerPtr->String(buffer);
+            }
         }
     }
     ret = true;
     return ret;
 }
 
-bool LilInterp::serialize(const SerializationFlags &flags) {
+bool LilInterp::serialize(SerializationFlags &flags) {
     bool ret = false;
 
     using namespace rapidjson;
@@ -368,6 +411,12 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
         keyValue(*g_writerPtr, "type", "LilInterp");
         keyValue(*g_writerPtr, "comment", flags.comment_);
+
+        {
+            char buffer[64];
+            sprintf(buffer, "%p", CAST(void*)this);
+            keyValue(*g_writerPtr, "id", buffer);
+        }
 
         if (flags.flags_[LILINTERP_BASIC])
         {
@@ -497,14 +546,19 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
                 writer.Key("parentInterp_");
                 writer.Null();
             } else {
-                keyValue(*g_writerPtr, "parentInterp_", "placeHolder"); // #TODO
+                g_writerPtr->Key("parentInterp_");
+                {
+                    char buffer[64];
+                    sprintf(buffer, "%p", CAST(void*)parentInterp_);
+                    g_writerPtr->String(buffer);
+                }
             }
         }
         //    cmdFilterType  cmdFilter_;
         keyValue(*g_writerPtr, "cmdFilter_", "placeHolder"); // #TODO
 
         //    bool           isSafe_ = false; // If true don't allow unsafe commands.
-        keyValue(*g_writerPtr, "isSafe_", "isSafe_"); // #TODO
+        keyValue(*g_writerPtr, "isSafe_", isSafe_);
         //    std::ostream*  logFile_ = nullptr; // Log file, must be setup by main program.
     } // End json object
 

@@ -85,6 +85,7 @@ const INT ERROR_FIXHEAD = 2;
 #endif
 
 enum SERIALIZATION_FLAGS {
+    SHOW_OBJ_ID,
     LILINTERP, LILINTERP_BASIC, LILINTERP_SYSINFO, LILINTERP_CMDMAP, LILINTERP_SYSCMDMAP,
     LILINTERP_CODE, LILINTERP_ROOTCODE, LILINTERP_ROOTENV, LILINTERP_DOWNENV, LILINTERP_ENV,
     LILINTERP_PARENTINTERP,
@@ -99,6 +100,7 @@ struct SerializationFlags {
    std::vector<bool>        flags_;
    std::string              fileName_{"LilInterp.json"};
    std::string              comment_;
+   bool                     showId_ = false;
    SerializationFlags() : flags_(SERIALIZATION_NUM_FLAGS, true) { }
 };
 
@@ -329,7 +331,7 @@ struct SysInfo { // #class
     SysInfo(const SysInfo& rhs) = default;
     SysInfo& operator=(const SysInfo& rhs) = default;
     ~SysInfo() = default;
-    bool serialize(const SerializationFlags &flags);
+    bool serialize(SerializationFlags &flags);
     void printStats() const {
         converage_.printStats();
         objCounter_.printStats();
@@ -493,7 +495,7 @@ public:
         LIL_DTOR(sysInfo_, "Lil_var");
         if (this->getValue()) lil_free_value(this->getValue());
     }
-    bool serialize(const SerializationFlags &flags);
+    bool serialize(SerializationFlags &flags);
     // Get variable name_.
     ND const lstring& getName() const { return name_; }
     // Get variable value_.
@@ -555,7 +557,7 @@ public:
             delete (n.second); //delete Lil_var_Ptr
         }
     }
-    bool serialize(const SerializationFlags &flags);
+    bool serialize(SerializationFlags &flags);
 
     // Size commands hashtable.  #optimization
     void varmap_reserve(Var_HashTable::size_type sz) { varmap_.reserve(sz); }
@@ -716,7 +718,7 @@ public:
         proc_ = p;
         sysInfo_->numCommands_++;
     }
-    bool serialize(const SerializationFlags &flags);
+    bool serialize(SerializationFlags &flags);
 };
 
 struct LilInterp { // #class
@@ -790,7 +792,7 @@ public:
         if (parentInterp_==nullptr) Lil_getSysInfo(true);
     }
 
-    bool serialize(const SerializationFlags &flags);
+    bool serialize(SerializationFlags &flags);
 
     // Size commands hashtable.  #optimization
     void cmdmap_reserve(Cmds_HashTable::size_type sz) { cmdMap_.reserve(sz); }
