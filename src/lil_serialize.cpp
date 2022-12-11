@@ -10,17 +10,6 @@
 
 NS_BEGIN(LILNS)
 
-// if (flags.flags_[LILINTERP])
-enum SERIALIZATION_FLAGS {
-    LILINTERP, LILINTERP_BASIC, LILINTERP_SYSINFO, LILINTERP_CMDMAP, LILINTERP_SYSCMDMAP,
-    LILINTERP_CODE, LILINTERP_ROOTCODE, LILINTERP_ROOTENV, LILINTERP_DOWNENV, LILINTERP_ENV,
-    LILINTERP_PARENTINTERP,
-    SYSINFO_OBJCOUNTER, SYSINFO_TIMERINFO, SYSINFO_COVERAGE, SYSINFO_STATS,
-    LILVAR_WATCHCODE, LILVAR_THISCALLFRAME, LILVAR_VALUE,
-    LILCALLFRAME_VARMAP, LILCALLFRAME_RETVAL,
-    LILFUNC_ARGNAMES, LILFUNC_CODE, LILFUNC_PROC,
-    SERIALIZATION_NUM_FLAGS
-};
 namespace {
     rapidjson::PrettyWriter<rapidjson::FileWriteStream> *g_writerPtr = nullptr;
 
@@ -28,7 +17,7 @@ namespace {
 //    g_writerPtr->Key("watchCode_"); g_writerPtr->String(watchCode_.c_str(), watchCode_.length());
     void keyValue(auto &writer, const char *name, const std::string &value) {
         writer.Key(name);
-        writer.String(value.c_str(), value.length());
+        writer.String(value.c_str(), CAST(rapidjson::SizeType)value.length());
     }
 
     void keyValue(auto &writer, const char *name, const char *value) {
@@ -50,7 +39,7 @@ namespace {
     struct JsonObject {
         T &writer_;
 
-        JsonObject(T &writerD, const char *keyNameD = nullptr) : writer_(writerD) {
+        explicit JsonObject(T &writerD, const char *keyNameD = nullptr) : writer_(writerD) {
             if (keyNameD != nullptr) {
                 writer_.Key(keyNameD);
             }
@@ -66,7 +55,7 @@ namespace {
     struct JsonArray {
         T &writer_;
 
-        JsonArray(T &writerD, const char *keyNameD = nullptr) : writer_(writerD) {
+        explicit JsonArray(T &writerD, const char *keyNameD = nullptr) : writer_(writerD) {
             if (keyNameD != nullptr) {
                 writer_.Key(keyNameD);
             }
@@ -127,7 +116,7 @@ bool SysInfo::serialize(const SerializationFlags &flags) {
             }
         }
         //    std::ostream*       outStrm_ = nullptr;
-        keyValue(*g_writerPtr, "outStrm_", "passholder");
+        keyValue(*g_writerPtr, "outStrm_", "placeHolder");
 
         //
         //    // Interpreter specific ================================================
@@ -281,7 +270,7 @@ bool Lil_callframe::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("func_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "func_", "passholder"); // #TODO
+            keyValue(*g_writerPtr, "func_", "placeHolder"); // #TODO
         }
         //    Lil_value_Ptr catcher_for_ = nullptr; // Exception catcher.
         if (catcher_for_ == nullptr) {
@@ -342,7 +331,7 @@ bool Lil_func::serialize(const SerializationFlags &flags) {
             g_writerPtr->Key("proc_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "proc_", "passholder"); // #TODO
+            keyValue(*g_writerPtr, "proc_", "placeHolder"); // #TODO
         }
     }
     return ret;
@@ -382,9 +371,9 @@ bool LilInterp::serialize(const SerializationFlags &flags) {
             keyValue(*g_writerPtr, "c++version", __cplusplus);
             keyValue(*g_writerPtr, "pointerSize", CAST(INT)sizeof(void*));
             keyValue(*g_writerPtr, "buildTime", __DATE__ " " __TIME__);
-            auto timenow =
+            auto timeNow =
                     std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            keyValue(*g_writerPtr, "currTime", ctime(&timenow));
+            keyValue(*g_writerPtr, "currTime", ctime(&timeNow));
         }
 
         if (flags.flags_[LILINTERP_SYSINFO]) {

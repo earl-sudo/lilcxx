@@ -71,6 +71,7 @@ cmds
 codeat
 codeindex
 codelen
+converage
 cout
 defvalue
 dollarpart
@@ -119,6 +120,7 @@ lilint
 lilmain
 lilstd
 lmap
+lstring
 mandelbrots
 mlcmt
 mlhello
