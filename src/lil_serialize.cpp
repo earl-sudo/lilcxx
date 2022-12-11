@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include <rapidjson/filereadstream.h>
 #include <rapidjson/filewritestream.h>
 #include <rapidjson/document.h>
@@ -67,20 +69,18 @@ namespace {
 
 } // un-named namespace
 
-bool SysInfo::serialize(std::vector<int> types) {
+bool SysInfo::serialize(const SerializationFlags &flags) {
     bool ret = false;
 
-    g_writerPtr->Key("sysInfo_");
     {
-        JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+        JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr, "sysInfo_");
 
         //    ObjCounter  objCounter_;
-        g_writerPtr->Key("objCounter_");
         {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "objCounter_");
             for (const auto &elem: objCounter_.objectCounts_) {
                 {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr);
+                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object2(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
                     keyValue(*g_writerPtr, "maxNum_", elem.second.maxNum_);
                     keyValue(*g_writerPtr, "count", elem.second.numCtor_ - elem.second.numDtor_);
@@ -89,12 +89,11 @@ bool SysInfo::serialize(std::vector<int> types) {
         } // End json array.
 
         //    FuncTimer   funcTimer_;
-        g_writerPtr->Key("funcTimer_");
         {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object3(*g_writerPtr, "funcTimer_");
             for (const auto &elem: funcTimer_.timerInfo_) {
                 {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr);
+                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object4(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
                     keyValue(*g_writerPtr, "maxTime_", elem.second.maxTime_);
                     keyValue(*g_writerPtr, "numCalls_", elem.second.numCalls_);
@@ -103,19 +102,18 @@ bool SysInfo::serialize(std::vector<int> types) {
             }
         } // End json array
         //    Coverage    converage_;
-        g_writerPtr->Key("converage_");
         {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object5(*g_writerPtr, "converage_");
             for (const auto &elem: converage_.coverageMap_) {
                 {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr);
+                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object6(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
                     keyValue(*g_writerPtr, "count", elem.second);
                 } // End json object
             }
         }
         //    std::ostream*       outStrm_ = nullptr;
-        keyValue(*g_writerPtr, "outStrm_", "placekeeper");
+        keyValue(*g_writerPtr, "outStrm_", "passholder");
 
         //
         //    // Interpreter specific ================================================
@@ -207,7 +205,7 @@ bool SysInfo::serialize(std::vector<int> types) {
     return ret;
 }
 
-bool Lil_var::serialize(std::vector<int> type) {
+bool Lil_var::serialize(const SerializationFlags &flags) {
     bool ret = false;
 
     //    SysInfo*            sysInfo_ = nullptr;
@@ -232,7 +230,7 @@ bool Lil_var::serialize(std::vector<int> type) {
     return ret;
 }
 
-bool Lil_callframe::serialize(std::vector<int> type) {
+bool Lil_callframe::serialize(const SerializationFlags &flags) {
     bool ret = false;
 
 //    SysInfo*        sysInfo_ = nullptr;
@@ -242,16 +240,15 @@ bool Lil_callframe::serialize(std::vector<int> type) {
 //    using Var_HashTable = std::unordered_map<lstring,Lil_var_Ptr>;
 //    Var_HashTable varmap_; // Hashmap of variables in callframe.
     {
-        JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+        JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object7(*g_writerPtr);
 
-        g_writerPtr->Key("varmap_");
         {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object8(*g_writerPtr, "varmap_");
             for (const auto &elem: varmap_) {
                 {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr);
+                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object9(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
-                    elem.second->serialize(type);
+                    elem.second->serialize(flags);
                 } // End json object
             }
         } // End json array
@@ -260,21 +257,21 @@ bool Lil_callframe::serialize(std::vector<int> type) {
             g_writerPtr->Key("func_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "func_", "placekeeper"); // #TODO
+            keyValue(*g_writerPtr, "func_", "passholder"); // #TODO
         }
         //    Lil_value_Ptr catcher_for_ = nullptr; // Exception catcher.
         if (catcher_for_ == nullptr) {
             g_writerPtr->Key("catcher_for_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "catcher_for_", "placekeeper"); // #TODO
+            keyValue(*g_writerPtr, "catcher_for_", catcher_for_->getValue());
         }
         //    Lil_value_Ptr retval_      = nullptr; // Return value_ from this callframe. (can be nullptr)
         if (retval_ == nullptr) {
             g_writerPtr->Key("retval_");
             g_writerPtr->Null();
         } else {
-            keyValue(*g_writerPtr, "retval_", "placekeeper"); // #TODO
+            keyValue(*g_writerPtr, "retval_", retval_->getValue());
         }
         //    bool          retval_set_  = false;   // Has the retval_ been set.
         keyValue(*g_writerPtr, "retval_set_", "retval_set_");
@@ -285,7 +282,7 @@ bool Lil_callframe::serialize(std::vector<int> type) {
     return ret;
 }
 
-bool Lil_func::serialize(std::vector<int> type) {
+bool Lil_func::serialize(const SerializationFlags &flags) {
     bool ret = false;
     // class Lil_func
     // lstring         name_; // Name of function.
@@ -296,13 +293,16 @@ bool Lil_func::serialize(std::vector<int> type) {
     if (argNames_ == nullptr) {
         g_writerPtr->Key("argNames_"); g_writerPtr->Null();
     } else {
-        keyValue(*g_writerPtr, "argNames_", "passholder"); // #TODO
+        JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr, "argNames_");
+        for (int i = 0; i < argNames_->getCount(); i++) {
+            keyValue(*g_writerPtr, "argNames_", argNames_->getValue(i)->getValue());
+        }
     }
     // Lil_value_Ptr   code_     = nullptr; // Body of function. Owns memory.
     if (code_ == nullptr) {
         g_writerPtr->Key("code_"); g_writerPtr->Null();
     } else {
-        keyValue(*g_writerPtr, "code_", "passholder"); // #TODO
+        keyValue(*g_writerPtr, "code_", code_->getValue());
     }
     // lil_func_proc_t proc_     = nullptr; // Function pointer to binary command.
     if (code_ == nullptr) {
@@ -313,7 +313,7 @@ bool Lil_func::serialize(std::vector<int> type) {
     return ret;
 }
 
-bool LilInterp::serialize(std::vector<int> type) {
+bool LilInterp::serialize(const SerializationFlags &flags) {
     bool ret = false;
 
     using namespace rapidjson;
@@ -331,38 +331,52 @@ bool LilInterp::serialize(std::vector<int> type) {
     {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
 
+        {
+            JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "basic");
+            keyValue(*g_writerPtr, "DEF_COMPILER", DEF_COMPILER);
+            keyValue(*g_writerPtr, "DEF_COMPILER_VERSION", DEF_COMPILER_VERSION);
+            keyValue(*g_writerPtr, "CPP_VERSION", CPP_VERSION);
+            keyValue(*g_writerPtr, "DEF_OS", DEF_OS);
+            keyValue(*g_writerPtr, "LilCxx-git-id", getLilCxxGitId());
+            keyValue(*g_writerPtr, "LilCxx-git-branch", getLilCxxGitBranch());
+            keyValue(*g_writerPtr, "c++version", __cplusplus);
+            keyValue(*g_writerPtr, "pointerSize", CAST(INT)sizeof(void*));
+            keyValue(*g_writerPtr, "buildTime", __DATE__ " " __TIME__);
+            auto timenow =
+                    std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            keyValue(*g_writerPtr, "currTime", ctime(&timenow));
+        }
+
         if (sysInfo_ == nullptr) {
             writer.Key("sysInfo_");
             writer.Null();
         } else {
-            sysInfo_->serialize(type);
+            sysInfo_->serialize(flags);
         }
 
-        lstring err_msg_; // Error message.
+        //lstring err_msg_; // Error message.
         keyValue(*g_writerPtr, "err_msg_", err_msg_);
 
         //    Cmds_HashTable cmdMap_;    // Hashmap of "commands".
-        writer.Key("cmdMap_");
         {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "cmdMap_");
             for (const auto &elem: cmdMap_) {
                 {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr);
+                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object2(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
-                    elem.second->serialize(type);
+                    elem.second->serialize(flags);
                 } // End json object
             }
         } // End json array
         // ===============
         //    Cmds_HashTable sysCmdMap_; // Hashmap of initial or system "commands".
-        writer.Key("sysCmdMap_");
         {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
+            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object3(*g_writerPtr, "sysCmdMap_");
             for (const auto &elem: sysCmdMap_) {
                 {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr);
+                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object4(*g_writerPtr);
                     keyValue(*g_writerPtr, "name", elem.first);
-                    elem.second->serialize(type);
+                    elem.second->serialize(flags);
                 } // End json object
             }
         } // End json array
@@ -390,7 +404,7 @@ bool LilInterp::serialize(std::vector<int> type) {
             writer.Null();
         } else {
             writer.Key("rootEnv_");
-            rootEnv_->serialize(type);
+            rootEnv_->serialize(flags);
         }
         //    Lil_callframe_Ptr downEnv_ = nullptr; // Another callframe for use with "upeval".
         if (downEnv_ == nullptr) {
@@ -398,7 +412,7 @@ bool LilInterp::serialize(std::vector<int> type) {
             writer.Null();
         } else {
             writer.Key("downEnv_");
-            downEnv_->serialize(type);
+            downEnv_->serialize(flags);
         }
         //    Lil_callframe_Ptr env_     = nullptr; // Current callframe.
         if (env_ == nullptr) {
@@ -406,7 +420,7 @@ bool LilInterp::serialize(std::vector<int> type) {
             writer.Null();
         } else {
             writer.Key("env_");
-            env_->serialize(type);
+            env_->serialize(flags);
         }
         //    Lil_value_Ptr       empty_                   = nullptr; // A "empty" Lil_value. (own memory)
         //    std::vector<lil_callback_proc_t> callback_{NUM_CALLBACKS}; // index LIL_CALLBACK_*

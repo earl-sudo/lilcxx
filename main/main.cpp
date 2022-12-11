@@ -330,7 +330,8 @@ static int unittest_eval(lcstrp input) { // #UNITTEST
     lil_register(lil, "system", fnc_system);
         lil_register(lil, "canread", fnc_canRead);
     lil_register(lil, "readline", fnc_readline);
-    lil->serialize({0}); // #TEMP
+    SerializationFlags flags;
+    lil->serialize(flags); // #TEMP
 
     Lil_value_Ptr  code = lil_alloc_string(lil, input);
     lil_set_var(lil, "__lilmain:code__", code, LIL_SETVAR_GLOBAL);
