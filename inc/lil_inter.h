@@ -128,22 +128,8 @@ struct LilException : std::runtime_error { // #class #exception
 #define LIL_ERROR(X) ErrorCode((X))
 
 struct ObjCounter { // #class
-    // Number of objects created. =========================================
-    bool logObjectCount_      = false; // Do we actually log counts?
-    std::ostream*       outStrm_ = nullptr;
+  private:
 
-    ~ObjCounter() = default;
-    void printStats() const {
-        auto print_key_value = [this](const auto& key, const auto& value) {
-            *outStrm_ << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
-        };
-
-        if (logObjectCount_ && outStrm_!=nullptr) {
-            for( const auto& n : objectCounts_ ) {
-                print_key_value(n.first, n.second);
-            }
-        }
-    }
     struct ObjCount { // #class
         INT  numCtor_ = 0;
         INT  numDtor_ = 0;
@@ -154,6 +140,15 @@ struct ObjCounter { // #class
         }
     };
     std::unordered_map<lstring, ObjCount>  objectCounts_;
+
+  public:
+    // Number of objects created. =========================================
+    bool logObjectCount_      = false; // Do we actually log counts?
+    std::ostream*       outStrm_ = nullptr;
+
+    ObjCounter() = default;
+    ~ObjCounter() = default;
+
     void ctor(lstring_view name) {
         auto it = objectCounts_.find(name.data());
         if (it == objectCounts_.end()) {
@@ -164,6 +159,7 @@ struct ObjCounter { // #class
         auto count = (it->second.numCtor_ - it->second.numDtor_);
         if (count > it->second.maxNum_) it->second.maxNum_ = count;
     }
+
     void dtor(lstring_view name) {
         auto it = objectCounts_.find(name.data());
         if (it == objectCounts_.end()) {
@@ -171,6 +167,18 @@ struct ObjCounter { // #class
             it = objectCounts_.find(name.data());
         }
         it->second.numDtor_++;
+    }
+
+    void printStats() const {
+        auto print_key_value = [this](const auto& key, const auto& value) {
+            *outStrm_ << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
+        };
+
+        if (logObjectCount_ && outStrm_!=nullptr) {
+            for( const auto& n : objectCounts_ ) {
+                print_key_value(n.first, n.second);
+            }
+        }
     }
     bool serialize(SerializationFlags &flags);
 };

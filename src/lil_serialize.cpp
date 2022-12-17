@@ -305,8 +305,7 @@ bool Lil_callframe::serialize(SerializationFlags &flags) {
         //    Lil_callframe * parent_ = nullptr; // Parent callframe.
         genPtr("parent_", parent_);
 
-        if (flags.flags_[LILCALLFRAME_VARMAP])
-        {
+        if (flags.flags_[LILCALLFRAME_VARMAP]) {
         //     using Var_HashTable = std::unordered_map<lstring,Lil_var_Ptr>;
         //    Var_HashTable varmap_; // Hashmap of variables in callframe.
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object8(*g_writerPtr, "varmap_");
@@ -321,24 +320,21 @@ bool Lil_callframe::serialize(SerializationFlags &flags) {
         } // End json array
         //    Lil_func_Ptr  func_        = nullptr; // The function that generated this callframe.
         if (func_ == nullptr) {
-            g_writerPtr->Key("func_");
-            g_writerPtr->Null();
+            keyNull(*g_writerPtr, "func_");
         } else {
             g_writerPtr->Key("func_");
             func_->serialize(flags);
         }
         //    Lil_value_Ptr catcher_for_ = nullptr; // Exception catcher.
         if (catcher_for_ == nullptr) {
-            g_writerPtr->Key("catcher_for_");
-            g_writerPtr->Null();
+            keyNull(*g_writerPtr, "catcher_for_");
         } else {
             keyValue(*g_writerPtr, "catcher_for_", catcher_for_->getValue());
         }
         //    Lil_value_Ptr retval_      = nullptr; // Return value_ from this callframe. (can be nullptr)
         if (flags.flags_[LILCALLFRAME_RETVAL]) {
             if (retval_ == nullptr) {
-                g_writerPtr->Key("retval_");
-                g_writerPtr->Null();
+                keyNull(*g_writerPtr, "retval_");
             } else {
                 keyValue(*g_writerPtr, "retval_", retval_->getValue());
             }
@@ -366,8 +362,7 @@ bool Lil_func::serialize(SerializationFlags &flags) {
     // Lil_list_Ptr    argNames_ = nullptr; // List of arguments to function. Owns memory.
     if (flags.flags_[LILFUNC_ARGNAMES]) {
         if (argNames_ == nullptr) {
-            g_writerPtr->Key("argNames_");
-            g_writerPtr->Null();
+            keyNull(*g_writerPtr, "argNames_");
         } else {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object(*g_writerPtr, "argNames_");
             for (int i = 0; i < argNames_->getCount(); i++) {
@@ -378,8 +373,7 @@ bool Lil_func::serialize(SerializationFlags &flags) {
     // Lil_value_Ptr   code_     = nullptr; // Body of function. Owns memory.
     if (flags.flags_[LILFUNC_CODE]) {
         if (code_ == nullptr) {
-            g_writerPtr->Key("code_");
-            g_writerPtr->Null();
+            keyNull(*g_writerPtr, "code_");
         } else {
             keyValue(*g_writerPtr, "code_", code_->getValue());
         }
@@ -387,8 +381,7 @@ bool Lil_func::serialize(SerializationFlags &flags) {
     // lil_func_proc_t proc_     = nullptr; // Function pointer to binary command.
     if (flags.flags_[LILFUNC_PROC]) {
         if (proc_ == nullptr) {
-            g_writerPtr->Key("proc_");
-            g_writerPtr->Null();
+            keyNull(*g_writerPtr, "proc_");
         } else {
             genPtr("proc_", &proc_);
         }
@@ -444,8 +437,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
 
         if (flags.flags_[LILINTERP_SYSINFO]) {
             if (sysInfo_ == nullptr) {
-                g_writerPtr->Key("sysInfo_");
-                g_writerPtr->Null();
+                keyNull(*g_writerPtr, "sysInfo_");
             } else {
                 ret = sysInfo_->serialize(flags);
                 if (!ret) return ret;
@@ -495,8 +487,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    lcstrp  rootCode_ = nullptr; // The original code_
         if (flags.flags_[LILINTERP_ROOTCODE]) {
             if (rootCode_ == nullptr) {
-                g_writerPtr->Key("rootCode_");
-                g_writerPtr->Null();
+                keyNull(*g_writerPtr, "rootCode_");
             } else {
                 keyValue(*g_writerPtr, "rootCode_", rootCode_);
             }
@@ -506,8 +497,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    Lil_callframe_Ptr rootEnv_ = nullptr; // Root/global callframe.
         if (flags.flags_[LILINTERP_ROOTENV]) {
             if (rootEnv_ == nullptr) {
-                g_writerPtr->Key("rootEnv_");
-                g_writerPtr->Null();
+                keyNull(*g_writerPtr, "rootEnv_");
             } else {
                 g_writerPtr->Key("rootEnv_");
                 ret = rootEnv_->serialize(flags);
@@ -517,8 +507,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    Lil_callframe_Ptr downEnv_ = nullptr; // Another callframe for use with "upeval".
         if (flags.flags_[LILINTERP_DOWNENV]) {
             if (downEnv_ == nullptr) {
-                g_writerPtr->Key("downEnv_");
-                g_writerPtr->Null();
+                keyNull(*g_writerPtr, "downEnv_");
             } else {
                 g_writerPtr->Key("downEnv_");
                 ret = downEnv_->serialize(flags);
@@ -528,8 +517,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    Lil_callframe_Ptr env_     = nullptr; // Current callframe.
         if (flags.flags_[LILINTERP_ENV]) {
             if (env_ == nullptr) {
-                g_writerPtr->Key("env_");
-                g_writerPtr->Null();
+                keyNull(*g_writerPtr, "env_");
             } else {
                 g_writerPtr->Key("env_");
                 ret = env_->serialize(flags);
@@ -550,8 +538,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    LilInterp*  parentInterp_ = nullptr;
         if (flags.flags_[LILINTERP_PARENTINTERP]) {
             if (parentInterp_ == nullptr) {
-                g_writerPtr->Key("parentInterp_");
-                g_writerPtr->Null();
+                keyNull(*g_writerPtr, "parentInterp_");
             } else {
                 genPtr("parentInterp_", parentInterp_);
             }
