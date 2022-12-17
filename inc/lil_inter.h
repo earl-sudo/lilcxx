@@ -172,6 +172,7 @@ struct ObjCounter { // #class
         }
         it->second.numDtor_++;
     }
+    bool serialize(SerializationFlags &flags);
 };
 
 struct FuncTimer { // #class
@@ -183,6 +184,7 @@ struct FuncTimer { // #class
     FuncTimer(const FuncTimer& rhs) = default;
     FuncTimer& operator=(const FuncTimer& rhs) = default;
     ~FuncTimer() = default;
+    bool serialize(SerializationFlags &flags);
     void printStats() const {
         auto print_key_value = [this](const auto& key, const auto& value) {
             *outStrm_ << "Key:[" << key << "] Value:[" << value << "]\n"; // #TODO make this changeable. How?
@@ -243,6 +245,7 @@ struct Coverage { // #class
     Coverage(const Coverage& rhs) = default;
     Coverage& operator=(const Coverage& rhs) = default;
     ~Coverage() = default;
+    bool serialize(SerializationFlags &flags);
     void printStats() const {
         auto print_key_value = [&](const auto& key, const auto& value) {
             (*outStrm_) << "Key:[" << key << "] Value:[" << value << "]\n";

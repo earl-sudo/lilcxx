@@ -34,6 +34,20 @@ namespace {
         writer.Key(name);
         writer.Int64(value);
     }
+    void keyNull(auto &writer, const char *name) {
+        writer.Key(name);
+        writer.Null();
+    }
+    void genId(void* ptr) {
+        char buffer[64];
+        sprintf(buffer, "%p", ptr);
+        keyValue(*g_writerPtr, "id", buffer);
+    }
+    void genPtr(std::string_view name, void* ptr) {
+        char buffer[64];
+        sprintf(buffer, "%p", ptr);
+        keyValue(*g_writerPtr, name.data(), buffer);
+    }
 
     template<typename T>
     struct JsonObject {
@@ -69,6 +83,54 @@ namespace {
 
 } // un-named namespace
 
+bool FuncTimer::serialize([[maybe_unused]] SerializationFlags &flags) {
+    bool ret = false;
+
+    JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object3(*g_writerPtr, "funcTimer_");
+    for (const auto &elem: timerInfo_) {
+        {
+            JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object4(*g_writerPtr);
+            keyValue(*g_writerPtr, "name", elem.first);
+            keyValue(*g_writerPtr, "maxTime_", elem.second.maxTime_);
+            keyValue(*g_writerPtr, "numCalls_", elem.second.numCalls_);
+            keyValue(*g_writerPtr, "totalTime_", elem.second.totalTime_);
+        } // End json object
+    }
+
+    ret = true;
+    return ret;
+}
+
+bool ObjCounter::serialize([[maybe_unused]] SerializationFlags &flags) {
+    bool ret = false;
+
+    JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "objCounter_");
+    for (const auto &elem: objectCounts_) {
+        {
+            JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object2(*g_writerPtr);
+            keyValue(*g_writerPtr, "name", elem.first);
+            keyValue(*g_writerPtr, "maxNum_", elem.second.maxNum_);
+            keyValue(*g_writerPtr, "count", elem.second.numCtor_ - elem.second.numDtor_);
+        } // End json object
+    }
+    ret = true;
+    return ret;
+}
+
+bool Coverage::serialize([[maybe_unused]] SerializationFlags &flags) {
+    bool ret = false;
+    JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object5(*g_writerPtr, "converage_");
+    for (const auto &elem: coverageMap_) {
+        {
+            JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object6(*g_writerPtr);
+            keyValue(*g_writerPtr, "name", elem.first);
+            keyValue(*g_writerPtr, "count", elem.second);
+        } // End json object
+    }
+    ret = true;
+    return ret;
+}
+
 bool SysInfo::serialize(SerializationFlags &flags) {
     bool ret = false;
 
@@ -76,51 +138,26 @@ bool SysInfo::serialize(SerializationFlags &flags) {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr, "sysInfo_");
 
         keyValue(*g_writerPtr, "type", "SysInfo");
-        {
-            char buffer[64];
-            sprintf(buffer, "%p", CAST(void*)this);
-            keyValue(*g_writerPtr, "id", buffer);
-        }
+        genId(this);
+
         //    ObjCounter  objCounter_;
-        if (flags.flags_[SYSINFO_OBJCOUNTER])
-        {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "objCounter_");
-            for (const auto &elem: objCounter_.objectCounts_) {
-                {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object2(*g_writerPtr);
-                    keyValue(*g_writerPtr, "name", elem.first);
-                    keyValue(*g_writerPtr, "maxNum_", elem.second.maxNum_);
-                    keyValue(*g_writerPtr, "count", elem.second.numCtor_ - elem.second.numDtor_);
-                } // End json object
-            }
+        if (flags.flags_[SYSINFO_OBJCOUNTER]) {
+            ret = objCounter_.serialize(flags);
+            if (!ret) return ret;
         } // End json array.
 
         //    FuncTimer   funcTimer_;
-        if (flags.flags_[SYSINFO_TIMERINFO])
-        {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object3(*g_writerPtr, "funcTimer_");
-            for (const auto &elem: funcTimer_.timerInfo_) {
-                {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object4(*g_writerPtr);
-                    keyValue(*g_writerPtr, "name", elem.first);
-                    keyValue(*g_writerPtr, "maxTime_", elem.second.maxTime_);
-                    keyValue(*g_writerPtr, "numCalls_", elem.second.numCalls_);
-                    keyValue(*g_writerPtr, "totalTime_", elem.second.totalTime_);
-                } // End json object
-            }
+        if (flags.flags_[SYSINFO_TIMERINFO]) {
+            ret = funcTimer_.serialize(flags);
+            if (!ret) return ret;
         } // End json array
+
         //    Coverage    converage_;
-        if (flags.flags_[SYSINFO_COVERAGE])
-        {
-            JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object5(*g_writerPtr, "converage_");
-            for (const auto &elem: converage_.coverageMap_) {
-                {
-                    JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>> object6(*g_writerPtr);
-                    keyValue(*g_writerPtr, "name", elem.first);
-                    keyValue(*g_writerPtr, "count", elem.second);
-                } // End json object
-            }
+        if (flags.flags_[SYSINFO_COVERAGE]) {
+            ret = converage_.serialize(flags);
+            if (!ret) return ret;
         }
+
         //    std::ostream*       outStrm_ = nullptr;
         keyValue(*g_writerPtr, "outStrm_", "placeHolder");
 
@@ -222,15 +259,13 @@ bool Lil_var::serialize(SerializationFlags &flags) {
 
     keyValue(*g_writerPtr, "type", "Lil_var");
 
-    {
-        char buffer[64];
-        sprintf(buffer, "%p", CAST(void*)this);
-        keyValue(*g_writerPtr, "id", buffer);
-    }
+    genId(this);
+
     //    SysInfo*            sysInfo_ = nullptr;
     //    lstring             watchCode_;
-    if (flags.flags_[LILVAR_WATCHCODE])
+    if (flags.flags_[LILVAR_WATCHCODE]) {
         keyValue(*g_writerPtr, "watchCode_", watchCode_);
+    }
 
     //    lstring             name_; // Variable named.
     keyValue(*g_writerPtr, "name_", name_);
@@ -238,22 +273,15 @@ bool Lil_var::serialize(SerializationFlags &flags) {
     //    Lil_callframe *     thisCallframe_ = nullptr; // Pointer to callframe defined in.
     if (flags.flags_[LILVAR_THISCALLFRAME]) {
         if (thisCallframe_ == nullptr) {
-            g_writerPtr->Key("thisCallframe_");
-            g_writerPtr->Null();
+            keyNull(*g_writerPtr, "thisCallframe_");
         } else {
-            g_writerPtr->Key("thisCallframe_");
-            {
-                char buffer[64];
-                sprintf(buffer, "%p", CAST(void*)thisCallframe_);
-                g_writerPtr->String(buffer);
-            }
+            genPtr("thisCallframe_", thisCallframe_);
         }
     }
     //    Lil_value_Ptr       value_ = nullptr;
     if (flags.flags_[LILVAR_VALUE]) {
         if (value_ == nullptr) {
-            g_writerPtr->Key("value_");
-            g_writerPtr->Null();
+            keyNull(*g_writerPtr, "value_");
         } else {
             keyValue(*g_writerPtr, "value_", value_->getValue());
         }
@@ -267,24 +295,15 @@ bool Lil_callframe::serialize(SerializationFlags &flags) {
 
 //    SysInfo*        sysInfo_ = nullptr;
 //
-
     {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object7(*g_writerPtr);
 
         keyValue(*g_writerPtr, "type", "Lil_callframe");
 
-        {
-            char buffer[64];
-            sprintf(buffer, "%p", CAST(void*)this);
-            keyValue(*g_writerPtr, "id", buffer);
-        }
+        genId(this);
+
         //    Lil_callframe * parent_ = nullptr; // Parent callframe.
-        g_writerPtr->Key("parent_");
-        {
-            char buffer[64];
-            sprintf(buffer, "%p", CAST(void*)parent_);
-            g_writerPtr->String(buffer);
-        }
+        genPtr("parent_", parent_);
 
         if (flags.flags_[LILCALLFRAME_VARMAP])
         {
@@ -337,11 +356,8 @@ bool Lil_func::serialize(SerializationFlags &flags) {
     bool ret = false;
     // class Lil_func
     // lstring         name_; // Name of function.
-    {
-        char buffer[64];
-        sprintf(buffer, "%p", CAST(void*)this);
-        keyValue(*g_writerPtr, "id", buffer);
-    }
+    genId(this);
+
     keyValue(*g_writerPtr, "type", "Lil_func");
 
     keyValue(*g_writerPtr, "orgName", name_);
@@ -374,12 +390,7 @@ bool Lil_func::serialize(SerializationFlags &flags) {
             g_writerPtr->Key("proc_");
             g_writerPtr->Null();
         } else {
-            g_writerPtr->Key("proc_");
-            {
-                char buffer[64];
-                sprintf(buffer, "%p", CAST(void*)&proc_);
-                g_writerPtr->String(buffer);
-            }
+            genPtr("proc_", &proc_);
         }
     }
     ret = true;
@@ -411,12 +422,8 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
         keyValue(*g_writerPtr, "type", "LilInterp");
         keyValue(*g_writerPtr, "comment", flags.comment_);
+        genId(this);
 
-        {
-            char buffer[64];
-            sprintf(buffer, "%p", CAST(void*)this);
-            keyValue(*g_writerPtr, "id", buffer);
-        }
 
         if (flags.flags_[LILINTERP_BASIC])
         {
@@ -437,8 +444,8 @@ bool LilInterp::serialize(SerializationFlags &flags) {
 
         if (flags.flags_[LILINTERP_SYSINFO]) {
             if (sysInfo_ == nullptr) {
-                writer.Key("sysInfo_");
-                writer.Null();
+                g_writerPtr->Key("sysInfo_");
+                g_writerPtr->Null();
             } else {
                 ret = sysInfo_->serialize(flags);
                 if (!ret) return ret;
@@ -488,8 +495,8 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    lcstrp  rootCode_ = nullptr; // The original code_
         if (flags.flags_[LILINTERP_ROOTCODE]) {
             if (rootCode_ == nullptr) {
-                writer.Key("rootCode_");
-                writer.Null();
+                g_writerPtr->Key("rootCode_");
+                g_writerPtr->Null();
             } else {
                 keyValue(*g_writerPtr, "rootCode_", rootCode_);
             }
@@ -499,10 +506,10 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    Lil_callframe_Ptr rootEnv_ = nullptr; // Root/global callframe.
         if (flags.flags_[LILINTERP_ROOTENV]) {
             if (rootEnv_ == nullptr) {
-                writer.Key("rootEnv_");
-                writer.Null();
+                g_writerPtr->Key("rootEnv_");
+                g_writerPtr->Null();
             } else {
-                writer.Key("rootEnv_");
+                g_writerPtr->Key("rootEnv_");
                 ret = rootEnv_->serialize(flags);
                 if (!ret) return ret;
             }
@@ -510,10 +517,10 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    Lil_callframe_Ptr downEnv_ = nullptr; // Another callframe for use with "upeval".
         if (flags.flags_[LILINTERP_DOWNENV]) {
             if (downEnv_ == nullptr) {
-                writer.Key("downEnv_");
-                writer.Null();
+                g_writerPtr->Key("downEnv_");
+                g_writerPtr->Null();
             } else {
-                writer.Key("downEnv_");
+                g_writerPtr->Key("downEnv_");
                 ret = downEnv_->serialize(flags);
                 if (!ret) return ret;
             }
@@ -521,10 +528,10 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    Lil_callframe_Ptr env_     = nullptr; // Current callframe.
         if (flags.flags_[LILINTERP_ENV]) {
             if (env_ == nullptr) {
-                writer.Key("env_");
-                writer.Null();
+                g_writerPtr->Key("env_");
+                g_writerPtr->Null();
             } else {
-                writer.Key("env_");
+                g_writerPtr->Key("env_");
                 ret = env_->serialize(flags);
                 if (!ret) return ret;
             }
@@ -543,15 +550,10 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         //    LilInterp*  parentInterp_ = nullptr;
         if (flags.flags_[LILINTERP_PARENTINTERP]) {
             if (parentInterp_ == nullptr) {
-                writer.Key("parentInterp_");
-                writer.Null();
-            } else {
                 g_writerPtr->Key("parentInterp_");
-                {
-                    char buffer[64];
-                    sprintf(buffer, "%p", CAST(void*)parentInterp_);
-                    g_writerPtr->String(buffer);
-                }
+                g_writerPtr->Null();
+            } else {
+                genPtr("parentInterp_", parentInterp_);
             }
         }
         //    cmdFilterType  cmdFilter_;

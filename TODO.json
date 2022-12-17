@@ -153,8 +153,17 @@
     {"n": "Event loop", "version2": 1}
   ],
   "unsorted": [
-    {"n": "serialize"},
+    {"n": "Define linux shell argument tab completion"},
+    {"n": "Add readline to input loop."},
+    {"n": "Add fuzzing to test"},
+    {"n": "A storage area for SysInfo(s)"},
+    {"n": "Add method to add SysInfo(s)"},
+    {"n": "Add method to subtract SysInfo(s)"},
+    {"n": "new expr based on ExprTk library"},
+    {"n": "new expr based on gnu libmatheval"},
+    {"n": "deserialize"},
     {"n": "compile to web assembly"},
+
     {"n": "Use link script to make libraries safer to resuse"},
     {"n": "Version libraries"},
     {"n": "Start changing namespace name"},
@@ -291,6 +300,8 @@
     {"n": "Rename executable lilcxxsh - DONE"},
     {"n": "command keywords - DONE", "rank": 1},
     {"n": "List of features org/language/imp-design/src/build-pkg - DONE", "rank": 20},
-    {"n": "Put git version info into binary. - DONE", "rank":  10}
+    {"n": "Put git version info into binary. - DONE", "rank":  10},
+    {"n": "serialize - DONE"}
+    {"n": "Add shared library build target - DONE"}
   ]
 }

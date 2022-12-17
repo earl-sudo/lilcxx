@@ -98,7 +98,20 @@ target_include_directories(lilcxxsh SYSTEM PUBLIC inc boost_1_79_0 extern)
 # EXAMPLE: link_directories(/Users/User/Projects/libraries/libs)
 
 #         main/unittest.cxx
-add_library(lilcxx
+add_library(lilcxx STATIC
+        src/lil_cmds.cpp
+        src/lil_eval_expr.cpp
+        src/lilcxxTest.cpp
+        inc/lilcxxTest.h
+        src/lil.cpp inc/lil.h
+        inc/lil_inter.h
+        inc/narrow_cast.h
+        inc/MemCache.h
+        inc/comp_info.h
+        inc/funcPointers.h
+        src/lil_serialize.cpp)
+
+add_library(lilcxxso SHARED
         src/lil_cmds.cpp
         src/lil_eval_expr.cpp
         src/lilcxxTest.cpp
@@ -120,6 +133,7 @@ add_custom_command ( OUTPUT inc/git_info.h
 add_custom_target(genGitInfo ALL DEPENDS inc/git_info.h)
 
 target_include_directories(lilcxx SYSTEM PUBLIC inc boost_1_79_0 extern)
+target_include_directories(lilcxxso SYSTEM PUBLIC inc boost_1_79_0 extern)
 
 # <help> apply option to all target files
 # target_compile_options(<target> [BEFORE]
@@ -187,6 +201,34 @@ target_compile_options(lilcxx PRIVATE -Wnonnull
 
         -Wno-unknown-pragmas -Wno-sign-compare -Wno-inline)
 
+target_compile_options(lilcxxso PRIVATE -Wnonnull
+        -pedantic -Wall -Wextra -Wcast-align -Wcast-qual
+        -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op
+        -Wmissing-include-dirs -Wnoexcept  -Woverloaded-virtual
+        -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel
+        -Wswitch-default -Wundef  -Wno-unused
+
+        -pedantic-errors -Wextra  -Wcast-align
+        -Wcast-qual -Wconversion
+        -Wdisabled-optimization
+        -Wfloat-equal -Wformat=2
+        -Wformat-nonliteral -Wformat-security
+        -Wformat-y2k
+        -Wimport  -Winit-self  -Winline -Winvalid-pch
+        -Wlong-long
+        -Wmissing-field-initializers -Wmissing-format-attribute
+        -Wmissing-include-dirs -Wmissing-noreturn
+        -Wpacked  -Wpointer-arith
+        -Wredundant-decls
+        -Wshadow -Wstack-protector
+        -Wstrict-aliasing=2 -Wswitch-default
+        -Wswitch-enum
+        -Wunreachable-code -Wunused
+        -Wunused-parameter
+        -Wvariadic-macros -Wno-float-equal
+        -Wwrite-strings -Wsign-conversion
+
+        -Wno-unknown-pragmas -Wno-sign-compare -Wno-inline)
 # <help> target_compile_definitions(<target>
 #        <INTERFACE|PUBLIC|PRIVATE> [items1...]
 #        [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
