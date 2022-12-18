@@ -393,7 +393,6 @@ bool LilInterp::serialize(SerializationFlags &flags) {
 
     char writeBuffer[64*1024];
 
-    std::cerr << "filename:" << flags.fileName_ << ":\n";
     FILE* fp = fopen(flags.fileName_.c_str(), "w");
     if (fp == nullptr) return ret;
 
