@@ -35,6 +35,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <filesystem>
 
 #include "lil.h"
 #include "lil_inter.h"
@@ -316,7 +317,7 @@ LILCALLBACK void lil_write_callback_for_unittest(LILNS::LilInterp_Ptr lil, LILNS
 NS_BEGIN(LILNS)
 
 // Run a string.
-static int unittest_eval(lcstrp input) { // #UNITTEST
+static int unittest_eval(lcstrp name, lcstrp input) { // #UNITTEST
     configure_interpreter();
     LilInterp_Ptr lil = lil_new();
     lcstrp err_msg;
@@ -331,6 +332,9 @@ static int unittest_eval(lcstrp input) { // #UNITTEST
         lil_register(lil, "canread", fnc_canRead);
     lil_register(lil, "readline", fnc_readline);
     SerializationFlags flags;
+    std::filesystem::path cwd = std::filesystem::current_path();
+    //flags.fileName_ = CAST(lstring)"../unittest_scripts/test_stats/" + name + ".json";
+    flags.fileName_ = cwd / ".." / "unittest_scripts" / "test_stats" / (CAST(lstring)name + ".json");
 
     Lil_value_Ptr  code = lil_alloc_string(lil, input);
     lil_set_var(lil, "__lilmain:code__", code, LIL_SETVAR_GLOBAL);
@@ -377,7 +381,7 @@ int main(int argc, const char* argv[]) {
         for (int i = 0; i < sizeof(ut)/sizeof(unittest); i++) { // For each test #UNITTEST_VER1
             std::cout << "TEST: " << i << ":";
             g_unitTestOutput.reset();
-            unittest_eval(ut[i].input);
+            unittest_eval(ut[i].name, ut[i].input);
             g_unitTestOutput.splitExpected(ut[i].output);
             numErrors += g_unitTestOutput.diff(ut[i].name);
         }

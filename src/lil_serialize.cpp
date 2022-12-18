@@ -258,7 +258,6 @@ bool Lil_var::serialize(SerializationFlags &flags) {
     bool ret = false;
 
     keyValue(*g_writerPtr, "type", "Lil_var");
-
     genId(this);
 
     //    SysInfo*            sysInfo_ = nullptr;
@@ -299,7 +298,6 @@ bool Lil_callframe::serialize(SerializationFlags &flags) {
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object7(*g_writerPtr);
 
         keyValue(*g_writerPtr, "type", "Lil_callframe");
-
         genId(this);
 
         //    Lil_callframe * parent_ = nullptr; // Parent callframe.
@@ -353,9 +351,7 @@ bool Lil_func::serialize(SerializationFlags &flags) {
     // class Lil_func
     // lstring         name_; // Name of function.
     genId(this);
-
     keyValue(*g_writerPtr, "type", "Lil_func");
-
     keyValue(*g_writerPtr, "orgName", name_);
 
     // SysInfo*        sysInfo_ = nullptr;
@@ -397,6 +393,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
 
     char writeBuffer[64*1024];
 
+    std::cerr << "filename:" << flags.fileName_ << ":\n";
     FILE* fp = fopen(flags.fileName_.c_str(), "w");
     if (fp == nullptr) return ret;
 
@@ -409,8 +406,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
     Document   doc;
 
     //for (int i = 0; i < SERIALIZATION_NUM_FLAGS; i++) std::cout << "flag: " << i << " " <<  flags.flags_[i] << "\n";
-    if (flags.flags_[LILINTERP])
-    {
+    if (flags.flags_[LILINTERP]) {
 
         JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object(*g_writerPtr);
         keyValue(*g_writerPtr, "type", "LilInterp");
@@ -418,8 +414,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         genId(this);
 
 
-        if (flags.flags_[LILINTERP_BASIC])
-        {
+        if (flags.flags_[LILINTERP_BASIC]) {
             JsonObject<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object1(*g_writerPtr, "basic");
             keyValue(*g_writerPtr, "DEF_COMPILER", DEF_COMPILER);
             keyValue(*g_writerPtr, "DEF_COMPILER_VERSION", DEF_COMPILER_VERSION);
@@ -462,8 +457,7 @@ bool LilInterp::serialize(SerializationFlags &flags) {
         } // End json array
         // ===============
         //    Cmds_HashTable sysCmdMap_; // Hashmap of initial or system "commands".
-        if (flags.flags_[LILINTERP_SYSCMDMAP])
-        {
+        if (flags.flags_[LILINTERP_SYSCMDMAP]) {
             JsonArray<rapidjson::PrettyWriter<rapidjson::FileWriteStream>>   object3(*g_writerPtr, "sysCmdMap_");
             for (const auto &elem: sysCmdMap_) {
                 {

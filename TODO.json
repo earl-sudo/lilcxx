@@ -4,6 +4,7 @@
     {"n": "Fix \"invalid read of size 1\", ~Lil_value()."}
   ],
   "misc": [
+    {"n": "Output info on each unittest (i.e. serialize"},
     {"n": "safe mode", "rank":  1, "note":  "started"},
     {"n": "Add compile/os/date/commands tested info to log", "rank": 1},
     {"n": "test command & testfunc", "rank": 1},
